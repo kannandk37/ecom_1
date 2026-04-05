@@ -1,0 +1,102 @@
+/* ReviewList.css */
+
+.rl-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  background: transparent;
+}
+
+.rl-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Individual Card Styling (Matching Sarah M. and Sarah T. style) */
+.rl-card {
+  background-color: #ffffff;
+  border-radius: 20px; /* Highly rounded as in image */
+  padding: 24px 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); /* Soft premium shadow */
+  transition: transform 0.2s ease;
+}
+
+.rl-card:hover {
+  transform: translateY(-2px);
+}
+
+.rl-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.rl-card__user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rl-card__name {
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #1a1a1a;
+}
+
+.rl-card__verified {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #2e7d32; /* Success green from image */
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.verified-icon {
+  font-size: 1.1rem;
+}
+
+/* Star Icons */
+.rl-stars-wrapper {
+  display: flex;
+  gap: 2px;
+}
+
+.rl-star {
+  font-size: 1.2rem;
+  color: #bc9a5c; /* Muted gold matching theme */
+}
+
+/* Comment Section */
+.rl-card__comment {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: #333333;
+}
+
+/* Show More Button (Themed) */
+.rl-show-more-btn {
+  background-color: transparent;
+  color: #bc9a5c;
+  border: 1px solid #bc9a5c;
+  padding: 12px 30px;
+  border-radius: 50px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: center; /* Center horizontally */
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+.rl-show-more-btn:hover {
+  background-color: #bc9a5c;
+  color: #ffffff;
+}

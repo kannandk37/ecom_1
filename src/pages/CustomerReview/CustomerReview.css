@@ -1,0 +1,17 @@
+.root-customer-review {
+  /* background: red; */
+  width: 100%;
+  /* height: 250px; */
+  display: flex;
+  /*flex-direction: row; */
+  /* gap: 20px; */
+  /* justify-content: stretch; */
+}
+
+.customer-review-overall {
+  width: 400px;
+  /* background: blue; */
+  /* flex: 0; */
+  padding: 20px;
+  margin-right: 40px;
+}

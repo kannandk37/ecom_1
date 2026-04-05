@@ -1,0 +1,87 @@
+/* IconButton.css */
+
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%; /* Always circular */
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  outline: none;
+  padding: 0; /* Important for perfect centering */
+  flex-shrink: 0;
+}
+
+/* Size Presets */
+.icon-button--small {
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+}
+
+.icon-button--medium {
+  width: 44px;
+  height: 44px;
+  font-size: 20px;
+}
+
+.icon-button--large {
+  width: 56px;
+  height: 56px;
+  font-size: 24px;
+}
+
+/* Variant: Primary (Matches Design) */
+.icon-button--primary {
+  background-color: var(--color-primary);
+  color: var(--color-text-primary);
+}
+
+.icon-button--primary:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+  box-shadow: 0 4px 12px var(--color-primary);
+}
+
+/* Variant: Secondary */
+.icon-button--secondary {
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
+}
+
+.icon-button--secondary:hover:not(:disabled) {
+  background-color: var(--color-secondary-hover);
+}
+
+/* Variant: Outline */
+.icon-button--outline {
+  background-color: var(--color-outline);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.icon-button--outline:hover:not(:disabled) {
+  background-color: var(--color-primary);
+  border-color: var(--color-outline-border-hover);
+  color: var(--color-outline-hover);
+}
+
+/* Shared States */
+.icon-button:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+.icon-button:disabled {
+  background-color: var(--color-button-disable-background);
+  color: var(--color-button-disable);
+  border-color: var(--color-outline);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.icon-button__content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}

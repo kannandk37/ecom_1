@@ -1,0 +1,81 @@
+/* Button.css */
+
+.ds-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px 24px;
+  border-radius: 999px;
+  font-family: var(--font-family);
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  outline: none;
+  white-space: nowrap;
+  transition: transform 0.1s;
+}
+
+.ds-button--primary {
+  background-color: var(--color-primary);
+  color: var(--color-text-primary);
+}
+
+.ds-button--primary:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+  box-shadow: 0 4px 12px var(--color-primary);
+}
+
+.ds-button--primary:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+}
+
+.ds-button--secondary {
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
+}
+
+.ds-button--secondary:hover:not(:disabled) {
+  background-color: var(--color-secondary-hover);
+}
+
+.ds-button--secondary:hover {
+  background-color: var(--color-secondary-hover);
+  transform: translateY(-1px);
+}
+
+.ds-button--outline {
+  background-color: var(--color-outline);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.ds-button--outline:hover:not(:disabled) {
+  background-color: var(--color-primary);
+}
+
+.ds-button--outline:hover {
+  background-color: var(--color-primary);
+  color: var(--color-outline-hover);
+  border-color: var(--color-outline-border-hover);
+  transform: translateY(-1px);
+}
+
+.ds-button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.ds-button:disabled {
+  background-color: var(--color-button-disable-background);
+  color: var(--color-button-disable);
+  border-color: transparent;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.ds-button__icon {
+  display: flex;
+  align-items: center;
+  font-size: 1.2em;
+}

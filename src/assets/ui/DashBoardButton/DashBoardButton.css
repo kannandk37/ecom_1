@@ -1,0 +1,101 @@
+/* DashboardButton.css */
+
+.dashboard-btn {
+  /* Base Styles */
+  display: inline-flex;
+  align-items: center;
+  justify-content: var(--btn-justify-content, center);
+  border-radius: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  outline: none;
+  will-change: transform;
+
+  /* Dynamic Props via CSS Variables */
+  font-family: var(--font-family);
+  width: var(--btn-width);
+  height: var(--btn-height);
+  font-size: var(--btn-font-size);
+  padding: 16px 24px; /* Default padding if height is auto */
+
+  /* Responsiveness */
+  max-width: 100%;
+}
+
+.dashboard-btn__content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dashboard-btn:active:not(:disabled) {
+  /* Scales the button down to 98% of its size */
+  transform: scale(0.98);
+  /* Also remove the hover 'lift' if it was there */
+  box-shadow: 0 4px 10px rgba(140, 109, 63, 0.1);
+  transition: transform 0.1s ease-out; /* Makes the "press" feel instant */
+}
+
+.dashboard-btn:active:not(:disabled) {
+  transform: translateY(0) scale(0.97) !important;
+}
+
+/* --- VARIANT: PRIMARY --- */
+.dashboard-btn--primary {
+  background-color: #8c6d3f;
+  color: #ffffff;
+  box-shadow: 0 10px 20px rgba(140, 109, 63, 0.2);
+}
+
+.dashboard-btn--primary:hover:not(:disabled) {
+  background-color: #7a5e35;
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 12px 24px rgba(140, 109, 63, 0.3);
+}
+
+.dashboard-btn--primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* --- VARIANT: SECONDARY --- */
+.dashboard-btn--secondary {
+  background-color: #f3f1ec;
+  color: #8c6d3f;
+}
+
+.dashboard-btn--secondary:hover:not(:disabled) {
+  background-color: #e8e4db;
+  transform: translateY(-2px) scale(1.01);
+}
+
+/* --- VARIANT: OUTLINE --- */
+.dashboard-btn--outline {
+  background-color: transparent;
+  border-color: #8c6d3f;
+  color: #8c6d3f;
+}
+
+.dashboard-btn--outline:hover:not(:disabled) {
+  background-color: rgba(140, 109, 63, 0.05);
+  transform: translateY(-2px) scale(1.01);
+}
+
+/* --- STATE: DISABLED --- */
+.dashboard-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  filter: grayscale(0.5);
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* --- MOBILE ADJUSTMENTS --- */
+@media (max-width: 480px) {
+  .dashboard-btn {
+    padding: 14px 20px;
+    font-size: 0.95rem;
+    border-radius: 12px;
+  }
+}

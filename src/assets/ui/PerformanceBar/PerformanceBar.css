@@ -1,0 +1,173 @@
+/* PerformanceBar.css */
+
+:root {
+  --p-bar-bg-card: #ffffff;
+  --p-bar-bg-track: #f3f1ec; /* Cream/grey background from your theme */
+  --p-bar-text-title: #1a1a1a;
+  --p-bar-text-product: #5c4d3b; /* Muted brown from reference image */
+  --p-bar-text-percent: #71604d;
+  --p-bar-icon: #71604d;
+}
+
+.p-bar-card {
+  padding: 32px;
+  background-color: var(--p-bar-bg-card);
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* Header: Title and Options Button */
+.p-bar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.p-bar-title {
+  margin: 0;
+  color: var(--p-bar-text-title);
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.p-bar-more-btn {
+  background: none;
+  border: none;
+  color: var(--p-bar-icon);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.p-bar-more-btn:hover {
+  background-color: #f3f1ec;
+}
+
+/* The Data List */
+.p-bar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px; /* Space between each product block */
+}
+
+/* Individual Product Block */
+.p-bar-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Space between text and bar */
+}
+
+/* Info: Product Name and Percentage */
+.p-bar-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.p-bar-product-name {
+  color: var(--p-bar-text-product);
+}
+
+.p-bar-percentage-label {
+  color: var(--p-bar-text-percent);
+}
+
+/* Bar Track (Grey Background) */
+.p-bar-track {
+  width: 100%;
+  height: 12px; /* Thicker, high-end look */
+  background-color: var(--p-bar-bg-track);
+  border-radius: 6px;
+  overflow: visible; /* Clips the internal fill */
+  position: relative;
+}
+
+/* Bar Fill (Progressive Color) */
+.p-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); /* Professional animation */
+  position: relative;
+  cursor: pointer;
+}
+
+.p-bar-fill:hover {
+  filter: brightness(1.1);
+  transition: filter 0.2s ease;
+}
+
+/* Responsiveness: Maintain padding and size on small screens */
+@media (max-width: 480px) {
+  .p-bar-card {
+    padding: 24px;
+  }
+
+  .p-bar-title {
+    font-size: 1.1rem;
+  }
+}
+
+/* TOOLTIP LOGIC */
+.p-bar-fill.has-tooltip:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: -35px; /* Position above the bar */
+  right: 0;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  z-index: 10;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+  /* animation: fadeInTooltip 0.2s ease-out; */
+  animation: fadeIn 0.4s ease-in forwards;
+}
+
+/* Tooltip Arrow */
+.p-bar-fill.has-tooltip:hover::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  right: 10px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: #1a1a1a transparent transparent transparent;
+  z-index: 10;
+}
+
+@keyframes fadeInTooltip {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

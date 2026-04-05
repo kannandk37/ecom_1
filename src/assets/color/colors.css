@@ -1,0 +1,21 @@
+:root {
+  --color-bg: #fdfaf5;
+
+  --color-primary: #bc9a5c;
+  --color-primary-hover: #a6854d;
+
+  --color-secondary: #f3eee4;
+  --color-secondary-hover: #ebe3d5;
+
+  --color-outline: transparent;
+  --color-outline-border-hover: #ffffff;
+  --color-outline-hover: #ffffff;
+
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #bc9a5c;
+
+  --color-button-disable-background: #e0e0e0;
+  --color-button-disable: #444343;
+
+  --font-family: "Fredoka", sans-serif;
+}

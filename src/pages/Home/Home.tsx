@@ -1,0 +1,650 @@
+import { useState, useEffect } from "react";
+import axiosinstance from "../../service";
+import { useNavigate } from "react-router-dom";
+import HomeBanner from "../../assets/banner/Banner";
+import Banner from "../../../data/banner.png";
+import "./Home.css";
+
+import { CardGrid } from "../../assets/card1/Card";
+import image1 from "../../../data/image1.png";
+import image2 from "../../../data/image2.png";
+import image3 from "../../../data/image3.png";
+import ProductCard from "../../assets/card2/ProductCard";
+import ProductImageGallery from "../../assets/ProductImageGallery/ProductImageGallery";
+import { Carousel } from "../../assets/CarouselTest/CarouselTest";
+import ReviewCard from "../../assets/reviewCard/ReviewCard";
+import ProductCardGrid from "../../assets/productCardGrid/ProductCardGrid";
+import ProductCardGridSingle from "../../assets/ProductCardGridSingle/ProductCardGridSingle";
+import CustomerRievew from "../CustomerReview/CustomerRievew";
+
+interface CardItem {
+  id: Number;
+  image: string;
+  title: string;
+}
+
+const productsTestData: any = [
+  { image: image1, name: "Almond1", price: 10 },
+  { image: image2, name: "Cashew2", price: 12 },
+  { image: image3, name: "Walnut3", price: 14 },
+  { image: image1, name: "Almond4", price: 10 },
+  { image: image2, name: "Cashew5", price: 12 },
+  { image: image3, name: "Walnut6", price: 14 },
+  { image: image1, name: "Almond7", price: 10 },
+  { image: image2, name: "Cashew8", price: 12 },
+  { image: image3, name: "Walnut9", price: 14 },
+  { image: image1, name: "Almond90", price: 10 },
+  { image: image2, name: "Cashew11", price: 12 },
+  { image: image3, name: "Walnut12", price: 14 },
+  { image: image3, name: "Walnut92", price: 14 },
+  { image: image1, name: "Almond93", price: 10 },
+  { image: image2, name: "Cashew13", price: 12 },
+  { image: image3, name: "Walnut14", price: 14 },
+];
+
+const myCards: CardItem[] = [
+  {
+    id: 1,
+    image: image1,
+    title: "Dry Fruits",
+  },
+  {
+    id: 2,
+    image: image2,
+    title: "Nuts",
+  },
+  {
+    id: 3,
+    image: image3,
+    title: "Dates",
+  },
+  {
+    id: 4,
+    image: image1,
+    title: "Fresh Juices",
+  },
+  {
+    id: 5,
+    image: image2,
+    title: "Chocolates",
+  },
+  // {
+  // id:6,
+  //   image: image3,
+  //   title: "Walnuts",
+  // },
+  // {
+  // id: 7,
+  //   image: image1,
+  //   title: "Walnuts",
+  // },
+];
+
+const mockReviews: any[] = [
+  {
+    id: 1,
+    name: "Sarah M.",
+    comment: "Excellent quality! Fresh and crunchy almonds.",
+    rating: 5,
+    isVerified: true,
+  },
+  {
+    id: 2,
+    name: "James L.",
+    comment:
+      "Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.",
+    rating: 3.5,
+    isVerified: true,
+  },
+  {
+    id: 3,
+    name: "Anonymous",
+    comment: "The packaging was great, arrived on time.",
+    rating: 4,
+    isVerified: false,
+  },
+];
+
+const images = [image1, image2, image3, image1, image2, image3];
+const Home = () => {
+  const [user, setUser] = useState<any>(null);
+  const [cart, setCart] = useState<any>();
+  const [products, setProducts] = useState<any>([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const res = await axiosinstance.get("/api/products");
+      setProducts(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  const addToCart = async (product: any) => {
+    if (cart?.order) {
+      let cartData = {
+        _id: cart._id,
+        userId: user._id,
+        order: {
+          _id: cart?.order?._id,
+          products: [...cart?.order?.products, product],
+        },
+      };
+      console.log(cartData, "asda");
+      let updatedCart = await axiosinstance.put(
+        `/api/carts/${cartData.userId}/user`,
+        cartData,
+      );
+      if (updatedCart.data) {
+        navigate("/cart");
+      }
+    } else {
+      let cartData = {
+        userId: user._id,
+        order: {
+          products: [product],
+        },
+      };
+      let persistCart = await axiosinstance.post("/api/carts", cartData);
+      if (persistCart.data) {
+        navigate("/cart");
+      }
+    }
+  };
+
+  const emptyUserCart = async () => {
+    try {
+      if (user?._id) {
+        await axiosinstance.delete(`/api/carts/${user._id}/user/empty`);
+        navigate(0);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchUserCart = async () => {
+      if (user?._id) {
+        const res = await axiosinstance.get(`/api/carts/${user?._id}/user`);
+        if (res?.data) {
+          setCart(res.data);
+        }
+      }
+    };
+    fetchUserCart();
+  }, [user]);
+
+  const handleCardClick = (category: any) => {
+    navigate(`/categories/${category.id}/products`, {
+      state: { category: category },
+    });
+  };
+
+  return (
+    <div className="root-home">
+      <div className="home-contaiiner">
+        <HomeBanner
+          image={Banner}
+          width="100%"
+          height="400px"
+          borderRadius="20px"
+          fontSize2="22px"
+          buttonText="Shop Now"
+          buttonVariant="primary"
+          onButtonClick={() => console.log("asda")}
+          showButton={true}
+          showTitle1={true}
+          showTitle2={true}
+          title1="PREMIUM QUALITY, NATURALLY DELICIOUS"
+          title2="Discover our curated collection of dry fruits, nuts, dates, and healthy snacks."
+        />
+        <div className="categoreis-container">
+          <h2 className="categories-title">Categories</h2>
+          <div className="categories-cards-container">
+            <CardGrid
+              cards={myCards}
+              cardsPerColumn={1}
+              //  height="320px"
+              onCardClick={handleCardClick}
+            />
+            {/* <ProductCard /> */}
+          </div>
+        </div>
+        {/* <ProductImageGallery images={images} height={"650px"} width={"650px"} /> */}
+        {/* <ProductCarousel /> */}
+        {/* <Carousel
+          title="Our Best Sellers"
+          data={productsTestData}
+          renderItem={(item: any) => <ProductCardGridSingle product={item} />}
+          {data.map((item: any, index: any) => (
+           <ProductCardGridSingle product={item} />
+          ))}
+          <Card
+            key={index}
+            name={item.name}
+            price={item.price}
+            image={item.image}
+          />
+          <CardGrid
+            cards={myCards}
+            cardsPerColumn={1}
+             height="320px"
+          />
+        /> */}
+        {/* <ProductCardGrid products={productsTestData} /> */}
+        {/* <ReviewCard reviews={mockReviews} /> */}
+        {/* <CustomerRievew /> */}
+        {/* <Carousel
+          title="Our Best Sellers"
+          data={productsTestData}
+          renderItem={(item: any) => <ProductCardGridSingle product={item} />}
+        /> */}
+      </div>
+    </div>
+  );
+};
+
+export default Home;
+
+// import { useState } from "react"
+
+interface CardProps {
+  image: string;
+  name: string;
+  price: number;
+}
+
+const Card = ({ image, name, price }: CardProps) => {
+  return (
+    <div className="card">
+      <img src={image} />
+      <h4>{name}</h4>
+      <p>${price}</p>
+    </div>
+  );
+};
+
+// interface CarouselProps<T> {
+//   items: T[];
+//   renderItem: (item: T, index: number) => React.ReactNode;
+// }
+
+// function Carousel<T>({ items, renderItem }: CarouselProps<T>) {
+//   const [index, setIndex] = useState(0);
+
+//   const next = () => {
+//     setIndex((prev) => Math.min(prev + 1, items.length - 1));
+//   };
+
+//   const prev = () => {
+//     setIndex((prev) => Math.max(prev - 1, 0));
+//   };
+
+//   return (
+//     <div className="carousel">
+//       <button onClick={prev}>◀</button>
+
+//       <div className="carousel-track">
+//         {items.map((item, i) => (
+//           <div key={i} className="carousel-item">
+//             {renderItem(item, i)}
+//           </div>
+//         ))}
+//       </div>
+
+//       <button onClick={next}>▶</button>
+//     </div>
+//   );
+// }
+
+// const products = [
+//   { image: image1, name: "Almond", price: 10 },
+//   { image: image2, name: "Cashew", price: 12 },
+//   { image: image3, name: "Walnut", price: 14 },
+//   { image: image1, name: "Almond", price: 10 },
+//   { image: image2, name: "Cashew", price: 12 },
+//   { image: image3, name: "Walnut", price: 14 },
+// ];
+
+// function ProductCarousel() {
+//   return (
+//     <Carousel
+//       items={products}
+//       renderItem={(product) => (
+//         <Card image={product.image} name={product.name} price={product.price} />
+//       )}
+//     />
+//   );
+// }
+
+// import { useState, useEffect } from "react";
+// import axiosinstance from "../../service";
+// import { useNavigate } from "react-router-dom";
+// import HomeBanner from "../../assets/banner/Banner";
+// import Banner from "../../../data/banner.png";
+// import "./Home.css";
+
+// import { CardGrid } from "../../assets/card1/Card";
+// import image1 from "../../../data/image1.png";
+// import image2 from "../../../data/image2.png";
+// import image3 from "../../../data/image3.png";
+
+// interface CardItem {
+//   image: string;
+//   title: string;
+// }
+
+// const myCards: CardItem[] = [
+//   {
+//     image: image1,
+//     title: "Dry Fruits",
+//   },
+//   {
+//     image: image2,
+//     title: "Mixed Nuts",
+//   },
+//   {
+//     image: image3,
+//     title: "Almonds",
+//   },
+//   {
+//     image: image1,
+//     title: "Cashews",
+//   },
+//   {
+//     image: image2,
+//     title: "Walnuts",
+//   },
+//   {
+//     image: image3,
+//     title: "Walnuts",
+//   },
+//   {
+//     image: image1,
+//     title: "Walnuts",
+//   },
+// ];
+
+// const Home = () => {
+//   const [user, setUser] = useState<any>(null);
+//   const [cart, setCart] = useState<any>();
+//   const [products, setProducts] = useState<any>([]);
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     fetchProducts();
+//   }, []);
+
+//   const fetchProducts = async () => {
+//     try {
+//       const res = await axiosinstance.get("/api/products");
+//       setProducts(res.data);
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   };
+
+//   useEffect(() => {
+//     const storedUser = localStorage.getItem("user");
+//     if (storedUser) {
+//       setUser(JSON.parse(storedUser));
+//     }
+//   }, []);
+
+//   const addToCart = async (product: any) => {
+//     if (cart?.order) {
+//       let cartData = {
+//         _id: cart._id,
+//         userId: user._id,
+//         order: {
+//           _id: cart?.order?._id,
+//           products: [...cart?.order?.products, product],
+//         },
+//       };
+//       console.log(cartData, "asda");
+//       let updatedCart = await axiosinstance.put(
+//         `/api/carts/${cartData.userId}/user`,
+//         cartData,
+//       );
+//       if (updatedCart.data) {
+//         navigate("/cart");
+//       }
+//     } else {
+//       let cartData = {
+//         userId: user._id,
+//         order: {
+//           products: [product],
+//         },
+//       };
+//       let persistCart = await axiosinstance.post("/api/carts", cartData);
+//       if (persistCart.data) {
+//         navigate("/cart");
+//       }
+//     }
+//   };
+
+//   const emptyUserCart = async () => {
+//     try {
+//       if (user?._id) {
+//         await axiosinstance.delete(`/api/carts/${user._id}/user/empty`);
+//         navigate(0);
+//       }
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   };
+
+//   useEffect(() => {
+//     const fetchUserCart = async () => {
+//       if (user?._id) {
+//         const res = await axiosinstance.get(`/api/carts/${user?._id}/user`);
+//         if (res?.data) {
+//           setCart(res.data);
+//         }
+//       }
+//     };
+//     fetchUserCart();
+//   }, [user]);
+
+//   return (
+//     <div className="root-home">
+//       {/* <div
+//         style={{
+//           display: "flex",
+//           justifyContent: "space-between",
+//           padding: "10px",
+//           borderBottom: "1px solid gray",
+//         }}
+//       >
+//         <h2
+//           onClick={() => {
+//             navigate(0);
+//           }}
+//         >
+//           Fruit Store
+//         </h2>
+
+//         <div style={{ display: "flex", flexDirection: "row", gap: "9px" }}>
+//           {user ? (
+//             <>
+//               <button
+//                 style={{
+//                   backgroundColor: "#41bec2",
+//                   border: "0",
+//                   borderRadius: "15px",
+//                   width: "90px",
+//                   height: "35px",
+//                 }}
+//                 onClick={() => {
+//                   emptyUserCart();
+//                 }}
+//               >
+//                 Empty Cart
+//               </button>
+//               <button
+//                 style={{
+//                   backgroundColor: "#41bec2",
+//                   border: "0",
+//                   borderRadius: "15px",
+//                   width: "140px",
+//                   height: "35px",
+//                 }}
+//               >
+//                 Total Cart Price (
+//                 {cart?.order?.products?.length ? cart?.order?.totalPrice : 0})
+//               </button>
+//               <text
+//                 style={{
+//                   backgroundColor: "#41bec2",
+//                   border: "0",
+//                   borderRadius: "15px",
+//                   height: "35px",
+//                   alignContent: "center",
+//                   textAlign: "center",
+//                   padding: "10px 15px",
+//                 }}
+//                 onClick={() => {
+//                   navigate("/profile");
+//                 }}
+//               >
+//                 {user?.name}
+//               </text>
+//               <button
+//                 style={{
+//                   backgroundColor: "#41bec2",
+//                   border: "0",
+//                   borderRadius: "15px",
+//                   width: "90px",
+//                   height: "35px",
+//                 }}
+//                 onClick={() => {
+//                   navigate("/order");
+//                 }}
+//               >
+//                 Orders
+//               </button>
+//               <button
+//                 style={{
+//                   backgroundColor: "#41bec2",
+//                   border: "0",
+//                   borderRadius: "15px",
+//                   width: "90px",
+//                   height: "35px",
+//                 }}
+//                 onClick={() => {
+//                   navigate("/cart");
+//                 }}
+//               >
+//                 Cart (
+//                 {cart?.order?.products?.length
+//                   ? cart?.order?.products?.length
+//                   : 0}
+//                 )
+//               </button>
+//               <button
+//                 style={{
+//                   backgroundColor: "#41bec2",
+//                   border: "0",
+//                   borderRadius: "15px",
+//                   width: "90px",
+//                   height: "35px",
+//                 }}
+//                 onClick={() => {
+//                   localStorage.removeItem("user");
+//                   navigate(0);
+//                 }}
+//               >
+//                 Sign out
+//               </button>
+//             </>
+//           ) : (
+//             <button
+//               style={{
+//                 backgroundColor: "#41bec2",
+//                 border: "0",
+//                 borderRadius: "15px",
+//                 width: "90px",
+//                 height: "35px",
+//               }}
+//               onClick={() => {
+//                 navigate("/login");
+//               }}
+//             >
+//               Sign In
+//             </button>
+//           )}
+//         </div>
+//       </div> */}
+//       <HomeBanner
+//         image={Banner}
+//         fontSize2="22px"
+//         buttonText="Shop Now"
+//         buttonVariant="primary"
+//         onButtonClick={() => console.log("asda")}
+//       />
+//       <text className="catrgory-title">Categories</text>
+//       <CardGrid cards={myCards} cardsPerColumn={1} />
+
+//       {/* <div style={{ padding: "20px" }}>
+//         {products.map((product: any) => (
+//           <div
+//             key={product._id}
+//             style={{
+//               border: "0",
+//               borderRadius: "15px",
+//               backgroundColor: "#fd9d75",
+//               marginBottom: "10px",
+//               padding: "10px",
+//               display: "flex",
+//               flexDirection: "row",
+//               justifyContent: "space-between",
+//               alignItems: "center",
+//             }}
+//           >
+//             <div
+//               style={{ display: "flex", gap: "9px", flexDirection: "column" }}
+//             >
+//               <h3>{product.name}</h3>
+//               <p>Price: ₹{product.price}</p>
+//             </div>
+//             <div>
+//               <button
+//                 style={{
+//                   backgroundColor: "#96e3a5",
+//                   border: "0",
+//                   borderRadius: "15px",
+//                   width: "90px",
+//                   height: "35px",
+//                 }}
+//                 onClick={() => {
+//                   if (user) {
+//                     addToCart(product);
+//                   } else {
+//                     navigate("/login");
+//                   }
+//                 }}
+//               >
+//                 Add to Cart
+//               </button>
+//             </div>
+//           </div>
+//         ))}
+//       </div> */}
+//     </div>
+//   );
+// };
+
+// export default Home;

@@ -1,0 +1,38 @@
+body {
+  margin: 0;
+}
+
+.root-home {
+  margin-top: 25px;
+  padding: clamp(40px, 5vh, 75px) 40px;
+  height: 95vh; /* if changing the height changing padding 5vh so height + padding must be 100vh*/
+  box-sizing: border-box;
+  /* background-color: #fdfaf5;
+  background-color: red; */
+}
+
+.categories-title {
+  font-family: var(--font-family);
+  font-size: 32px;
+  font-weight: 700;
+  color: #6d4906;
+  letter-spacing: 0.6px;
+  padding-left: clamp(20px, 6vw, 80px);
+}
+
+.home-contaiiner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.categories-cards-container {
+  /* background: red; */
+  padding-left: clamp(20px, 5vw, 80px);
+  padding-right: clamp(20px, 5vw, 80px);
+}
+
+.categoreis-container {
+  padding: 0px 68px;
+}

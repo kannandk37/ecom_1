@@ -1,0 +1,106 @@
+/* ReviewSummary.css */
+
+.rs-container {
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  font-family: var(--font-family);
+  padding: 10px;
+}
+
+.rs-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #222;
+  margin: 0 0 16px 0;
+  letter-spacing: -0.02em;
+}
+
+/* Header Section */
+.rs-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.rs-average-num {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  line-height: 1;
+}
+
+.rs-header-stars {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+.rs-stars-wrapper {
+  display: flex;
+  gap: 4px;
+}
+
+.rs-star {
+  font-size: 1.4rem;
+  color: #bc9a5c; /* Muted gold from image */
+}
+
+.rs-total-count {
+  font-size: 1.1rem;
+  color: #666;
+  font-weight: 500;
+}
+
+/* Distribution Bars */
+.rs-distribution {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rs-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rs-bar-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #444;
+  width: 25px;
+}
+
+.rs-progress-bg {
+  flex: 1;
+  height: 8px;
+  background-color: #f0ede8; /* Soft background tint */
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.rs-progress-fill {
+  height: 100%;
+  background-color: #bc9a5c;
+  border-radius: 10px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.rs-bar-percent {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #666;
+  width: 40px;
+  text-align: right;
+}
+
+/* Responsive adjust */
+@media (max-width: 400px) {
+  .rs-average-num {
+    font-size: 2.8rem;
+  }
+}

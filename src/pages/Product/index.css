@@ -1,0 +1,258 @@
+/* ProductDetail.css */
+
+/* Global Page & Container */
+.pd-page {
+  width: 100%;
+  background-color: #f8f6f1; /* Page background matching global theme */
+  color: #1a1a1a;
+  font-family: "Inter", sans-serif;
+
+  /* 1. THEMED SCROLLBAR (Cross-browser solution) */
+  scrollbar-width: thin;
+  scrollbar-color: #bc9a5c #f0ede8; /* Muted gold / Light cream */
+}
+
+/* Chrome, Safari, and Edge scrollbar styling */
+.pd-page::-webkit-scrollbar {
+  width: 10px;
+}
+
+.pd-page::-webkit-scrollbar-track {
+  background: #f0ede8;
+  border-radius: 10px;
+}
+
+.pd-page::-webkit-scrollbar-thumb {
+  background-color: #bc9a5c;
+  border-radius: 10px;
+  border: 2px solid #f0ede8; /* Padding around thumb */
+}
+
+.pd-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 60px;
+}
+
+/* Breadcrumbs */
+.pd-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 40px;
+}
+
+.pd-breadcrumbs a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.pd-breadcrumbs a:hover {
+  color: #bc9a5c;
+}
+
+.pd-breadcrumbs span.current {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+/* Main Product Section */
+.pd-main-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Image left, Info right */
+  gap: 80px;
+  margin-bottom: 80px;
+}
+
+/* Media Gallery */
+.pd-media {
+  width: 100%;
+}
+
+/* Product Info Section */
+.pd-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.pd-title {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0 0 16px 0;
+  letter-spacing: -0.02em;
+}
+
+/* Rating Summary */
+.pd-rating-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.pd-rating__stars {
+  display: flex;
+  gap: 4px;
+}
+
+.pd-rating-summary .star-icon {
+  font-size: 1.2rem;
+  color: #bc9a5c; /* Gold color from image */
+}
+
+.pd-rating-summary .star-icon.empty {
+  color: #d1cbc0;
+}
+
+.pd-rating__num {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.pd-rating__count {
+  font-size: 1rem;
+  color: #666;
+}
+
+/* Price & Weight */
+.pd-price-weight-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.pd-price {
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: #1a1a1a;
+}
+
+.pd-weight {
+  font-size: 1.15rem;
+  color: #888;
+  font-weight: 500;
+}
+
+/* Attributes List */
+.pd-attributes {
+  margin: 0 0 40px 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pd-attributes li {
+  position: relative;
+  padding-left: 20px;
+  font-size: 1.05rem;
+  color: #444;
+}
+
+.pd-attributes li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #bc9a5c; /* Gold bullet from image */
+  font-weight: 800;
+}
+
+/* --- ACTION SECTION --- */
+.pd-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 40px;
+  padding: 24px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.pd-actions__quantity {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.pd-label {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.pd-actions__buttons {
+  display: flex;
+  gap: 20px;
+}
+
+/* Product Description */
+.pd-description {
+  margin-bottom: 60px;
+}
+
+.pd-description p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #333;
+  margin: 0 0 30px 0;
+}
+
+.pd-section-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 20px 0;
+}
+
+.pd-spec-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.pd-spec-item {
+  background-color: #ffffff;
+  padding: 12px 24px;
+  border-radius: 50px; /* Pill shape from image */
+  font-size: 1rem;
+  color: #333;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.pd-spec-item .pd-label {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+/* Bottom Sections (Stacked Vertically) */
+.pd-reviews-section,
+.pd-recommendations-section {
+  width: 100%;
+  margin-bottom: 80px;
+}
+
+.pd-section-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin-bottom: 40px;
+  letter-spacing: -0.02em;
+}
+
+/* Loading/Error States */
+.pd-loading,
+.pd-error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  font-size: 1.2rem;
+  color: #666;
+}

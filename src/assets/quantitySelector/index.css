@@ -1,0 +1,54 @@
+/* QuantitySelector.css */
+.qty-selector {
+  display: flex;
+  align-items: center;
+  background-color: #fdfaf5; /* Warm cream background from theme */
+  border: 1px solid #e2ddd3;
+  border-radius: 50px; /* Pill shape from image */
+  width: fit-content;
+  overflow: hidden;
+}
+
+.qty-btn {
+  background: transparent;
+  border: none;
+  padding: 12px 16px;
+  color: #8c734b; /* Muted gold/brown from theme */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: background-color 0.2s;
+}
+
+.qty-btn:hover:not(:disabled) {
+  background-color: #f3eee4;
+}
+
+.qty-btn:disabled {
+  color: #d1cbc0;
+  cursor: not-allowed;
+}
+
+.qty-input {
+  border: none;
+  background: transparent;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  width: 50px;
+  -moz-appearance: textfield; /* Hide default spinner Firefox */
+}
+
+/* Hide default spinner Chrome/Safari */
+.qty-input::-webkit-outer-spin-button,
+.qty-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.qty-input:focus {
+  outline: none;
+}
