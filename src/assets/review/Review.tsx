@@ -20,7 +20,7 @@ export interface ReviewSummaryProps {
 
 // --- Helper Component: StarRating ---
 
-const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
+export const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
   const stars = [];
   for (let i = 1; i <= 5; i++) {
     if (i <= Math.floor(rating)) {

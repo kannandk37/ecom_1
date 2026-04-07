@@ -8,7 +8,7 @@ import image1 from "../../../data/image1.png";
 import "./categoryProducts.css";
 import Dropdown from "../../assets/dropdown/DropDown";
 
-const productsData: Product[] = [
+export const productsData: Product[] = [
   {
     id: 1,
     title: "Premium California Almonds",
@@ -19,6 +19,7 @@ const productsData: Product[] = [
     unit: "g",
     isFav: false,
     categoryId: 1,
+    images: [],
   },
   {
     id: 2,
@@ -30,6 +31,7 @@ const productsData: Product[] = [
     unit: "g",
     isFav: true,
     categoryId: 1,
+    images: [],
   },
   {
     id: 3,
@@ -41,6 +43,7 @@ const productsData: Product[] = [
     unit: "g",
     isFav: true,
     categoryId: 1,
+    images: [],
   },
   {
     id: 4,
@@ -52,6 +55,7 @@ const productsData: Product[] = [
     unit: "g",
     isFav: true,
     categoryId: 1,
+    images: [],
   },
   {
     id: 5,
@@ -63,17 +67,29 @@ const productsData: Product[] = [
     unit: "g",
     isFav: true,
     categoryId: 1,
+    images: [],
   },
   {
     id: 6,
-    title: "Premium California Almonds",
-    description: "Crunchy and nutritious, perfect for snacking.",
     image: image2,
+    categoryId: 2,
+    title: "Premium California Almonds",
+    description:
+      "These Premium California almonds are carefully selected for their superior taste, crunch, and nutritional value. Packed with protien, fiber and healthy fats, they make a prefect snack for a healthy lifestyle. Our almonds sourced and packed to maintain freshness",
     price: 750,
     weight: 500,
     unit: "g",
     isFav: true,
-    categoryId: 2,
+    name: "Premium California Almonds",
+    images: [image1, image2],
+    rating: 3.5,
+    reviews: 4,
+    features: ["tester1", "tester2"],
+    specs: [
+      { label: "Origin", value: "California, USA" },
+      { label: "Shelf Life", value: "12 months" },
+      { label: "Storage", value: "Cool and dry place" },
+    ],
   },
   {
     id: 7,
@@ -85,6 +101,7 @@ const productsData: Product[] = [
     unit: "g",
     isFav: true,
     categoryId: 2,
+    images: [],
   },
 ];
 

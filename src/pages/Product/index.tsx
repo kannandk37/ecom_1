@@ -202,3 +202,160 @@
 // };
 
 // export default ProductDetail;
+
+import React, { useEffect, useState } from "react";
+import "./index.css";
+import {
+  FiMinus,
+  FiPlus,
+  FiHeart,
+  FiShoppingCart,
+  FiStar,
+} from "react-icons/fi";
+// Assuming your components are in these paths
+import ProductImageGallery from "@/src/assets/ProductImageGallery/ProductImageGallery";
+import ProductCardGrid from "@/src/assets/productCardGrid/ProductCardGrid";
+import Button from "@/src/assets/button/Button";
+import CustomerRievew from "../CustomerReview/CustomerRievew";
+import { productsData } from "../CategoryProducts/categoryProducts";
+import type { Product } from "@/src/assets/card2/ProductCard";
+import { FaHeart } from "react-icons/fa6";
+import { StarRating } from "@/src/assets/review/Review";
+
+interface ProductProps {
+  productData: Product;
+}
+
+export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
+  const [quantity, setQuantity] = useState<number>(1);
+  const [product, setProduct] = useState<any>();
+  useEffect(() => {
+    console.log(productData);
+    setProduct(productData);
+  }, [productData]);
+  return (
+    <>
+      {product && (
+        <div
+          className="product-page"
+          style={{ marginTop: "75px", marginBottom: "15px" }}
+        >
+          <div className="product-main-section">
+            {/* <div className="product-visuals"> */}
+            <ProductImageGallery images={product?.images} />
+            {/* </div> */}
+
+            {/* RIGHT: PRODUCT INFO */}
+            <div className="product-info">
+              {/* BREADCRUMBS */}
+              <div className="breadcrumbs">
+                <h2>Home</h2>
+                <h2>{">"}</h2>
+                <h2>Nuts</h2>
+                <h2>{">"}</h2>
+                <h2>{product?.name}</h2>
+              </div>
+              <h1 className="product-title">{product.name}</h1>
+
+              <div className="rating-row">
+                <div className="stars">
+                  {/* {[...Array(5)].map((_, i) => (
+                    <FiStar
+                      key={i}
+                      fill={
+                        i < Math.floor(product?.rating || 0)
+                          ? "#8c6d3f"
+                          : "none"
+                      }
+                      color="#8c6d3f"
+                    /> 
+                  ))}*/}
+                  <StarRating rating={product?.rating || 0} />
+                </div>
+                <span className="rating-text">
+                  {product.rating} ({product.reviews} Reviews)
+                </span>
+              </div>
+
+              <div className="price-row">
+                <span className="price">₹ {product.price}</span>
+                <span className="weight-tag">
+                  {product.weight}
+                  {product.unit} pack
+                </span>
+              </div>
+
+              <ul className="feature-list">
+                {product?.features?.map((feature: any, i: number) => (
+                  <li key={i}>{feature}</li>
+                ))}
+              </ul>
+
+              {/* QUANTITY & ACTIONS */}
+              <div className="purchase-actions">
+                <h2 style={{ fontWidth: "bold" }}>Quantity:</h2>
+                <div className="quantity-selector">
+                  <button
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  >
+                    <FiMinus />
+                  </button>
+                  <span>{quantity}</span>
+                  <button onClick={() => setQuantity(quantity + 1)}>
+                    <FiPlus />
+                  </button>
+                </div>
+                <Button
+                  name="Add to Cart"
+                  icon={<FiShoppingCart />}
+                  variant="primary"
+                  disabled={false}
+                  onClick={() => console.log("Added to cart")}
+                />
+                <Button
+                  name="Add to Wishlist"
+                  icon={product?.isFav ? <FaHeart /> : <FiHeart />}
+                  variant={"secondary"}
+                  disabled={false}
+                  onClick={() => {
+                    product.isFav = product?.isFav ? false : true;
+                    console.log("Added to wishlist");
+                  }}
+                />
+              </div>
+
+              {/* DESCRIPTION */}
+              <div className="description-section">
+                <h3>Product Description</h3>
+                <p>{product.description}</p>
+              </div>
+
+              {/* SPECIFICATIONS GRID */}
+              <div className="specs-grid">
+                {product?.specs?.map((spec: any, i: number) => (
+                  <div key={i} className="spec-card">
+                    <span className="spec-label">{spec.label} — </span>
+                    <span className="spec-value">{spec.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* FOOTER COMPONENTS */}
+          <div className="related-section">
+            <h2 className="section-title">You May Also Like</h2>
+            {/* Using your existing component */}
+            <ProductCardGrid products={productsData as any} />
+          </div>
+          <div className="related-section">
+            <h2 className="section-title">Customer Review</h2>
+            <CustomerRievew />
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+export default ProductDetails;

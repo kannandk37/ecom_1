@@ -24,6 +24,12 @@ export interface Product {
   weight: number;
   unit: string;
   isFav?: boolean;
+  name?: string;
+  images: any[];
+  rating?: number;
+  reviews?: number;
+  features?: string[];
+  specs?: { label: string; value: string }[];
 }
 
 export interface ProductCardProps {
