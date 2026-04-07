@@ -1,5 +1,5 @@
 import React, { type ReactNode } from "react";
-import "./DashboardButton.css";
+import "./DashBoardButton.css";
 
 export type ButtonVariant = "primary" | "secondary" | "outline";
 
