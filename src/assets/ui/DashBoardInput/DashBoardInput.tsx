@@ -1,5 +1,5 @@
 import React, { type ReactNode } from "react";
-import "./DashboardInput.css";
+import "./DashBoardInput.css";
 
 interface DashboardInputProps {
   label?: string;

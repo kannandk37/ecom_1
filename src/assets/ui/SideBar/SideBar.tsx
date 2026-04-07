@@ -1,5 +1,5 @@
 // import React, { useState, useEffect, type ReactNode } from "react";
-import "./Sidebar.css";
+import "./SideBar.css";
 // import {
 //   FiShoppingBag,
 //   FiDollarSign,
