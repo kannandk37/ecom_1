@@ -54,7 +54,7 @@
 //   );
 // };
 
-import React, { useRef, type ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
 import "./CarouselTest.css";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { IconButton } from "../icon_button/IconButton"; // Assuming your previous IconButton

@@ -8,7 +8,7 @@ import Orders from "./pages/Order";
 import CategoryProducts, {
   productsData,
 } from "./pages/CategoryProducts/categoryProducts";
-import Product from "./pages/Products/Products";
+// import Product from "./pages/Products/Products";
 import EnterpriseLogin from "./pages/EnterpriseLogin/EnterpriseLogin";
 import MainLayout from "./MainLayout";
 import { DashboardLayout } from "@/src/assets/ui/DashBoardLayout/DashBoardLayout";

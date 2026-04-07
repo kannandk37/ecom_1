@@ -1,6 +1,5 @@
-import React from "react";
 import "./CustomerReview.css";
-import { Carousel } from "../../assets/CarouselTest/CarouselTest";
+// import { Carousel } from "../../assets/CarouselTest/CarouselTest";
 import ReviewCard from "../../assets/reviewCard/ReviewCard";
 import ReviewSummary from "../../assets/review/Review";
 

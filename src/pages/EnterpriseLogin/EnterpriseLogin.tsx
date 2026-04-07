@@ -6,81 +6,81 @@ import DashboardInput from "../../assets/ui/DashBoardInput/DashBoardInput";
 import { emailRegex } from "../../utils/utils";
 import { LOGO } from "@/src/utils/utils";
 
-import { FiTrendingUp } from "react-icons/fi";
-import StatisticCard from "@/src/assets/ui/StatisticCard/StatisticCard";
-import PerformanceBar from "@/src/assets/ui/PerformanceBar/PerformanceBar";
-import LeaderboardBar from "@/src/assets/ui/LeaderboardBar/LeaderboardBar";
+// import { FiTrendingUp } from "react-icons/fi";
+// import StatisticCard from "@/src/assets/ui/StatisticCard/StatisticCard";
+// import PerformanceBar from "@/src/assets/ui/PerformanceBar/PerformanceBar";
+// import LeaderboardBar from "@/src/assets/ui/LeaderboardBar/LeaderboardBar";
 import { useNavigate } from "react-router-dom";
 
-const salesData = [
-  { name: "California Almonds", count: 20, percentage: 82 },
-  { name: "Medjool Dates", count: 20, percentage: 65 },
-  { name: "Organic Cashews", count: 20, percentage: 48 },
-  { name: "Pistachio Green", count: 20, percentage: 34 },
-  { name: "Pistachio Green", count: 20, percentage: 34 },
-  { name: "Pistachio Green", count: 20, percentage: 34 },
-  { name: "Pistachio Green", count: 20, percentage: 34 },
-  { name: "Pistachio Green", count: 20, percentage: 34 },
-];
+// const salesData = [
+//   { name: "California Almonds", count: 20, percentage: 82 },
+//   { name: "Medjool Dates", count: 20, percentage: 65 },
+//   { name: "Organic Cashews", count: 20, percentage: 48 },
+//   { name: "Pistachio Green", count: 20, percentage: 34 },
+//   { name: "Pistachio Green", count: 20, percentage: 34 },
+//   { name: "Pistachio Green", count: 20, percentage: 34 },
+//   { name: "Pistachio Green", count: 20, percentage: 34 },
+//   { name: "Pistachio Green", count: 20, percentage: 34 },
+// ];
 
-const purchasingData = [
-  {
-    name: "Ananya Sharma",
-    pic: "https://randomuser.me/api/portraits/men/32.jpg", // Male beard pic from ref image
-    price: "₹12,400 Spent",
-    orderCount: 145,
-    percentage: 82,
-  },
-  {
-    name: "Rohan Mehta",
-    pic: "https://randomuser.me/api/portraits/women/44.jpg", // Blonde pic from ref image
-    price: "₹9,800 Spent",
-    orderCount: 110,
-    percentage: 65,
-  },
-  {
-    name: "Ananya Sharma",
-    pic: "https://randomuser.me/api/portraits/men/32.jpg", // Male beard pic from ref image
-    price: "₹12,400 Spent",
-    orderCount: 145,
-    percentage: 82,
-  },
-  {
-    name: "Rohan Mehta",
-    pic: "https://randomuser.me/api/portraits/women/44.jpg", // Blonde pic from ref image
-    price: "₹9,800 Spent",
-    orderCount: 110,
-    percentage: 65,
-  },
-  {
-    name: "Ananya Sharma",
-    pic: "https://randomuser.me/api/portraits/men/32.jpg", // Male beard pic from ref image
-    price: "₹12,400 Spent",
-    orderCount: 145,
-    percentage: 82,
-  },
-  {
-    name: "Rohan Mehta",
-    pic: "https://randomuser.me/api/portraits/women/44.jpg", // Blonde pic from ref image
-    price: "₹9,800 Spent",
-    orderCount: 110,
-    percentage: 65,
-  },
-  {
-    name: "Ananya Sharma",
-    pic: "https://randomuser.me/api/portraits/men/32.jpg", // Male beard pic from ref image
-    price: "₹12,400 Spent",
-    orderCount: 145,
-    percentage: 82,
-  },
-  {
-    name: "Rohan Mehta",
-    pic: "https://randomuser.me/api/portraits/women/44.jpg", // Blonde pic from ref image
-    price: "₹9,800 Spent",
-    orderCount: 110,
-    percentage: 65,
-  },
-];
+// const purchasingData = [
+//   {
+//     name: "Ananya Sharma",
+//     pic: "https://randomuser.me/api/portraits/men/32.jpg", // Male beard pic from ref image
+//     price: "₹12,400 Spent",
+//     orderCount: 145,
+//     percentage: 82,
+//   },
+//   {
+//     name: "Rohan Mehta",
+//     pic: "https://randomuser.me/api/portraits/women/44.jpg", // Blonde pic from ref image
+//     price: "₹9,800 Spent",
+//     orderCount: 110,
+//     percentage: 65,
+//   },
+//   {
+//     name: "Ananya Sharma",
+//     pic: "https://randomuser.me/api/portraits/men/32.jpg", // Male beard pic from ref image
+//     price: "₹12,400 Spent",
+//     orderCount: 145,
+//     percentage: 82,
+//   },
+//   {
+//     name: "Rohan Mehta",
+//     pic: "https://randomuser.me/api/portraits/women/44.jpg", // Blonde pic from ref image
+//     price: "₹9,800 Spent",
+//     orderCount: 110,
+//     percentage: 65,
+//   },
+//   {
+//     name: "Ananya Sharma",
+//     pic: "https://randomuser.me/api/portraits/men/32.jpg", // Male beard pic from ref image
+//     price: "₹12,400 Spent",
+//     orderCount: 145,
+//     percentage: 82,
+//   },
+//   {
+//     name: "Rohan Mehta",
+//     pic: "https://randomuser.me/api/portraits/women/44.jpg", // Blonde pic from ref image
+//     price: "₹9,800 Spent",
+//     orderCount: 110,
+//     percentage: 65,
+//   },
+//   {
+//     name: "Ananya Sharma",
+//     pic: "https://randomuser.me/api/portraits/men/32.jpg", // Male beard pic from ref image
+//     price: "₹12,400 Spent",
+//     orderCount: 145,
+//     percentage: 82,
+//   },
+//   {
+//     name: "Rohan Mehta",
+//     pic: "https://randomuser.me/api/portraits/women/44.jpg", // Blonde pic from ref image
+//     price: "₹9,800 Spent",
+//     orderCount: 110,
+//     percentage: 65,
+//   },
+// ];
 
 interface EnterpriseLoginProps {
   onLogin?: (email: string, pass: string, remember: boolean) => void;

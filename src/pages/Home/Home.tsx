@@ -4,18 +4,17 @@ import { useNavigate } from "react-router-dom";
 import HomeBanner from "../../assets/banner/Banner";
 import Banner from "../../../data/banner.png";
 import "./Home.css";
-
 import { CardGrid } from "../../assets/card1/Card";
 import image1 from "../../../data/image1.png";
 import image2 from "../../../data/image2.png";
 import image3 from "../../../data/image3.png";
-import ProductCard from "../../assets/card2/ProductCard";
-import ProductImageGallery from "../../assets/ProductImageGallery/ProductImageGallery";
-import { Carousel } from "../../assets/CarouselTest/CarouselTest";
-import ReviewCard from "../../assets/reviewCard/ReviewCard";
-import ProductCardGrid from "../../assets/productCardGrid/ProductCardGrid";
-import ProductCardGridSingle from "../../assets/ProductCardGridSingle/ProductCardGridSingle";
-import CustomerRievew from "../CustomerReview/CustomerRievew";
+// import ProductCard from "../../assets/card2/ProductCard";
+// import ProductImageGallery from "../../assets/ProductImageGallery/ProductImageGallery";
+// import { Carousel } from "../../assets/CarouselTest/CarouselTest";
+// import ReviewCard from "../../assets/reviewCard/ReviewCard";
+// import ProductCardGrid from "../../assets/productCardGrid/ProductCardGrid";
+// import ProductCardGridSingle from "../../assets/ProductCardGridSingle/ProductCardGridSingle";
+// import CustomerRievew from "../CustomerReview/CustomerRievew";
 
 interface CardItem {
   id: Number;
@@ -23,24 +22,24 @@ interface CardItem {
   title: string;
 }
 
-const productsTestData: any = [
-  { image: image1, name: "Almond1", price: 10 },
-  { image: image2, name: "Cashew2", price: 12 },
-  { image: image3, name: "Walnut3", price: 14 },
-  { image: image1, name: "Almond4", price: 10 },
-  { image: image2, name: "Cashew5", price: 12 },
-  { image: image3, name: "Walnut6", price: 14 },
-  { image: image1, name: "Almond7", price: 10 },
-  { image: image2, name: "Cashew8", price: 12 },
-  { image: image3, name: "Walnut9", price: 14 },
-  { image: image1, name: "Almond90", price: 10 },
-  { image: image2, name: "Cashew11", price: 12 },
-  { image: image3, name: "Walnut12", price: 14 },
-  { image: image3, name: "Walnut92", price: 14 },
-  { image: image1, name: "Almond93", price: 10 },
-  { image: image2, name: "Cashew13", price: 12 },
-  { image: image3, name: "Walnut14", price: 14 },
-];
+// const productsTestData: any = [
+//   { image: image1, name: "Almond1", price: 10 },
+//   { image: image2, name: "Cashew2", price: 12 },
+//   { image: image3, name: "Walnut3", price: 14 },
+//   { image: image1, name: "Almond4", price: 10 },
+//   { image: image2, name: "Cashew5", price: 12 },
+//   { image: image3, name: "Walnut6", price: 14 },
+//   { image: image1, name: "Almond7", price: 10 },
+//   { image: image2, name: "Cashew8", price: 12 },
+//   { image: image3, name: "Walnut9", price: 14 },
+//   { image: image1, name: "Almond90", price: 10 },
+//   { image: image2, name: "Cashew11", price: 12 },
+//   { image: image3, name: "Walnut12", price: 14 },
+//   { image: image3, name: "Walnut92", price: 14 },
+//   { image: image1, name: "Almond93", price: 10 },
+//   { image: image2, name: "Cashew13", price: 12 },
+//   { image: image3, name: "Walnut14", price: 14 },
+// ];
 
 const myCards: CardItem[] = [
   {
@@ -80,32 +79,32 @@ const myCards: CardItem[] = [
   // },
 ];
 
-const mockReviews: any[] = [
-  {
-    id: 1,
-    name: "Sarah M.",
-    comment: "Excellent quality! Fresh and crunchy almonds.",
-    rating: 5,
-    isVerified: true,
-  },
-  {
-    id: 2,
-    name: "James L.",
-    comment:
-      "Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.",
-    rating: 3.5,
-    isVerified: true,
-  },
-  {
-    id: 3,
-    name: "Anonymous",
-    comment: "The packaging was great, arrived on time.",
-    rating: 4,
-    isVerified: false,
-  },
-];
+// const mockReviews: any[] = [
+//   {
+//     id: 1,
+//     name: "Sarah M.",
+//     comment: "Excellent quality! Fresh and crunchy almonds.",
+//     rating: 5,
+//     isVerified: true,
+//   },
+//   {
+//     id: 2,
+//     name: "James L.",
+//     comment:
+//       "Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.Pretty good, but some pieces were smaller than expected.",
+//     rating: 3.5,
+//     isVerified: true,
+//   },
+//   {
+//     id: 3,
+//     name: "Anonymous",
+//     comment: "The packaging was great, arrived on time.",
+//     rating: 4,
+//     isVerified: false,
+//   },
+// ];
 
-const images = [image1, image2, image3, image1, image2, image3];
+// const images = [image1, image2, image3, image1, image2, image3];
 const Home = () => {
   const [user, setUser] = useState<any>(null);
   const [cart, setCart] = useState<any>();
@@ -132,48 +131,56 @@ const Home = () => {
     }
   }, []);
 
-  const addToCart = async (product: any) => {
-    if (cart?.order) {
-      let cartData = {
-        _id: cart._id,
-        userId: user._id,
-        order: {
-          _id: cart?.order?._id,
-          products: [...cart?.order?.products, product],
-        },
-      };
-      console.log(cartData, "asda");
-      let updatedCart = await axiosinstance.put(
-        `/api/carts/${cartData.userId}/user`,
-        cartData,
-      );
-      if (updatedCart.data) {
-        navigate("/cart");
-      }
-    } else {
-      let cartData = {
-        userId: user._id,
-        order: {
-          products: [product],
-        },
-      };
-      let persistCart = await axiosinstance.post("/api/carts", cartData);
-      if (persistCart.data) {
-        navigate("/cart");
-      }
-    }
-  };
+  // const addToCart = async (product: any) => {
+  //   if (cart?.order) {
+  //     let cartData = {
+  //       _id: cart._id,
+  //       userId: user._id,
+  //       order: {
+  //         _id: cart?.order?._id,
+  //         products: [...cart?.order?.products, product],
+  //       },
+  //     };
+  //     console.log(cartData, "asda");
+  //     let updatedCart = await axiosinstance.put(
+  //       `/api/carts/${cartData.userId}/user`,
+  //       cartData,
+  //     );
+  //     if (updatedCart.data) {
+  //       navigate("/cart");
+  //     }
+  //   } else {
+  //     let cartData = {
+  //       userId: user._id,
+  //       order: {
+  //         products: [product],
+  //       },
+  //     };
+  //     let persistCart = await axiosinstance.post("/api/carts", cartData);
+  //     if (persistCart.data) {
+  //       navigate("/cart");
+  //     }
+  //   }
+  // };
 
-  const emptyUserCart = async () => {
-    try {
-      if (user?._id) {
-        await axiosinstance.delete(`/api/carts/${user._id}/user/empty`);
-        navigate(0);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const emptyUserCart = async () => {
+  //   try {
+  //     if (user?._id) {
+  //       await axiosinstance.delete(`/api/carts/${user._id}/user/empty`);
+  //       navigate(0);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  useEffect(() => {
+    console.log(cart);
+  }, [cart]);
+
+  useEffect(() => {
+    console.log(products);
+  }, [products]);
 
   useEffect(() => {
     const fetchUserCart = async () => {
@@ -261,21 +268,21 @@ export default Home;
 
 // import { useState } from "react"
 
-interface CardProps {
-  image: string;
-  name: string;
-  price: number;
-}
+// interface CardProps {
+//   image: string;
+//   name: string;
+//   price: number;
+// }
 
-const Card = ({ image, name, price }: CardProps) => {
-  return (
-    <div className="card">
-      <img src={image} />
-      <h4>{name}</h4>
-      <p>${price}</p>
-    </div>
-  );
-};
+// const Card = ({ image, name, price }: CardProps) => {
+//   return (
+//     <div className="card">
+//       <img src={image} />
+//       <h4>{name}</h4>
+//       <p>${price}</p>
+//     </div>
+//   );
+// };
 
 // interface CarouselProps<T> {
 //   items: T[];

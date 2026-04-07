@@ -1,4 +1,4 @@
-import React, { useEffect, useState, type ReactNode } from "react";
+import React, { useEffect, useState } from "react";
 import "./PerformanceBar.css";
 import { FiMoreHorizontal } from "react-icons/fi"; // npm install react-icons
 import { colors } from "@/src/utils/utils";
@@ -75,7 +75,7 @@ export const PerformanceBar: React.FC<PerformanceBarProps> = ({
           const barColor = customColors
             ? customColors[index % customColors.length]
             : colors[index % colors.length];
-          const barWidth = `${item.percentage}%`;
+          // const barWidth = `${item.percentage}%`;
           // ANIMATION LOGIC:
           // If not loaded, width is 0. If loaded, width is the actual percentage.
           const animatedWidth = isLoaded ? `${item.percentage}%` : "0%";

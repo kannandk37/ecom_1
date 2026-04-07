@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Banner from "../../../data/banner.png";
 import HomeBanner from "../../assets/banner/Banner";
@@ -126,10 +126,12 @@ const CategoryProducts = ({}) => {
   const [products, setProducts] = useState<Product[]>([]);
 
   const fetchProductsOfCategory = async (id: string) => {
+    console.log(id);
     // setProducts()
   };
 
   const fetchCategory = async (id: string) => {
+    console.log(id);
     // setCategory()
   };
 

@@ -205,13 +205,7 @@
 
 import React, { useEffect, useState } from "react";
 import "./index.css";
-import {
-  FiMinus,
-  FiPlus,
-  FiHeart,
-  FiShoppingCart,
-  FiStar,
-} from "react-icons/fi";
+import { FiMinus, FiPlus, FiHeart, FiShoppingCart } from "react-icons/fi";
 // Assuming your components are in these paths
 import ProductImageGallery from "@/src/assets/ProductImageGallery/ProductImageGallery";
 import ProductCardGrid from "@/src/assets/productCardGrid/ProductCardGrid";

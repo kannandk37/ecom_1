@@ -1,16 +1,19 @@
 {
-  "files": [],
-  "composite": false,
-  "noEmit": false,
-  "emitDeclarationOnly": true,
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ],
+  // "files": [],
+  // "composite": true,
+  // "declaration": true,
+  // "declarationMap": true,
+  // "noEmit": false,
+  // "emitDeclarationOnly": true,
+  // "references": [
+  //   { "path": "./tsconfig.app.json" },
+  //   { "path": "./tsconfig.node.json" }
+  // ],
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "jsx": "react-jsx",
     // "baseUrl": ".",
     "paths": {
       "@/*": ["./*"]
@@ -23,6 +26,6 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts", "vite.config.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules"]
 }

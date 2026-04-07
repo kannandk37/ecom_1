@@ -1,17 +1,10 @@
 import React from "react";
 import "./ProductCard.css";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-
-import image2 from "../../../data/image2.png";
 import IconButton from "../icon_button/IconButton";
-
 // --- Interfaces ---
-
 export type ProductCardVariant = "primary" | "secondary" | "outline";
 export type ProductCardSize = "small" | "medium" | "large";
-
-import { RiHeart3Line, RiHeart3Fill } from "react-icons/ri";
-import { BsSuitHeart } from "react-icons/bs";
+import { RiHeart3Line } from "react-icons/ri";
 import { FiHeart } from "react-icons/fi";
 
 export interface Product {

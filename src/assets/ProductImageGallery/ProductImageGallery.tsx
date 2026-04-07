@@ -62,7 +62,7 @@
 
 // export default ProductImageGallery;
 
-import React, { useState, useMemo, type ReactNode } from "react";
+import React, { useState } from "react";
 import "./ProductImageGallery.css";
 
 interface ProductImageGalleryProps {
