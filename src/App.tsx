@@ -9,7 +9,7 @@ import CategoryProducts, {
   productsData,
 } from "./pages/CategoryProducts/categoryProducts";
 // import Product from "./pages/Products/Products";
-import EnterpriseLogin from "./pages/EnterpriseLogin/EnterpriseLogin";
+import EnterpriseLogin from "./pages/EnterpriseLogin";
 import MainLayout from "./MainLayout";
 import { DashboardLayout } from "@/src/assets/ui/DashBoardLayout/DashBoardLayout";
 import type { NavItem } from "./config/navigation";
