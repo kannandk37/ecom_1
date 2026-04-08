@@ -9,5 +9,10 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './')
     }
+  },
+  css: {
+    modules: {
+      localsConvention: 'camelCase'
+    }
   }
 })

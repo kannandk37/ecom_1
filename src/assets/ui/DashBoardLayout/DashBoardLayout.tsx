@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
-import { Sidebar } from "@/src/assets/ui/SideBar/SideBar";
+import { Sidebar } from "../../../assets/ui/SideBar/SideBar";
 import "./DashBoardLayout.css";
 
 const DashboardLayout: React.FC = () => {

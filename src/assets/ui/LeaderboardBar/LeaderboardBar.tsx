@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./LeaderboardBar.css";
 import { FiMoreHorizontal } from "react-icons/fi";
-import { colors } from "@/src/utils/utils";
+import { colors } from "../../../utils/utils";
 
 // Define the shape of each item's data
 interface LeaderboardItem {

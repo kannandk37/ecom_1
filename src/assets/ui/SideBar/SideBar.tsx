@@ -209,10 +209,10 @@ import "./SideBar.css";
 // };
 
 import { useLocation, useNavigate } from "react-router-dom";
-import { NAV_OPTIONS } from "@/src/config/navigation";
+import { NAV_OPTIONS } from "../../../config/navigation";
 import DashboardButton from "../DashBoardButton/DashBoardButton";
 import { FiAlignJustify } from "react-icons/fi";
-import { LOGO, siteName } from "@/src/utils/utils";
+import { LOGO, siteName } from "../../../utils/utils";
 import { useEffect, useState } from "react";
 
 export const Sidebar = ({ isCollapsed, onToggle }: any) => {

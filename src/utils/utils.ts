@@ -1,4 +1,4 @@
-import Logo from "@/data/logo.png";
+import Logo from "../../data/logo.png";
 export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 export const colors = [
     "#7a5e35",

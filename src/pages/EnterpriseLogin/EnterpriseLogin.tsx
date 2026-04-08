@@ -4,7 +4,7 @@ import { FiMail, FiLock } from "react-icons/fi";
 import DashboardButton from "../../assets/ui/DashBoardButton/DashBoardButton";
 import DashboardInput from "../../assets/ui/DashBoardInput/DashBoardInput";
 import { emailRegex } from "../../utils/utils";
-import { LOGO } from "@/src/utils/utils";
+import { LOGO } from "../../utils/utils";
 
 // import { FiTrendingUp } from "react-icons/fi";
 // import StatisticCard from "@/src/assets/ui/StatisticCard/StatisticCard";
@@ -90,7 +90,7 @@ interface EnterpriseLoginProps {
   height?: string | number;
 }
 
-const EnterpriseLogin: React.FC<EnterpriseLoginProps> = ({
+const Enterprise: React.FC<EnterpriseLoginProps> = ({
   onLogin,
   onForgotPassword,
   logoUrl = LOGO,
@@ -250,7 +250,7 @@ const EnterpriseLogin: React.FC<EnterpriseLoginProps> = ({
   );
 };
 
-export default EnterpriseLogin;
+export default Enterprise;
 
 {
   /* <div className="el-input-group">

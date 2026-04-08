@@ -3,7 +3,7 @@ import "./Header.css";
 import { FiSearch, FiUser, FiShoppingCart } from "react-icons/fi";
 import Button from "../../assets/button/Button";
 import IconButton from "../../assets/icon_button/IconButton";
-import { LOGO } from "@/src/utils/utils";
+import { LOGO } from "../../utils/utils";
 
 interface HeaderProps {
   siteName: string;

@@ -9,9 +9,9 @@ import CategoryProducts, {
   productsData,
 } from "./pages/CategoryProducts/categoryProducts";
 // import Product from "./pages/Products/Products";
-import EnterpriseLogin from "./pages/index";
+import Enterprise from "./pages/index";
 import MainLayout from "./MainLayout";
-import DashboardLayout from "@/src/assets/ui/DashBoardLayout/DashBoardLayout";
+import DashboardLayout from "./assets/ui/DashBoardLayout/DashBoardLayout";
 import type { NavItem } from "./config/navigation";
 import { NAV_OPTIONS } from "./config/navigation";
 import ProductDetails from "./pages/Product";
@@ -35,10 +35,10 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/enterprise" element={<EnterpriseLogin />} />
+        <Route path="/enterprise" element={<Enterprise />} />
+        <Route path="/login" element={<Login />} />
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
           <Route
             path="/categories/:categoryId/products"
             element={<CategoryProducts />}

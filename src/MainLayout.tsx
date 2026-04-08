@@ -1,13 +1,13 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import Header from "./pages/Header/Header.tsx";
+import Header from "./pages/Header/Header";
 import "./assets/color/colors.css";
-import Footer from "./pages/Footer/Footer.tsx";
+import Footer from "./pages/Footer/Footer";
 import type { IconType } from "react-icons";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 import { SiThreads } from "react-icons/si";
 import "./MainLayout.css";
-import { siteName } from "./utils/utils.ts";
+import { siteName } from "./utils/utils";
 
 interface MenuProps {
   menuName: string;

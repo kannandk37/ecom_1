@@ -207,14 +207,14 @@ import React, { useEffect, useState } from "react";
 import "./index.css";
 import { FiMinus, FiPlus, FiHeart, FiShoppingCart } from "react-icons/fi";
 // Assuming your components are in these paths
-import ProductImageGallery from "@/src/assets/ProductImageGallery/ProductImageGallery";
-import ProductCardGrid from "@/src/assets/productCardGrid/ProductCardGrid";
-import Button from "@/src/assets/button/Button";
+import ProductImageGallery from "../../assets/ProductImageGallery/ProductImageGallery";
+import ProductCardGrid from "../../assets/productCardGrid/ProductCardGrid";
+import Button from "../../assets/button/Button";
 import CustomerRievew from "../CustomerReview/CustomerRievew";
 import { productsData } from "../CategoryProducts/categoryProducts";
-import type { Product } from "@/src/assets/card2/ProductCard";
+import type { Product } from "../../assets/card2/ProductCard";
 import { FaHeart } from "react-icons/fa6";
-import { StarRating } from "@/src/assets/review/Review";
+import { StarRating } from "../../assets/review/Review";
 
 interface ProductProps {
   productData: Product;

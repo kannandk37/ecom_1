@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./PerformanceBar.css";
 import { FiMoreHorizontal } from "react-icons/fi"; // npm install react-icons
-import { colors } from "@/src/utils/utils";
+import { colors } from "../../../utils/utils";
 
 // Interface for each product data point
 interface ProductPerformance {

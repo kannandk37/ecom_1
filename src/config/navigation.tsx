@@ -1,5 +1,5 @@
 // import { Revenue } from '@/src/pages/Revenue';
-import Orders from "@/src/pages/Order";
+import Orders from "../pages/Order";
 // import { Products } from '@/src/pages/pages/Products';
 import type { JSX } from "react";
 import {
