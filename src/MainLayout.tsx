@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Header from "./pages/Header/Header";
 import "./assets/color/colors.css";
 import Footer from "./pages/Footer/Footer";
@@ -14,47 +14,63 @@ interface MenuProps {
   onClick: () => void;
 }
 
-let FooterMenus: MenuProps[] = [
-  { menuName: "Home", onClick: () => console.log("Home clicked") },
-  { menuName: "About Us", onClick: () => console.log("About clicked") },
-  { menuName: "Services", onClick: () => console.log("Services clicked") },
-  { menuName: "Contact", onClick: () => console.log("Contact clicked") },
-];
-
 interface SocialIconProps {
   iconName: string;
   iconImage: IconType;
   onClick: () => void;
 }
 
-let FooterIcons: SocialIconProps[] = [
-  {
-    iconName: "FaceBook",
-    iconImage: FaFacebook,
-    onClick: () => console.log("facebook"),
-  },
-  {
-    iconName: "Instagram",
-    iconImage: FaInstagram,
-    onClick: () => console.log("Instagram"),
-  },
-  {
-    iconName: "Threads",
-    iconImage: SiThreads,
-    onClick: () => console.log("Threads"),
-  },
-];
-
 let copyRightText: string = `© 2025 The Nature's Candy & Co.`;
 
 const MainLayout: React.FC = () => {
+  const navigate = useNavigate();
+
+  const FooterIcons: SocialIconProps[] = [
+    {
+      iconName: "FaceBook",
+      iconImage: FaFacebook,
+      onClick: () =>
+        window.open(
+          "https://www.facebook.com/yourprofile",
+          "_blank",
+          "noopener,noreferrer",
+        ),
+    },
+    {
+      iconName: "Instagram",
+      iconImage: FaInstagram,
+      onClick: () =>
+        window.open(
+          "https://www.instagram.com/naturescandy_py",
+          "_blank",
+          "noopener,noreferrer",
+        ),
+    },
+    {
+      iconName: "Threads",
+      iconImage: SiThreads,
+      onClick: () =>
+        window.open(
+          "https://www.threads.net/@yourprofile",
+          "_blank",
+          "noopener,noreferrer",
+        ),
+    },
+  ];
+
+  let FooterMenus: MenuProps[] = [
+    { menuName: "Home", onClick: () => navigate("/") },
+    { menuName: "About Us", onClick: () => console.log("About clicked") },
+    { menuName: "Services", onClick: () => console.log("Services clicked") },
+    { menuName: "Contact", onClick: () => console.log("Contact clicked") },
+  ];
   return (
     <>
       <Header
         siteName={siteName}
         onSearch={() => console.log("search")}
-        onSignInClick={() => console.log("sign in")}
-        onCartClick={() => console.log("cart click")}
+        onSignInClick={() => navigate("/login")}
+        onCartClick={() => navigate("/cart")}
       />
       <main className="main-content">
         <Outlet />

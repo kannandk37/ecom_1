@@ -41,18 +41,10 @@ const Footer: React.FC<FooterProps> = ({
             ))}
           </ul>
         </div>
-
         {/* Middle Section: Social Media Icons */}
         <div className="footer-section middle">
           <div className="social-icons">
             {icons?.map((icon, index) => (
-              //   <img
-              //     key={index}
-              //     // src={icon.iconImage}
-              //     alt={icon.iconName}
-              //     className="social-icon"
-              //     onClick={icon.onClick}
-              //   />
               <div
                 className="social-placeholder"
                 key={index}
@@ -62,8 +54,31 @@ const Footer: React.FC<FooterProps> = ({
                 <icon.iconImage />
               </div>
             ))}
-            {/* Fallback internal icons if no props provided to match screenshot */}
-            {/* {icons.length === 0 && (
+          </div>
+        </div>
+        {/* Right Section: Copyright */}
+        <div className="footer-section right">
+          <p className="copyright-text">{copyRightText}</p>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;
+
+//   <img
+//     key={index}
+//     // src={icon.iconImage}
+//     alt={icon.iconName}
+//     className="social-icon"
+//     onClick={icon.onClick}
+//   />
+{
+  /* Fallback internal icons if no props provided to match screenshot */
+}
+{
+  /* {icons.length === 0 && (
               <>
                 <div className="social-placeholder">
                   <FaFacebook />
@@ -75,17 +90,5 @@ const Footer: React.FC<FooterProps> = ({
                   <SiThreads />
                 </div>
               </>
-            )} */}
-          </div>
-        </div>
-
-        {/* Right Section: Copyright */}
-        <div className="footer-section right">
-          <p className="copyright-text">{copyRightText}</p>
-        </div>
-      </div>
-    </footer>
-  );
-};
-
-export default Footer;
+            )} */
+}

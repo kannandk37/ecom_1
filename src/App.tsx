@@ -37,8 +37,9 @@ function App() {
       <Routes>
         <Route path="/enterprise" element={<Enterprise />} />
         <Route path="/login" element={<Login />} />
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<Home />} />
+
+        <Route path="/" element={<Home />} />
+        {/* <Route element={<MainLayout />}>
           <Route
             path="/categories/:categoryId/products"
             element={<CategoryProducts />}
@@ -69,9 +70,9 @@ function App() {
           <Route path="/order" element={<Orders />} />
           <Route path="/profile" element={<Profile />} />
         </Route>
+
         <Route path="/checkout" element={<ConfirmCheckout />} />
-        {/* DASHBOARD SHELL */}
-        <Route element={<DashboardLayout />}>{renderRoutes(NAV_OPTIONS)}</Route>
+        <Route element={<DashboardLayout />}>{renderRoutes(NAV_OPTIONS)}</Route> */}
       </Routes>
     </BrowserRouter>
   );
