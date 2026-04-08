@@ -39,7 +39,7 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         <Route path="/" element={<Home />} />
-        {/* <Route element={<MainLayout />}>
+        <Route element={<MainLayout />}>
           <Route
             path="/categories/:categoryId/products"
             element={<CategoryProducts />}
@@ -72,7 +72,7 @@ function App() {
         </Route>
 
         <Route path="/checkout" element={<ConfirmCheckout />} />
-        <Route element={<DashboardLayout />}>{renderRoutes(NAV_OPTIONS)}</Route> */}
+        <Route element={<DashboardLayout />}>{renderRoutes(NAV_OPTIONS)}</Route>
       </Routes>
     </BrowserRouter>
   );
