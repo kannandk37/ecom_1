@@ -35,10 +35,10 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login />} />
         <Route path="/enterprise" element={<EnterpriseLogin />} />
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
           <Route
             path="/categories/:categoryId/products"
             element={<CategoryProducts />}
