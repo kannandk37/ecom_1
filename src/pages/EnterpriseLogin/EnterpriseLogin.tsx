@@ -90,7 +90,7 @@ interface EnterpriseLoginProps {
   height?: string | number;
 }
 
-export const EnterpriseLogin: React.FC<EnterpriseLoginProps> = ({
+const EnterpriseLogin: React.FC<EnterpriseLoginProps> = ({
   onLogin,
   onForgotPassword,
   logoUrl = LOGO,
