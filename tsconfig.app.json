@@ -2,7 +2,7 @@
   "compilerOptions": {
     "jsx": "react-jsx"
   },
-  "include": ["src"]
+  "include": ["src", "src/**/*.d.ts"]
 }
 
 // {
