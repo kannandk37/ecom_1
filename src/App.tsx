@@ -11,7 +11,7 @@ import CategoryProducts, {
 // import Product from "./pages/Products/Products";
 import EnterpriseLogin from "./pages/EnterpriseLogin";
 import MainLayout from "./MainLayout";
-import { DashboardLayout } from "@/src/assets/ui/DashBoardLayout/DashBoardLayout";
+import DashboardLayout from "@/src/assets/ui/DashBoardLayout/DashBoardLayout";
 import type { NavItem } from "./config/navigation";
 import { NAV_OPTIONS } from "./config/navigation";
 import ProductDetails from "./pages/Product";

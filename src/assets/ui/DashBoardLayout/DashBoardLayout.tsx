@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Sidebar } from "@/src/assets/ui/SideBar/SideBar";
-import "./DashboardLayout.css";
+import "./DashBoardLayout.css";
 
-export const DashboardLayout: React.FC = () => {
+const DashboardLayout: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const toggleSidebar = () => {
@@ -23,3 +23,5 @@ export const DashboardLayout: React.FC = () => {
     </div>
   );
 };
+
+export default DashboardLayout;
