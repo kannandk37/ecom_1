@@ -70,6 +70,7 @@ const MainLayout: React.FC = () => {
         siteName={siteName}
         onSearch={() => console.log("search")}
         onSignInClick={() => navigate("/login")}
+        onEnterpriseSignInClick={() => navigate("/enterprise")}
         onCartClick={() => navigate("/cart")}
       />
       <main className="main-content">

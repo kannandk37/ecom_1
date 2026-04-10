@@ -38,8 +38,8 @@ function App() {
         <Route path="/enterprise" element={<Enterprise />} />
         <Route path="/login" element={<Login />} />
 
-        <Route path="/" element={<Home />} />
         <Route element={<MainLayout />}>
+          <Route path="/" element={<Home />} />
           <Route
             path="/categories/:categoryId/products"
             element={<CategoryProducts />}

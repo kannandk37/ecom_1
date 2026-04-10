@@ -10,6 +10,7 @@ interface HeaderProps {
   onSearch: (query: string) => void;
   onSignInClick: () => void;
   onCartClick: () => void;
+  onEnterpriseSignInClick: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -17,6 +18,7 @@ export const Header: React.FC<HeaderProps> = ({
   onSearch,
   onSignInClick,
   onCartClick,
+  onEnterpriseSignInClick,
 }) => {
   const [query, setQuery] = useState("");
 
@@ -68,6 +70,14 @@ export const Header: React.FC<HeaderProps> = ({
             disabled={false}
             height="40px"
             onClick={onSignInClick}
+            icon={<FiUser fontSize="15px" />}
+          />
+          <Button
+            name="Enterprise Sign In"
+            variant="outline"
+            disabled={false}
+            height="40px"
+            onClick={onEnterpriseSignInClick}
             icon={<FiUser fontSize="15px" />}
           />
           {/* <button className="signin-btn" onClick={onSignInClick}>
