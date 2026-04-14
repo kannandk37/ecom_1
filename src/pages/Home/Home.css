@@ -3,12 +3,46 @@ body {
 }
 
 .root-home {
-  margin-top: 25px;
-  padding: clamp(40px, 5vh, 75px) 40px;
-  height: 95vh; /* if changing the height changing padding 5vh so height + padding must be 100vh*/
+  margin-top: 35px;
+  height: calc(100vh - 35px);
   box-sizing: border-box;
-  /* background-color: #fdfaf5;
-  background-color: red; */
+  overflow: hidden; /* Hide the main browser scrollbar */
+  display: flex;
+  align-items: center; /* Vertically centers the viewport */
+  justify-content: center;
+}
+
+.scroll-viewport {
+  width: 100%;
+  /* Height is parent height minus 100px (50px top + 50px bottom) */
+  height: calc(100% - 100px);
+  overflow-y: auto;
+  padding: 0 40px; /* Moves the padding here from root-home */
+}
+
+/* CUSTOM SCROLLBAR STYLES (Targeting the viewport) */
+.scroll-viewport::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scroll-viewport::-webkit-scrollbar-track {
+  background: transparent; /* Makes it look like it's floating */
+}
+
+.scroll-viewport::-webkit-scrollbar-thumb {
+  background: #8c6d3f;
+  border-radius: 10px;
+  /* Adding a border creates the 'inset' look if desired */
+}
+
+.scroll-viewport::-webkit-scrollbar-thumb:hover {
+  background: #6d4906;
+}
+
+/* Firefox Support */
+.scroll-viewport {
+  scrollbar-width: thin;
+  scrollbar-color: #8c6d3f transparent;
 }
 
 .categories-title {
@@ -20,7 +54,7 @@ body {
   padding-left: clamp(20px, 6vw, 80px);
 }
 
-.home-contaiiner {
+.home-container {
   display: flex;
   flex-direction: column;
   gap: 10px;

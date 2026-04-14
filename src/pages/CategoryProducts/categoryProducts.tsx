@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import Banner from "../../../data/banner.png";
+import Banner from "../../../data/Banner dry fruits.png";
 import HomeBanner from "../../assets/banner/Banner";
 import ProductCard, { type Product } from "../../assets/card2/ProductCard";
-import image2 from "../../../data/image2.png";
-import image1 from "../../../data/image1.png";
+import NUTS from "../../../data/NUTS.png";
+import DRY_FRUITS from "../../../data/DRY_FRUITS.png";
 import "./categoryProducts.css";
 import Dropdown from "../../assets/dropdown/DropDown";
 
@@ -13,7 +13,7 @@ export const productsData: Product[] = [
     id: 1,
     title: "Premium California Almonds",
     description: "Crunchy and nutritious, perfect for snacking.",
-    image: image2,
+    image: NUTS,
     price: 750,
     weight: 501,
     unit: "g",
@@ -25,7 +25,7 @@ export const productsData: Product[] = [
     id: 2,
     title: "Premium California Almonds",
     description: "Crunchy and nutritious, perfect for snacking.",
-    image: image2,
+    image: NUTS,
     price: 750,
     weight: 500,
     unit: "g",
@@ -37,7 +37,7 @@ export const productsData: Product[] = [
     id: 3,
     title: "Premium California Almonds",
     description: "Crunchy and nutritious, perfect for snacking.",
-    image: image2,
+    image: NUTS,
     price: 750,
     weight: 500,
     unit: "g",
@@ -49,7 +49,7 @@ export const productsData: Product[] = [
     id: 4,
     title: "Premium California Almonds",
     description: "Crunchy and nutritious, perfect for snacking.",
-    image: image2,
+    image: NUTS,
     price: 750,
     weight: 500,
     unit: "g",
@@ -61,7 +61,7 @@ export const productsData: Product[] = [
     id: 5,
     title: "Premium California Almonds",
     description: "Crunchy and nutritious, perfect for snacking.",
-    image: image2,
+    image: NUTS,
     price: 750,
     weight: 500,
     unit: "g",
@@ -71,7 +71,7 @@ export const productsData: Product[] = [
   },
   {
     id: 6,
-    image: image2,
+    image: NUTS,
     categoryId: 2,
     title: "Premium California Almonds",
     description:
@@ -81,7 +81,7 @@ export const productsData: Product[] = [
     unit: "g",
     isFav: true,
     name: "Premium California Almonds",
-    images: [image1, image2],
+    images: [DRY_FRUITS, NUTS],
     rating: 3.5,
     reviews: 4,
     features: ["tester1", "tester2"],
@@ -95,7 +95,7 @@ export const productsData: Product[] = [
     id: 7,
     title: "Premium California Almonds",
     description: "Crunchy and nutritious, perfect for snacking.",
-    image: image2,
+    image: NUTS,
     price: 750,
     weight: 500,
     unit: "g",
@@ -114,7 +114,7 @@ const sortOptions: { id: number; value: string }[] = [
 
 let mockCategory = {
   id: 1,
-  image: image1,
+  image: DRY_FRUITS,
   title: "Dry Fruits",
 };
 const CategoryProducts = ({}) => {
@@ -186,48 +186,50 @@ const CategoryProducts = ({}) => {
 
   return (
     <div className="category-products-home">
-      <div className="category-products-contaiiner">
-        <HomeBanner
-          image={Banner}
-          width="100%"
-          height="400px"
-          borderRadius="20px"
-        />
-        <div className="products-contaiiner">
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              paddingBottom: "25px",
-            }}
-          >
+      <div className="scroll-viewport">
+        <div className="category-products-contaiiner">
+          <HomeBanner
+            image={Banner}
+            width="100%"
+            height="400px"
+            borderRadius="20px"
+          />
+          <div className="products-contaiiner">
             <div
               style={{
                 display: "flex",
                 flexDirection: "row",
+                justifyContent: "space-between",
+                paddingBottom: "25px",
               }}
             >
-              <h2 className="hh" onClick={() => navigate("/")}>
-                Category
-              </h2>
-              <h2 className="category-title-symbol">&nbsp;&gt;&nbsp;</h2>
-              {category && (
-                <h2 className="category-title">{category?.title}</h2>
-              )}
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                }}
+              >
+                <h2 className="hh" onClick={() => navigate("/")}>
+                  Category
+                </h2>
+                <h2 className="category-title-symbol">&nbsp;&gt;&nbsp;</h2>
+                {category && (
+                  <h2 className="category-title">{category?.title}</h2>
+                )}
+              </div>
+              <Dropdown label="Popularity" options={sortOptions} />
             </div>
-            <Dropdown label="Popularity" options={sortOptions} />
+            {products && (
+              <div className="products-lists">
+                <ProductCard
+                  products={products}
+                  onClick={handleCardClick}
+                  onClickAddToCart={onClickAddToCart}
+                  onToggleFav={handleToggleFav}
+                />
+              </div>
+            )}
           </div>
-          {products && (
-            <div className="products-lists">
-              <ProductCard
-                products={products}
-                onClick={handleCardClick}
-                onClickAddToCart={onClickAddToCart}
-                onToggleFav={handleToggleFav}
-              />
-            </div>
-          )}
         </div>
       </div>
     </div>

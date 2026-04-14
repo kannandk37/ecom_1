@@ -1,9 +1,64 @@
+.product-page-root {
+  margin-top: 15px;
+  height: calc(100vh - 15px);
+  overflow: hidden; /* Prevent default browser scroll */
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background-color: var(--color-bg);
+}
+
+/* THE SCROLLABLE VIEWPORT (The floating layer) */
+.product-scroll-viewport {
+  width: 100%;
+
+  /* ADJUST THIS VALUE: 
+     Increase 50px to 80px or 100px to make the scrollbar start even lower. 
+     Since it is flex-end, the gap will only appear at the top. */
+  height: calc(100% - 80px);
+
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 20px;
+
+  /* Optional: Add a small top padding inside the viewport 
+     if your content feels too close to where the scrollbar starts */
+}
+
+/* CUSTOM FLOATING SCROLLBAR */
+.product-scroll-viewport::-webkit-scrollbar {
+  width: 8px;
+}
+
+.product-scroll-viewport::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.product-scroll-viewport::-webkit-scrollbar-thumb {
+  background: #8c6d3f; /* Your brand brown */
+  border-radius: 10px;
+  /* Match border color to your background to create the 'floating' gap */
+  border: 2px solid var(--color-bg);
+}
+
+.product-scroll-viewport::-webkit-scrollbar-thumb:hover {
+  background: #6d4906;
+}
+
+/* Firefox support */
+.product-scroll-viewport {
+  scrollbar-width: thin;
+  scrollbar-color: #8c6d3f transparent;
+}
+
+/* YOUR EXISTING PRODUCT PAGE (Inner Content) */
 .product-page {
   font-family: var(--font-family);
-  padding: 40px;
+  padding: 20px;
   max-width: 1400px;
   margin: 0 auto;
   color: #333;
+  /* background-color removed here as it's on the root now */
   background-color: var(--color-bg);
 }
 
@@ -168,6 +223,7 @@
   padding: 12px 22px;
   border-radius: 12px;
   font-size: 0.9rem;
+  border: 1px solid rgba(0, 0, 0, 0.03);
 }
 
 .spec-label {

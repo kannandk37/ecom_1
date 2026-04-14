@@ -1,0 +1,189 @@
+/* EnterpriseLogin.css */
+
+.el-page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #fdfaf5; /* Warm theme background */
+  padding: 20px;
+  font-family: var(--font-family);
+}
+
+.el-card {
+  background-color: #ffffff;
+  padding: 48px 40px;
+  border-radius: 32px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  /* Use props via CSS variables */
+  width: var(--card-width);
+  height: var(--card-height);
+  max-width: 95vw; /* Safety for smaller screens */
+  transition: all 0.3s ease;
+}
+
+/* Responsiveness for Smaller Devices */
+@media (max-width: 480px) {
+  .el-card {
+    padding: 32px 24px;
+    border-radius: 24px;
+    width: 100% !important; /* Force full width on mobile */
+  }
+
+  .el-title {
+    font-size: 1.6rem;
+  }
+}
+
+/* Responsiveness for Bigger Devices (Tablets/Desktops) */
+@media (min-width: 1200px) {
+  .el-card {
+    box-shadow: 0 30px 60px rgba(140, 109, 63, 0.08);
+  }
+}
+
+.el-logo-wrapper {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 24px;
+  border: 1px solid #e2ddd3;
+}
+
+.el-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.el-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.el-title {
+  color: #8c6d3f;
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.el-subtitle {
+  color: #666;
+  font-size: 0.95rem;
+  margin-top: 8px;
+}
+
+.el-form {
+  width: 100%;
+}
+
+.el-input-group {
+  margin-bottom: 20px;
+}
+
+.el-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #333;
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+}
+
+.el-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.el-input-wrapper input {
+  width: 100%;
+  padding: 16px 16px 16px 52px;
+  background-color: #f3f1ec;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.el-input-wrapper input:focus {
+  outline: none;
+  background-color: #fff;
+  border-color: #8c6d3f;
+}
+
+.el-icon {
+  position: absolute;
+  left: 18px;
+  color: #8c6d3f;
+  font-size: 1.2rem;
+}
+
+.el-footer-links {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.el-checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.el-checkmark {
+  width: 18px;
+  height: 18px;
+  background-color: #f3f1ec;
+  border-radius: 4px;
+}
+
+.el-checkbox-container input:checked + .el-checkmark {
+  background-color: #8c6d3f;
+}
+
+.el-forgot-btn {
+  background: none;
+  border: none;
+  color: #8c6d3f;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.el-forgot-btn:hover {
+  color: #613b03;
+}
+
+.el-submit-btn {
+  width: 100%;
+  padding: 18px;
+  background-color: #8c6d3f;
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(140, 109, 63, 0.2);
+  transition: transform 0.2s;
+}
+
+.el-submit-btn:hover {
+  transform: translateY(-2px);
+  background-color: #7a5e35;
+}
+
+.el-error {
+  color: rgba(253, 60, 60, 0.815);
+}

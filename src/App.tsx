@@ -15,6 +15,7 @@ import DashboardLayout from "./assets/ui/DashBoardLayout/DashBoardLayout";
 import type { NavItem } from "./config/navigation";
 import { NAV_OPTIONS } from "./config/navigation";
 import ProductDetails from "./pages/Product";
+import AuthCard from "./pages/Auth";
 
 function App() {
   const renderRoutes: any = (items: NavItem[]) => {
@@ -36,9 +37,9 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/enterprise" element={<Enterprise />} />
-        <Route path="/login" element={<Login />} />
 
         <Route element={<MainLayout />}>
+          <Route path="/login" element={<AuthCard />} />
           <Route path="/" element={<Home />} />
           <Route
             path="/categories/:categoryId/products"

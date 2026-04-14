@@ -5,9 +5,11 @@ import HomeBanner from "../../assets/banner/Banner";
 import Banner from "../../../data/banner.png";
 import "./Home.css";
 import { CardGrid } from "../../assets/card1/Card";
-import image1 from "../../../data/image1.png";
-import image2 from "../../../data/image2.png";
-import image3 from "../../../data/image3.png";
+import DRY_FRUITS from "../../../data/DRY_FRUITS.png";
+import NUTS from "../../../data/NUTS.png";
+import DATES from "../../../data/DATES.png";
+import FRESH_JUICE from "../../../data/FRESH_JUICE.png";
+
 // import ProductCard from "../../assets/card2/ProductCard";
 // import ProductImageGallery from "../../assets/ProductImageGallery/ProductImageGallery";
 // import { Carousel } from "../../assets/CarouselTest/CarouselTest";
@@ -23,58 +25,58 @@ interface CardItem {
 }
 
 // const productsTestData: any = [
-//   { image: image1, name: "Almond1", price: 10 },
-//   { image: image2, name: "Cashew2", price: 12 },
-//   { image: image3, name: "Walnut3", price: 14 },
-//   { image: image1, name: "Almond4", price: 10 },
-//   { image: image2, name: "Cashew5", price: 12 },
-//   { image: image3, name: "Walnut6", price: 14 },
-//   { image: image1, name: "Almond7", price: 10 },
-//   { image: image2, name: "Cashew8", price: 12 },
-//   { image: image3, name: "Walnut9", price: 14 },
-//   { image: image1, name: "Almond90", price: 10 },
-//   { image: image2, name: "Cashew11", price: 12 },
-//   { image: image3, name: "Walnut12", price: 14 },
-//   { image: image3, name: "Walnut92", price: 14 },
-//   { image: image1, name: "Almond93", price: 10 },
-//   { image: image2, name: "Cashew13", price: 12 },
-//   { image: image3, name: "Walnut14", price: 14 },
+//   { image: DRY_FRUITS, name: "Almond1", price: 10 },
+//   { image: NUTS, name: "Cashew2", price: 12 },
+//   { image: DATES, name: "Walnut3", price: 14 },
+//   { image: DRY_FRUITS, name: "Almond4", price: 10 },
+//   { image: NUTS, name: "Cashew5", price: 12 },
+//   { image: DATES, name: "Walnut6", price: 14 },
+//   { image: DRY_FRUITS, name: "Almond7", price: 10 },
+//   { image: NUTS, name: "Cashew8", price: 12 },
+//   { image: DATES, name: "Walnut9", price: 14 },
+//   { image: DRY_FRUITS, name: "Almond90", price: 10 },
+//   { image: NUTS, name: "Cashew11", price: 12 },
+//   { image: DATES, name: "Walnut12", price: 14 },
+//   { image: DATES, name: "Walnut92", price: 14 },
+//   { image: DRY_FRUITS, name: "Almond93", price: 10 },
+//   { image: NUTS, name: "Cashew13", price: 12 },
+//   { image: DATES, name: "Walnut14", price: 14 },
 // ];
 
 const myCards: CardItem[] = [
   {
     id: 1,
-    image: image1,
+    image: DRY_FRUITS,
     title: "Dry Fruits",
   },
   {
     id: 2,
-    image: image2,
+    image: NUTS,
     title: "Nuts",
   },
   {
     id: 3,
-    image: image3,
+    image: DATES,
     title: "Dates",
   },
   {
     id: 4,
-    image: image1,
+    image: FRESH_JUICE,
     title: "Fresh Juices",
   },
   {
     id: 5,
-    image: image2,
+    image: NUTS,
     title: "Chocolates",
   },
   // {
   // id:6,
-  //   image: image3,
+  //   image: DATES,
   //   title: "Walnuts",
   // },
   // {
   // id: 7,
-  //   image: image1,
+  //   image: DRY_FRUITS,
   //   title: "Walnuts",
   // },
 ];
@@ -104,7 +106,7 @@ const myCards: CardItem[] = [
 //   },
 // ];
 
-// const images = [image1, image2, image3, image1, image2, image3];
+// const images = [DRY_FRUITS, NUTS, DATES, DRY_FRUITS, NUTS, DATES];
 const Home = () => {
   const [user, setUser] = useState<any>(null);
   const [cart, setCart] = useState<any>();
@@ -202,37 +204,38 @@ const Home = () => {
 
   return (
     <div className="root-home">
-      <div className="home-contaiiner">
-        <HomeBanner
-          image={Banner}
-          width="100%"
-          height="400px"
-          borderRadius="20px"
-          fontSize2="22px"
-          buttonText="Shop Now"
-          buttonVariant="primary"
-          onButtonClick={() => console.log("asda")}
-          showButton={true}
-          showTitle1={true}
-          showTitle2={true}
-          title1="PREMIUM QUALITY, NATURALLY DELICIOUS"
-          title2="Discover our curated collection of dry fruits, nuts, dates, and healthy snacks."
-        />
-        <div className="categoreis-container">
-          <h2 className="categories-title">Categories</h2>
-          <div className="categories-cards-container">
-            <CardGrid
-              cards={myCards}
-              cardsPerColumn={1}
-              //  height="320px"
-              onCardClick={handleCardClick}
-            />
-            {/* <ProductCard /> */}
+      <div className="scroll-viewport">
+        <div className="home-container">
+          <HomeBanner
+            image={Banner}
+            width="100%"
+            height="400px"
+            borderRadius="20px"
+            fontSize2="22px"
+            buttonText="Shop Now"
+            buttonVariant="primary"
+            onButtonClick={() => console.log("asda")}
+            showButton={true}
+            showTitle1={true}
+            showTitle2={true}
+            title1="PREMIUM QUALITY, NATURALLY DELICIOUS"
+            title2="Discover our curated collection of dry fruits, nuts, dates, and healthy snacks."
+          />
+          <div className="categoreis-container">
+            <h2 className="categories-title">Categories</h2>
+            <div className="categories-cards-container">
+              <CardGrid
+                cards={myCards}
+                cardsPerColumn={1}
+                //  height="320px"
+                onCardClick={handleCardClick}
+              />
+              {/* <ProductCard /> */}
+            </div>
           </div>
-        </div>
-        {/* <ProductImageGallery images={images} height={"650px"} width={"650px"} /> */}
-        {/* <ProductCarousel /> */}
-        {/* <Carousel
+          {/* <ProductImageGallery images={images} height={"650px"} width={"650px"} /> */}
+          {/* <ProductCarousel /> */}
+          {/* <Carousel
           title="Our Best Sellers"
           data={productsTestData}
           renderItem={(item: any) => <ProductCardGridSingle product={item} />}
@@ -251,14 +254,15 @@ const Home = () => {
              height="320px"
           />
         /> */}
-        {/* <ProductCardGrid products={productsTestData} /> */}
-        {/* <ReviewCard reviews={mockReviews} /> */}
-        {/* <CustomerRievew /> */}
-        {/* <Carousel
+          {/* <ProductCardGrid products={productsTestData} /> */}
+          {/* <ReviewCard reviews={mockReviews} /> */}
+          {/* <CustomerRievew /> */}
+          {/* <Carousel
           title="Our Best Sellers"
           data={productsTestData}
           renderItem={(item: any) => <ProductCardGridSingle product={item} />}
         /> */}
+        </div>
       </div>
     </div>
   );
@@ -318,12 +322,12 @@ export default Home;
 // }
 
 // const products = [
-//   { image: image1, name: "Almond", price: 10 },
-//   { image: image2, name: "Cashew", price: 12 },
-//   { image: image3, name: "Walnut", price: 14 },
-//   { image: image1, name: "Almond", price: 10 },
-//   { image: image2, name: "Cashew", price: 12 },
-//   { image: image3, name: "Walnut", price: 14 },
+//   { image: DRY_FRUITS, name: "Almond", price: 10 },
+//   { image: NUTS, name: "Cashew", price: 12 },
+//   { image: DATES, name: "Walnut", price: 14 },
+//   { image: DRY_FRUITS, name: "Almond", price: 10 },
+//   { image: NUTS, name: "Cashew", price: 12 },
+//   { image: DATES, name: "Walnut", price: 14 },
 // ];
 
 // function ProductCarousel() {
@@ -345,9 +349,9 @@ export default Home;
 // import "./Home.css";
 
 // import { CardGrid } from "../../assets/card1/Card";
-// import image1 from "../../../data/image1.png";
-// import image2 from "../../../data/image2.png";
-// import image3 from "../../../data/image3.png";
+// import DRY_FRUITS from "../../../data/DRY_FRUITS.png";
+// import NUTS from "../../../data/NUTS.png";
+// import DATES from "../../../data/DATES.png";
 
 // interface CardItem {
 //   image: string;
@@ -356,31 +360,31 @@ export default Home;
 
 // const myCards: CardItem[] = [
 //   {
-//     image: image1,
+//     image: DRY_FRUITS,
 //     title: "Dry Fruits",
 //   },
 //   {
-//     image: image2,
+//     image: NUTS,
 //     title: "Mixed Nuts",
 //   },
 //   {
-//     image: image3,
+//     image: DATES,
 //     title: "Almonds",
 //   },
 //   {
-//     image: image1,
+//     image: DRY_FRUITS,
 //     title: "Cashews",
 //   },
 //   {
-//     image: image2,
+//     image: NUTS,
 //     title: "Walnuts",
 //   },
 //   {
-//     image: image3,
+//     image: DATES,
 //     title: "Walnuts",
 //   },
 //   {
-//     image: image1,
+//     image: DRY_FRUITS,
 //     title: "Walnuts",
 //   },
 // ];
