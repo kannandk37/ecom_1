@@ -1,0 +1,179 @@
+.shipping-form-container {
+  width: 100%;
+  max-width: 800px;
+  height: 600px;
+  /* Important for internal scroll to work */
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  font-family: var(--font-family);
+  animation: fadeIn 0.4s ease;
+}
+
+.shipping-header {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 30px;
+}
+
+.step-count {
+  font-size: 0.75rem;
+  color: #8c6d3f;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.shipping-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 5px 0 0 0;
+}
+
+.add-address-btn {
+  background: none;
+  border: none;
+  color: #8c6d3f;
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 8px 0;
+}
+
+/* THE SCROLLABLE ADDRESS AREA */
+.address-list-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 10px;
+  margin-bottom: 30px;
+}
+
+/* Custom internal scrollbar */
+.address-list-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.address-list-scroll::-webkit-scrollbar-thumb {
+  background: #e5e5e1;
+  border-radius: 10px;
+  transition: background 0.3s;
+}
+
+.address-list-scroll::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.address-list-scroll::-webkit-scrollbar-hover {
+  background: #e5e5e1;
+}
+
+.address-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding-bottom: 10px;
+}
+
+/* ADDRESS CARD */
+.address-card {
+  background: #fff;
+  border: 2px solid #f0f0ed;
+  border-radius: 16px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.address-card:hover {
+  border-color: #e5e5e1;
+}
+
+.address-card.selected {
+  border-color: #8c6d3f;
+  background: #fdfaf5;
+  box-shadow: 0 10px 20px rgba(140, 109, 63, 0.05);
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.address-type {
+  font-weight: 800;
+  font-size: 1rem;
+  color: #1a1a1a;
+}
+
+/* CUSTOM RADIO BUTTON */
+.custom-radio {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ddd;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.address-card.selected .custom-radio {
+  border-color: #8c6d3f;
+}
+
+.radio-inner {
+  width: 10px;
+  height: 100%;
+  background: transparent;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.radio-inner.checked {
+  background: #8c6d3f;
+  width: 10px;
+  height: 10px;
+}
+
+.user-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin: 0 0 8px 0;
+}
+
+.address-text {
+  font-size: 0.85rem;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.phone-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.shipping-actions {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-start;
+  padding-top: 20px;
+}
+
+@media (max-width: 600px) {
+  .address-grid {
+    grid-template-columns: 1fr;
+  }
+}

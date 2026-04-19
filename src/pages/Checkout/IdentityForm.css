@@ -1,0 +1,286 @@
+/* .identity-container {
+  width: 100%;
+  max-width: 600px;
+  font-family: var(--font-family);
+  animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-header {
+  margin-bottom: 35px;
+}
+
+.step-tag {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #8c6d3f;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.section-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 8px 0;
+}
+
+.section-subtitle {
+  color: #888;
+  font-size: 0.95rem;
+}
+
+.identity-verified-card {
+  display: flex;
+  align-items: center;
+  background: #fdfaf5;
+  border: 1px solid #eee;
+  padding: 25px;
+  border-radius: 16px;
+  gap: 20px;
+}
+
+.verified-icon {
+  font-size: 2.5rem;
+  color: #27ae60;
+  display: flex;
+}
+
+.verified-info h3 {
+  font-size: 0.85rem;
+  color: #888;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.user-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 4px 0;
+}
+
+.user-email {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.change-account-btn {
+  margin-left: auto;
+  background: none;
+  border: 1px solid #ddd;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #8c6d3f;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.change-account-btn:hover {
+  background: #fff;
+  border-color: #8c6d3f;
+}
+
+.input-group {
+  margin-bottom: 30px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin-bottom: 10px;
+  letter-spacing: 0.05em;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 15px;
+  color: #aaa;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 15px 15px 15px 45px;
+  background: #f8f7f4;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.input-wrapper input:focus {
+  background: #fff;
+  border-color: #8c6d3f;
+  box-shadow: 0 4px 15px rgba(140, 109, 63, 0.05);
+}
+
+.helper-text {
+  font-size: 0.8rem;
+  color: #aaa;
+  margin-top: 8px;
+}
+
+.login-prompt {
+  background: #fff;
+  border: 1px dashed #ddd;
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.prompt-text strong {
+  font-size: 0.9rem;
+  color: #1a1a1a;
+}
+.prompt-text p {
+  font-size: 0.8rem;
+  color: #888;
+  margin: 4px 0 0 0;
+}
+
+.inline-login-btn {
+  background: none;
+  border: none;
+  color: #8c6d3f;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.marketing-note {
+  margin-top: 40px;
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+}
+
+.marketing-note p {
+  font-size: 0.75rem;
+  color: #bbb;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .login-prompt {
+    flex-direction: column;
+    text-align: center;
+  }
+} */
+.identity-container {
+  width: 100%;
+  max-width: 550px;
+  animation: slideInUp 0.4s ease-out;
+  font-family: var(--font-family);
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-header {
+  margin-bottom: 30px;
+}
+
+.step-tag {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #8c6d3f;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.section-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 5px 0;
+}
+
+.section-subtitle {
+  color: #888;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.identity-form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.field-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #333;
+  letter-spacing: 0.05em;
+}
+
+.identity-actions {
+  margin-top: 15px;
+}
+
+/* Security Banner Styles */
+.security-banner {
+  display: flex;
+  align-items: flex-start;
+  background-color: #fdfaf5; /* Warm organic beige */
+  border: 1px solid #eee;
+  padding: 20px;
+  border-radius: 16px;
+  gap: 18px;
+  margin-top: 45px;
+}
+
+.security-icon-box {
+  font-size: 1.5rem;
+  color: #27ae60; /* Trusted green */
+  display: flex;
+  padding-top: 2px;
+}
+
+.security-text strong {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.security-text p {
+  color: #888;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  margin: 0;
+}

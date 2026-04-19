@@ -23,6 +23,8 @@ export interface Product {
   reviews?: number;
   features?: string[];
   specs?: { label: string; value: string }[];
+  //temporary
+  quantity?: number;
 }
 
 export interface ProductCardProps {

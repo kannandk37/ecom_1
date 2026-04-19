@@ -1,0 +1,97 @@
+.checkout-sidebar {
+  width: 280px;
+  height: 100%;
+  background-color: #e5e5e1; /* The soft grey/beige from your image */
+  padding: 40px 0 40px 30px;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-family);
+  box-sizing: border-box;
+}
+
+.sidebar-header {
+  margin-bottom: 50px;
+  padding-right: 30px;
+}
+
+.sidebar-title {
+  color: #8c6d3f; /* Your signature brand brown */
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.sidebar-subtitle {
+  color: #71604d;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin: 4px 0 0 0;
+  opacity: 0.8;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.nav-option {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  border-radius: 12px; /* Pill effect only on the left/inside */
+  color: #71604d;
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-option:hover {
+  color: #8c6d3f;
+}
+
+/* THE ACTIVE PILL EFFECT */
+.nav-option.active {
+  background-color: #ffffff; /* White card effect from screenshot */
+  color: #8c6d3f;
+  font-weight: 700;
+  box-shadow: -4px 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.option-icon {
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  stroke-width: 2.5px; /* Makes icons look more "bold" like in the image */
+}
+
+.option-label {
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+}
+
+/* Subtle Right Border for the "Identity" highlight overlap */
+.nav-option.active::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: #ffffff; /* Seamless transition to the main content area */
+}
+
+/* Responsiveness: Adjust width for smaller tablets */
+@media (max-width: 768px) {
+  .checkout-sidebar {
+    width: 220px;
+    padding-left: 15px;
+  }
+  .sidebar-title {
+    font-size: 1.2rem;
+  }
+}

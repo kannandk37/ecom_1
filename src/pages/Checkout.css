@@ -1,0 +1,133 @@
+/* .checkout-layout-grid {
+  display: flex;
+  margin-top: 60px;
+  height: calc(100vh - 60px);
+  background: #fdfaf5;
+  padding: 40px;
+  gap: 30px;
+  box-sizing: border-box;
+}
+
+.checkout-middle-section {
+  flex: 1;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.middle-content-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 40px;
+} */
+
+/* THE MAIN FULL-SCREEN WRAPPER */
+.checkout-page-root {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh-120px);
+  background-color: #fdfaf5; /* Signature Nature's Candy background */
+  overflow: hidden;
+  font-family: var(--font-family);
+  margin-top: 120px;
+}
+
+/* THE THREE-COLUMN GRID LAYOUT */
+.checkout-layout-grid {
+  display: flex;
+  flex: 1; /* Fills remaining space below header */
+  padding: 30px 40px;
+  gap: 30px;
+  box-sizing: border-box;
+  background-color: #e5e5e1; /* Matches the sidebar's base color */
+  align-items: stretch;
+  overflow: hidden;
+}
+
+/* MIDDLE COLUMN: THE FORM AREA */
+.checkout-middle-section {
+  flex: 1;
+  background: white;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+
+/* THE INNER SCROLLABLE VIEWPORT (50px Top Gap) */
+.middle-content-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 40px 60px;
+
+  /* Applying the "Floating" Scrollbar logic */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers the actual form inside */
+}
+
+/* CUSTOM SCROLLBAR FOR THE FORM AREA */
+.middle-content-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.middle-content-scroll::-webkit-scrollbar-track {
+  background: transparent;
+  margin-top: 50px; /* The scrollbar handles start 50px down */
+  margin-bottom: 20px;
+}
+
+.middle-content-scroll::-webkit-scrollbar-thumb {
+  background: #8c6d3f;
+  border-radius: 10px;
+  border: 2px solid white; /* Floating effect against the white form bg */
+}
+
+.middle-content-scroll::-webkit-scrollbar-thumb:hover {
+  background: #6d4906;
+}
+
+/* THE FORM WRAPPER (Prevents form from stretching too wide) */
+.form-content-wrapper {
+  width: 100%;
+  max-width: 700px;
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* SIMPLE FADE ANIMATION WHEN STEPS CHANGE */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* RESPONSIVENESS */
+@media (max-width: 1200px) {
+  .checkout-layout-grid {
+    padding: 20px;
+    gap: 15px;
+  }
+  /* Hide text in sidebar or collapse summary if needed */
+}
+
+@media (max-width: 900px) {
+  .checkout-layout-grid {
+    flex-direction: column;
+    overflow-y: auto;
+    align-items: stretch;
+  }
+  .checkout-middle-section,
+  .order-summary-container {
+    width: 100%;
+    height: auto;
+  }
+}

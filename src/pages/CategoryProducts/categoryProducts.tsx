@@ -20,6 +20,7 @@ export const productsData: Product[] = [
     isFav: false,
     categoryId: 1,
     images: [],
+    quantity: 2,
   },
   {
     id: 2,
@@ -32,6 +33,7 @@ export const productsData: Product[] = [
     isFav: true,
     categoryId: 1,
     images: [],
+    quantity: 2,
   },
   {
     id: 3,
@@ -44,6 +46,7 @@ export const productsData: Product[] = [
     isFav: true,
     categoryId: 1,
     images: [],
+    quantity: 2,
   },
   {
     id: 4,
@@ -56,6 +59,7 @@ export const productsData: Product[] = [
     isFav: true,
     categoryId: 1,
     images: [],
+    quantity: 2,
   },
   {
     id: 5,
@@ -68,6 +72,7 @@ export const productsData: Product[] = [
     isFav: true,
     categoryId: 1,
     images: [],
+    quantity: 2,
   },
   {
     id: 6,
@@ -82,6 +87,7 @@ export const productsData: Product[] = [
     isFav: true,
     name: "Premium California Almonds",
     images: [DRY_FRUITS, NUTS],
+    quantity: 2,
     rating: 3.5,
     reviews: 4,
     features: ["tester1", "tester2"],
@@ -102,6 +108,7 @@ export const productsData: Product[] = [
     isFav: true,
     categoryId: 2,
     images: [],
+    quantity: 2,
   },
 ];
 

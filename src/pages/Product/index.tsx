@@ -215,6 +215,7 @@ import { productsData } from "../CategoryProducts/categoryProducts";
 import type { Product } from "../../assets/card2/ProductCard";
 import { FaHeart } from "react-icons/fa6";
 import { StarRating } from "../../assets/review/Review";
+import { useNavigate } from "react-router-dom";
 
 interface ProductProps {
   productData: Product;
@@ -223,6 +224,8 @@ interface ProductProps {
 export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
   const [quantity, setQuantity] = useState<number>(1);
   const [product, setProduct] = useState<any>();
+  const navigate = useNavigate();
+
   useEffect(() => {
     console.log(productData);
     setProduct(productData);
@@ -306,7 +309,10 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
                       icon={<FiShoppingCart />}
                       variant="primary"
                       disabled={false}
-                      onClick={() => console.log("Added to cart")}
+                      onClick={() => {
+                        console.log("Added to cart");
+                        navigate("/checkout");
+                      }}
                     />
                     <Button
                       name="Add to Wishlist"

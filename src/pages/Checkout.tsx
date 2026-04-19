@@ -1,122 +1,90 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import CheckoutSidebar from "./CheckoutSideBar/CheckoutSideBar";
+import OrderSummary from "./OrderSummary/OrderSummary";
+
+import ShippingForm from "./Checkout/ShippingForm";
+import PaymentForm from "./Checkout/PaymentForm";
+import ReviewForm from "./Checkout/ReviewForm";
+import AuthHeader from "../assets/categories_header";
 import { useNavigate } from "react-router-dom";
-import axiosinstance from "../service";
+import { siteName } from "../utils/utils";
+import Header from "./Header/Header";
+import "./Checkout.css";
+import IdentityForm from "./Checkout/IdentityForm";
+import { productsData } from "./CategoryProducts/categoryProducts";
 
-export default function ConfirmCheckout() {
+const ConfirmCheckout = () => {
+  const [currentStep, setCurrentStep] = useState<string>("identity");
+  const [data, setData] = useState<any>();
   const navigate = useNavigate();
-  const [cart, setCart] = useState<any>({});
-  const [user, setUser] = useState<any>(null);
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
-
-  useEffect(() => {
-    const fetchUserCart = async () => {
-      console.log(user, "asdasd");
-      if (user?._id) {
-        const res = await axiosinstance.get(`/api/carts/${user?._id}/user`);
-        if (res?.data) {
-          setCart(res.data);
-        }
-      }
-    };
-    fetchUserCart();
-  }, [user]);
-
-  const handleClick = async (orderId: any) => {
-    try {
-      await axiosinstance.put(`api/orders/${orderId}/confirm`);
-      navigate("/");
-    } catch (error) {
-      console.log(error);
+  // Dynamic content logic
+  const renderMiddleForm = () => {
+    switch (currentStep) {
+      case "identity":
+        return <IdentityForm onNextStep={(data) => setData(data)} />;
+      case "shipping":
+        return (
+          <ShippingForm
+            onNext={(address) => {
+              console.log("Shipping to:", address);
+              setCurrentStep("payment"); // Move to next step
+            }}
+            onAddAddress={() => console.log("Open Add Address Modal")}
+          />
+        );
+      case "payment":
+        return <PaymentForm />;
+      case "review":
+        return <ReviewForm />;
+      default:
+        return <IdentityForm onNextStep={() => console.log("")} />;
     }
   };
 
+  const getStepConfig = () => {
+    const configs: Record<string, { btn: string; next: string }> = {
+      identity: { btn: "Proceed to Shipping", next: "shipping" },
+      shipping: { btn: "Proceed to Payment", next: "payment" },
+      payment: { btn: "Review My Order", next: "review" },
+      review: { btn: "Place Order Now", next: "complete" },
+    };
+    return configs[currentStep] || configs.identity;
+  };
+
+  const stepConfig = getStepConfig();
+
   return (
-    <div
-      style={{
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#fdc675",
-      }}
-    >
-      <h2
-        onClick={() => navigate("/cart")}
-        style={{
-          position: "absolute",
-          top: "10px",
-          left: "15px",
-          cursor: "pointer",
-          fontSize: "16px",
-        }}
-      >
-        &larr; Go Back
-      </h2>
+    <div className="checkout-page-root">
+      <Header
+        siteName={siteName}
+        onSearch={() => console.log("search")}
+        onSignInClick={() => navigate("/login")}
+        onEnterpriseSignInClick={() => navigate("/enterprise")}
+        onCartClick={() => navigate("/cart")}
+      />
+      <AuthHeader />
+      <div className="checkout-layout-grid">
+        <CheckoutSidebar
+          activeStep={currentStep}
+          onStepChange={setCurrentStep}
+        />
 
-      <div
-        style={{
-          backgroundColor: "#41bec2",
-          padding: "180px",
-          borderRadius: "10px",
-          width: "900px",
-          height: "700px",
-          textAlign: "center",
-          boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-        }}
-      >
-        <text style={{ margin: "50px", fontSize: "30px" }}>Order Summary</text>
-        <div style={{ padding: "20px" }}>
-          {cart?.order?.products.map((product: any) => (
-            <div
-              key={product._id}
-              style={{
-                border: "0",
-                borderRadius: "15px",
-                backgroundColor: "#fd9d75",
-                marginBottom: "10px",
-                padding: "10px",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <div
-                style={{ display: "flex", gap: "9px", flexDirection: "column" }}
-              >
-                <h3>{product.name}</h3>
-                <p>Price: ₹{product.price}</p>
-              </div>
-            </div>
-          ))}
+        <div className="checkout-middle-section">
+          <div className="middle-content-scroll">{renderMiddleForm()}</div>
         </div>
-        <h2 style={{ marginBottom: "20px" }}>
-          Total Price: {cart?.order?.totalPrice}{" "}
-        </h2>
 
-        <button
-          onClick={() => {
-            handleClick(cart?.order?._id);
-          }}
-          style={{
-            padding: "10px 20px",
-            fontSize: "16px",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-            backgroundColor: "#d3fda1",
-            color: "#000000",
-          }}
-        >
-          Confirm Order
-        </button>
+        <OrderSummary
+          items={productsData}
+          subtotal={1500}
+          shipping={0}
+          buttonText={stepConfig.btn}
+          tax={10}
+          onButtonClick={() => setCurrentStep(stepConfig.next)}
+        />
       </div>
     </div>
   );
-}
+};
+
+export default ConfirmCheckout;
