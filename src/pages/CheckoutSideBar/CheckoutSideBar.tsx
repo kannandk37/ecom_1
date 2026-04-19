@@ -1,5 +1,5 @@
 import React, { ReactNode, useState } from "react";
-import "./CheckoutSidebar.css";
+import "./CheckoutSideBar.css";
 import { FiUser, FiTruck, FiCreditCard, FiClipboard } from "react-icons/fi";
 
 interface CheckoutOption {
