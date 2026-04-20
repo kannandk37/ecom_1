@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axiosinstance from "../../service";
 import { useNavigate } from "react-router-dom";
 import HomeBanner from "../../assets/banner/Banner";
-import Banner from "../../../data/banner.png";
+import Banner from "../../../data/Home_Banner.png";
 import "./Home.css";
 import { CardGrid } from "../../assets/card1/Card";
 import DRY_FRUITS from "../../../data/DRY_FRUITS.png";
@@ -117,7 +117,9 @@ const Home = () => {
 
   useEffect(() => {
     fetchProducts();
-    const timer = setTimeout(() => {setLoading(false)}, 6000)
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 6000);
   }, []);
 
   const fetchProducts = async () => {
@@ -205,10 +207,9 @@ const Home = () => {
     });
   };
 
-    return (
-    <> 
-    {
-      loading ? (
+  return (
+    <>
+      {loading ? (
         <Loader text="Roasting your results..." />
       ) : (
         <div className="root-home">
@@ -273,8 +274,7 @@ const Home = () => {
             </div>
           </div>
         </div>
-      ) 
-    }
+      )}
     </>
   );
 };

@@ -13,9 +13,11 @@ import BANNNER2 from "../../data/Banner dates.png";
 import LOGO from "../../data/logo.png";
 import AuthHeader from "../assets/categories_header";
 import DashboardButton from "../assets/ui/DashBoardButton/DashBoardButton";
+import { useNavigate } from "react-router-dom";
 
 const AuthCard: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const navigate = useNavigate();
 
   const toggleAuth = () => setIsLogin(!isLogin);
 
@@ -97,7 +99,14 @@ const AuthCard: React.FC = () => {
                       <FiLock className="input-icon" />
                       <input type="password" placeholder="••••••••" />
                       {isLogin && (
-                        <span className="forgot-link">Forgot Password?</span>
+                        <span
+                          className="forgot-link"
+                          onClick={() => {
+                            //TODO: need to navigate to screen saying email sent to email
+                          }}
+                        >
+                          Forgot Password?
+                        </span>
                       )}
                     </div>
                   </div>

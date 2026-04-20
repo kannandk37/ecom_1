@@ -16,6 +16,7 @@ import type { NavItem } from "./config/navigation";
 import { NAV_OPTIONS } from "./config/navigation";
 import ProductDetails from "./pages/Product";
 import AuthCard from "./pages/Auth";
+import ResetPassword from "./pages/ResetPassword/ResetPassword";
 
 function App() {
   const renderRoutes: any = (items: NavItem[]) => {
@@ -36,7 +37,17 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/enterprise" element={<Enterprise />} />
+        <Route
+          path="/enterprise"
+          element={
+            <Enterprise
+              onForgotPassword={() => {
+                /** TODO: need to navigate to screen saying email sent*/
+              }}
+            />
+          }
+        />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         <Route element={<MainLayout />}>
           <Route path="/login" element={<AuthCard />} />

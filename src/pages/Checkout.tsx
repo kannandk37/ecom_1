@@ -13,12 +13,13 @@ import "./Checkout.css";
 import IdentityForm from "./Checkout/IdentityForm";
 import { productsData } from "./CategoryProducts/categoryProducts";
 import AddAddress from "./Address/AddAddress";
+import { FaDollarSign } from "react-icons/fa";
 
 const ConfirmCheckout = () => {
   const [currentStep, setCurrentStep] = useState<string>("identity");
   const [data, setData] = useState<any>();
   const navigate = useNavigate();
-const [isAddingAddress, setIsAddingAddress] = useState<boolean>(false);
+  const [isAddingAddress, setIsAddingAddress] = useState<boolean>(false);
 
   // Dynamic content logic
   const renderMiddleForm = () => {
@@ -28,8 +29,8 @@ const [isAddingAddress, setIsAddingAddress] = useState<boolean>(false);
       case "shipping":
         if (isAddingAddress) {
           return (
-            <AddAddress 
-              onClickBack={() => setIsAddingAddress(false)} 
+            <AddAddress
+              onClickBack={() => setIsAddingAddress(false)}
               onSubmit={() => {
                 setIsAddingAddress(false);
               }}
@@ -42,13 +43,32 @@ const [isAddingAddress, setIsAddingAddress] = useState<boolean>(false);
               console.log("Shipping to:", address);
               setCurrentStep("payment"); // Move to next step
             }}
-            onAddAddress={() => {console.log("Open Add Address Modal"); setIsAddingAddress(true)}}
+            onAddAddress={() => {
+              console.log("Open Add Address Modal");
+              setIsAddingAddress(true);
+            }}
           />
         );
       case "payment":
         return <PaymentForm />;
       case "review":
-        return <ReviewForm />;
+        return (
+          <ReviewForm
+            shippingAddress={{
+              type: "Home",
+              name: "Tester",
+              addressLine: "testing street",
+              phone: "8989892344",
+            }}
+            paymentMethod={{
+              name: "Cash on Delivery",
+              icon: <FaDollarSign />,
+              description: "Pay on door step",
+            }}
+            items={productsData}
+            onPlaceOrder={() => {}}
+          />
+        );
       default:
         return <IdentityForm onNextStep={() => console.log("")} />;
     }

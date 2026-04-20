@@ -1,0 +1,205 @@
+:root {
+  --color-brand-brown: #8c6d3f;
+  --color-border: #eee;
+  --color-card-bg: #fff;
+  --color-input-bg: #f8f7f4;
+}
+
+.payment-form-container {
+  width: 100%;
+  max-width: 600px;
+  font-family: var(--font-family);
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-header {
+  margin: 0px;
+  margin-bottom: 5px;
+}
+
+.step-tag {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--color-brand-brown);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.section-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin: 2px 0;
+}
+
+.payment-form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Accordion Item Styles */
+.accordion-item {
+  background-color: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.accordion-item.active {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+}
+
+.accordion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.method-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Google Pay icon specifics from image */
+.accordion-item[key="upi"] .method-icon svg {
+  color: #fff;
+  background-color: #000;
+  border-radius: 4px;
+  padding: 3px;
+}
+
+.method-label {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #333;
+  transition:
+    font-size 0.3s ease-in-out,
+    color 0.3s ease-in-out;
+}
+
+.accordion-item.active .method-label {
+  color: #333 !important;
+  font-weight: 800;
+  font-size: 1.5rem;
+}
+
+.chevron-icon {
+  color: #aaa;
+  transition: transform 0.3s ease;
+}
+
+.chevron-icon.open {
+  transform: rotate(180deg);
+}
+
+/* Accordion Content styles */
+.accordion-content {
+  max-height: 0;
+  transition: max-height 0.4s ease-out;
+  overflow: hidden;
+}
+
+.accordion-content.open {
+  max-height: 500px; /* Adjust based on content height */
+  transition: max-height 0.4s ease-in;
+}
+
+/* Method specific content padding when open */
+.upi-content {
+  padding: 30px;
+}
+
+.cod-content {
+  padding: 30px;
+}
+
+.card-form {
+  padding: 20px 20px 20px 20px;
+}
+
+/* Google Pay QR Code styles */
+.upi-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.qr-code-image {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.upi-instruction {
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+.upi-instruction p {
+  margin-bottom: 15px;
+}
+
+/* COD content styles */
+.cod-content {
+  text-align: left;
+}
+
+.helper-text {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 30px;
+}
+
+/* Card Form styles */
+.card-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  gap: 15px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #333;
+  letter-spacing: 0.05em;
+}
+
+/* Reusable privacy note under button */
+.privacy-note {
+  margin-top: 5px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
