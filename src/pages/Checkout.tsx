@@ -12,11 +12,13 @@ import Header from "./Header/Header";
 import "./Checkout.css";
 import IdentityForm from "./Checkout/IdentityForm";
 import { productsData } from "./CategoryProducts/categoryProducts";
+import AddAddress from "./Address/AddAddress";
 
 const ConfirmCheckout = () => {
   const [currentStep, setCurrentStep] = useState<string>("identity");
   const [data, setData] = useState<any>();
   const navigate = useNavigate();
+const [isAddingAddress, setIsAddingAddress] = useState<boolean>(false);
 
   // Dynamic content logic
   const renderMiddleForm = () => {
@@ -24,13 +26,23 @@ const ConfirmCheckout = () => {
       case "identity":
         return <IdentityForm onNextStep={(data) => setData(data)} />;
       case "shipping":
+        if (isAddingAddress) {
+          return (
+            <AddAddress 
+              onClickBack={() => setIsAddingAddress(false)} 
+              onSubmit={() => {
+                setIsAddingAddress(false);
+              }}
+            />
+          );
+        }
         return (
           <ShippingForm
             onNext={(address) => {
               console.log("Shipping to:", address);
               setCurrentStep("payment"); // Move to next step
             }}
-            onAddAddress={() => console.log("Open Add Address Modal")}
+            onAddAddress={() => {console.log("Open Add Address Modal"); setIsAddingAddress(true)}}
           />
         );
       case "payment":
