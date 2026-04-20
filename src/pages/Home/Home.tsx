@@ -9,6 +9,7 @@ import DRY_FRUITS from "../../../data/DRY_FRUITS.png";
 import NUTS from "../../../data/NUTS.png";
 import DATES from "../../../data/DATES.png";
 import FRESH_JUICE from "../../../data/FRESH_JUICE.png";
+import Loader from "../../assets/loader/Loader";
 
 // import ProductCard from "../../assets/card2/ProductCard";
 // import ProductImageGallery from "../../assets/ProductImageGallery/ProductImageGallery";
@@ -112,6 +113,7 @@ const Home = () => {
   const [cart, setCart] = useState<any>();
   const [products, setProducts] = useState<any>([]);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     fetchProducts();
@@ -202,69 +204,77 @@ const Home = () => {
     });
   };
 
-  return (
-    <div className="root-home">
-      <div className="scroll-viewport">
-        <div className="home-container">
-          <HomeBanner
-            image={Banner}
-            width="100%"
-            height="400px"
-            borderRadius="20px"
-            fontSize2="22px"
-            buttonText="Shop Now"
-            buttonVariant="primary"
-            onButtonClick={() => console.log("asda")}
-            showButton={true}
-            showTitle1={true}
-            showTitle2={true}
-            title1="PREMIUM QUALITY, NATURALLY DELICIOUS"
-            title2="Discover our curated collection of dry fruits, nuts, dates, and healthy snacks."
-          />
-          <div className="categoreis-container">
-            <h2 className="categories-title">Categories</h2>
-            <div className="categories-cards-container">
+    return (
+    <> 
+    {
+      loading ? (
+        <Loader text="Roasting your results..." />
+      ) : (
+        <div className="root-home">
+          <div className="scroll-viewport">
+            <div className="home-container">
+              <HomeBanner
+                image={Banner}
+                width="100%"
+                height="400px"
+                borderRadius="20px"
+                fontSize2="22px"
+                buttonText="Shop Now"
+                buttonVariant="primary"
+                onButtonClick={() => console.log("asda")}
+                showButton={true}
+                showTitle1={true}
+                showTitle2={true}
+                title1="PREMIUM QUALITY, NATURALLY DELICIOUS"
+                title2="Discover our curated collection of dry fruits, nuts, dates, and healthy snacks."
+              />
+              <div className="categoreis-container">
+                <h2 className="categories-title">Categories</h2>
+                <div className="categories-cards-container">
+                  <CardGrid
+                    cards={myCards}
+                    cardsPerColumn={1}
+                    //  height="320px"
+                    onCardClick={handleCardClick}
+                  />
+                  {/* <ProductCard /> */}
+                </div>
+              </div>
+              {/* <ProductImageGallery images={images} height={"650px"} width={"650px"} /> */}
+              {/* <ProductCarousel /> */}
+              {/* <Carousel
+              title="Our Best Sellers"
+              data={productsTestData}
+              renderItem={(item: any) => <ProductCardGridSingle product={item} />}
+              {data.map((item: any, index: any) => (
+              <ProductCardGridSingle product={item} />
+              ))}
+              <Card
+                key={index}
+                name={item.name}
+                price={item.price}
+                image={item.image}
+              />
               <CardGrid
                 cards={myCards}
                 cardsPerColumn={1}
-                //  height="320px"
-                onCardClick={handleCardClick}
+                height="320px"
               />
-              {/* <ProductCard /> */}
+            /> */}
+              {/* <ProductCardGrid products={productsTestData} /> */}
+              {/* <ReviewCard reviews={mockReviews} /> */}
+              {/* <CustomerRievew /> */}
+              {/* <Carousel
+              title="Our Best Sellers"
+              data={productsTestData}
+              renderItem={(item: any) => <ProductCardGridSingle product={item} />}
+            /> */}
             </div>
           </div>
-          {/* <ProductImageGallery images={images} height={"650px"} width={"650px"} /> */}
-          {/* <ProductCarousel /> */}
-          {/* <Carousel
-          title="Our Best Sellers"
-          data={productsTestData}
-          renderItem={(item: any) => <ProductCardGridSingle product={item} />}
-          {data.map((item: any, index: any) => (
-           <ProductCardGridSingle product={item} />
-          ))}
-          <Card
-            key={index}
-            name={item.name}
-            price={item.price}
-            image={item.image}
-          />
-          <CardGrid
-            cards={myCards}
-            cardsPerColumn={1}
-             height="320px"
-          />
-        /> */}
-          {/* <ProductCardGrid products={productsTestData} /> */}
-          {/* <ReviewCard reviews={mockReviews} /> */}
-          {/* <CustomerRievew /> */}
-          {/* <Carousel
-          title="Our Best Sellers"
-          data={productsTestData}
-          renderItem={(item: any) => <ProductCardGridSingle product={item} />}
-        /> */}
         </div>
-      </div>
-    </div>
+      ) 
+    }
+    </>
   );
 };
 
