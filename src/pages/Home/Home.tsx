@@ -117,6 +117,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchProducts();
+    const timer = setTimeout(() => {setLoading(false)}, 6000)
   }, []);
 
   const fetchProducts = async () => {
