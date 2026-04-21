@@ -1,10 +1,10 @@
 import React, { useRef } from "react";
-import OrderReceipt from "./OrderReceipt";
-import "./OrderReceipt.css"; // Importing the main styles
-import downloadReceiptAsPdf from "../../utils/utils"; // Assuming a separate utility file
-import DRY_FRUITS from "../../../data/DRY_FRUITS.png";
-import DATES from "../../../data/DATES.png";
-import NUTS from "../../../data/NUTS.png";
+import OrderReceipt from "../OrderReceipt";
+import "../OrderReceipt.css"; // Importing the main styles
+import downloadReceiptAsPdf from "../../../utils/utils"; // Assuming a separate utility file
+import DRY_FRUITS from "../../../../data/DRY_FRUITS.png";
+import DATES from "../../../../data/DATES.png";
+import NUTS from "../../../../data/NUTS.png";
 
 // Mock Button Components to satisfy requirements
 const Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({

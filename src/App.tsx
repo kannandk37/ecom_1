@@ -21,7 +21,7 @@ import OrderStatusScreen from "./pages/OrderStatusScreen/OrderStatusScreen";
 import DRY_FRUITS from "../data/DRY_FRUITS.png";
 import NUTS from "../data/NUTS.png";
 import OrderReceipt from "./pages/OrderReceipt/OrderReceipt";
-import DemoReceiptScreen from "./pages/OrderReceipt/DemoReceiptScreen";
+import DemoReceiptScreen from "./pages/OrderReceipt/DemoReceiptScreen/DemoReceiptScreen";
 
 function App() {
   const renderRoutes: any = (items: NavItem[]) => {
