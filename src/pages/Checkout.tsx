@@ -112,7 +112,11 @@ const ConfirmCheckout = () => {
           shipping={0}
           buttonText={stepConfig.btn}
           tax={10}
-          onButtonClick={() => setCurrentStep(stepConfig.next)}
+          onButtonClick={() => {
+            stepConfig?.btn == "Place Order Now"
+              ? navigate("/order-status")
+              : setCurrentStep(stepConfig.next);
+          }}
         />
       </div>
     </div>

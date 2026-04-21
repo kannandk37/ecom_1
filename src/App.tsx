@@ -17,6 +17,11 @@ import { NAV_OPTIONS } from "./config/navigation";
 import ProductDetails from "./pages/Product";
 import AuthCard from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword/ResetPassword";
+import OrderStatusScreen from "./pages/OrderStatusScreen/OrderStatusScreen";
+import DRY_FRUITS from "../data/DRY_FRUITS.png";
+import NUTS from "../data/NUTS.png";
+import OrderReceipt from "./pages/OrderReceipt/OrderReceipt";
+import DemoReceiptScreen from "./pages/OrderReceipt/DemoReceiptScreen";
 
 function App() {
   const renderRoutes: any = (items: NavItem[]) => {
@@ -48,6 +53,75 @@ function App() {
           }
         />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route
+          path="/order-status"
+          element={
+            <OrderStatusScreen
+              orderData={{
+                orderNumber: "12",
+                estimatedDeliveryRange: "12",
+                items: [
+                  { thumbnailUrl: DRY_FRUITS, name: "Dry Fruits" },
+                  { thumbnailUrl: NUTS, name: "Nuts" },
+                  { thumbnailUrl: DRY_FRUITS, name: "Dry Fruits" },
+                  { thumbnailUrl: NUTS, name: "Nuts" },
+                  { thumbnailUrl: DRY_FRUITS, name: "Dry Fruits" },
+                  { thumbnailUrl: NUTS, name: "Nuts" },
+                  { thumbnailUrl: DRY_FRUITS, name: "Dry Fruits" },
+                  { thumbnailUrl: NUTS, name: "Nuts" },
+                  { thumbnailUrl: DRY_FRUITS, name: "Dry Fruits" },
+                  { thumbnailUrl: NUTS, name: "Nuts" },
+                  { thumbnailUrl: DRY_FRUITS, name: "Dry Fruits" },
+                  { thumbnailUrl: NUTS, name: "Nuts" },
+                  { thumbnailUrl: DRY_FRUITS, name: "Dry Fruits" },
+                  { thumbnailUrl: NUTS, name: "Nuts" },
+                  { thumbnailUrl: DRY_FRUITS, name: "Dry Fruits" },
+                  { thumbnailUrl: NUTS, name: "Nuts" },
+                  { thumbnailUrl: DRY_FRUITS, name: "Dry Fruits" },
+                  { thumbnailUrl: NUTS, name: "Nuts" },
+                  { thumbnailUrl: DRY_FRUITS, name: "Dry Fruits" },
+                  { thumbnailUrl: NUTS, name: "Nuts" },
+                  { thumbnailUrl: DRY_FRUITS, name: "Dry Fruits" },
+                  { thumbnailUrl: NUTS, name: "Nuts" },
+                ],
+                totalItems: 2,
+                userEmail: "tester",
+                failureReason: "testerfailed",
+              }}
+              orderStatus="success"
+            />
+          }
+        />
+
+        {/* <Route path="/receipt" element={<OrderReceipt
+          orderNumber="123"
+          date=''
+          status="success"
+          payment={{
+            method: {
+              icon: '',
+              text: ""
+            }, transactionId: ""
+          }}
+          shipping={{
+            name: '',
+            phone: "",
+            address: ['', '']
+          }}
+          items={[]}
+          pricing={{
+            subtotal: '',
+            discount: {
+              code: "",
+              value: ""
+            },
+            shippingFee: '',
+            grandTotal: ''
+          }}
+          onDownloadCopy={() => { }}
+        />} /> */}
+
+        <Route path="/receipt" element={<DemoReceiptScreen />} />
 
         <Route element={<MainLayout />}>
           <Route path="/login" element={<AuthCard />} />

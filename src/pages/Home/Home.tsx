@@ -10,6 +10,7 @@ import NUTS from "../../../data/NUTS.png";
 import DATES from "../../../data/DATES.png";
 import FRESH_JUICE from "../../../data/FRESH_JUICE.png";
 import Loader from "../../assets/loader/Loader";
+import CartItems, { CartItem } from "../../assets/cart/cartitems/cartitems";
 
 // import ProductCard from "../../assets/card2/ProductCard";
 // import ProductImageGallery from "../../assets/ProductImageGallery/ProductImageGallery";
@@ -207,6 +208,25 @@ const Home = () => {
     });
   };
 
+  const mockCartData: CartItem[] = [
+    {
+      id: "cj_001",
+      name: "Cashew",
+      description: "Fresh cashew",
+      price: "$22.50",
+      imageUrl: DRY_FRUITS,
+      quantity: 2,
+    },
+    {
+      id: "cj_001",
+      name: "Almonds",
+      description: "Roasted ALmonds",
+      price: "$18.50",
+      imageUrl: NUTS,
+      quantity: 1,
+    },
+  ];
+
   return (
     <>
       {loading ? (
@@ -223,13 +243,17 @@ const Home = () => {
                 fontSize2="22px"
                 buttonText="Shop Now"
                 buttonVariant="primary"
-                onButtonClick={() => console.log("asda")}
+                onButtonClick={() => {
+                  console.log("asda");
+                  // navigate("/order-status");
+                }}
                 showButton={true}
                 showTitle1={true}
                 showTitle2={true}
                 title1="PREMIUM QUALITY, NATURALLY DELICIOUS"
                 title2="Discover our curated collection of dry fruits, nuts, dates, and healthy snacks."
               />
+              {/* <CartItems data={mockCartData} /> */}
               <div className="categoreis-container">
                 <h2 className="categories-title">Categories</h2>
                 <div className="categories-cards-container">

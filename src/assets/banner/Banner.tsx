@@ -82,7 +82,7 @@ const HomeBanner: React.FC<HomeBannerProps> = ({
               height="44px"
               width="160px"
               fontSize="22px"
-              onClick={() => onButtonClick}
+              onClick={() => onButtonClick?.()}
             />
             // <button
             //   className={`home-banner-button ${buttonVariant}`}
