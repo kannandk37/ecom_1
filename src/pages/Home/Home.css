@@ -26,23 +26,22 @@ body {
 }
 
 .scroll-viewport::-webkit-scrollbar-track {
-  background: transparent; /* Makes it look like it's floating */
+  background: transparent;
 }
 
 .scroll-viewport::-webkit-scrollbar-thumb {
-  background: #8c6d3f;
+  background: var(--color-scroll-bar);
   border-radius: 10px;
-  /* Adding a border creates the 'inset' look if desired */
+  border: 2px solid #fdfaf5;
 }
 
 .scroll-viewport::-webkit-scrollbar-thumb:hover {
   background: #6d4906;
 }
 
-/* Firefox Support */
 .scroll-viewport {
   scrollbar-width: thin;
-  scrollbar-color: #8c6d3f transparent;
+  scrollbar-color: var(--color-scroll-bar) transparent;
 }
 
 .categories-title {

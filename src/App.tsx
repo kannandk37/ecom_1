@@ -1,27 +1,128 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home/Home";
+import Home, { productsTestData } from "./pages/Home/Home";
 import Login from "./pages/Login";
-import Cart from "./pages/Cart";
 import ConfirmCheckout from "./pages/Checkout";
 import Profile from "./pages/Profile";
 import Orders from "./pages/Order";
 import CategoryProducts, {
   productsData,
 } from "./pages/CategoryProducts/categoryProducts";
-// import Product from "./pages/Products/Products";
 import Enterprise from "./pages/index";
 import MainLayout from "./MainLayout";
 import DashboardLayout from "./assets/ui/DashBoardLayout/DashBoardLayout";
 import type { NavItem } from "./config/navigation";
 import { NAV_OPTIONS } from "./config/navigation";
-import ProductDetails from "./pages/Product";
+import ProductDetails from "./pages/Product/Product";
 import AuthCard from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import OrderStatusScreen from "./pages/OrderStatusScreen/OrderStatusScreen";
 import DRY_FRUITS from "../data/DRY_FRUITS.png";
 import NUTS from "../data/NUTS.png";
-import OrderReceipt from "./pages/OrderReceipt/OrderReceipt";
 import DemoReceiptScreen from "./pages/OrderReceipt/DemoReceiptScreen/DemoReceiptScreen";
+import CartTotalCard, {
+  CartTotalCardProps,
+} from "./pages/CartTotalCard/CardTotalCard";
+import { CartItem } from "./assets/cart/CartItems/CartItems";
+import Cart from "./pages/Cart/Card";
+
+const mockCartData: CartItem[] = [
+  {
+    id: "cj_001",
+    name: "Organic Jumbo Cashews",
+    description: "250g Pack",
+    price: "$22.50",
+    imageUrl: DRY_FRUITS,
+    quantity: 2,
+  },
+  {
+    id: "cj_002",
+    name: "Roasted Almonds - Salted",
+    description: "150g Pack",
+    price: "$18.00",
+    imageUrl: NUTS,
+    quantity: 1,
+  },
+  {
+    id: "cj_003",
+    name: "Organic Jumbo Cashews",
+    description: "250g Pack",
+    price: "$22.50",
+    imageUrl: DRY_FRUITS,
+    quantity: 2,
+  },
+  {
+    id: "cj_004",
+    name: "Roasted Almonds - Salted",
+    description: "150g Pack",
+    price: "$18.00",
+    imageUrl: NUTS,
+    quantity: 1,
+  },
+  {
+    id: "cj_005",
+    name: "Organic Jumbo Cashews",
+    description: "250g Pack",
+    price: "$22.50",
+    imageUrl: DRY_FRUITS,
+    quantity: 2,
+  },
+  {
+    id: "cj_006",
+    name: "Roasted Almonds - Salted",
+    description: "150g Pack",
+    price: "$18.00",
+    imageUrl: NUTS,
+    quantity: 1,
+  },
+  {
+    id: "cj_007",
+    name: "Organic Jumbo Cashews",
+    description: "250g Pack",
+    price: "$22.50",
+    imageUrl: DRY_FRUITS,
+    quantity: 2,
+  },
+  {
+    id: "cj_008",
+    name: "Roasted Almonds - Salted",
+    description: "150g Pack",
+    price: "$18.00",
+    imageUrl: NUTS,
+    quantity: 1,
+  },
+  {
+    id: "cj_009",
+    name: "Organic Jumbo Cashews",
+    description: "250g Pack",
+    price: "$22.50",
+    imageUrl: DRY_FRUITS,
+    quantity: 2,
+  },
+  {
+    id: "cj_010",
+    name: "Roasted Almonds - Salted",
+    description: "150g Pack",
+    price: "$18.00",
+    imageUrl: NUTS,
+    quantity: 1,
+  },
+  {
+    id: "cj_011",
+    name: "Organic Jumbo Cashews",
+    description: "250g Pack",
+    price: "$22.50",
+    imageUrl: DRY_FRUITS,
+    quantity: 2,
+  },
+  {
+    id: "cj_012",
+    name: "Roasted Almonds - Salted",
+    description: "150g Pack",
+    price: "$18.00",
+    imageUrl: NUTS,
+    quantity: 1,
+  },
+];
 
 function App() {
   const renderRoutes: any = (items: NavItem[]) => {
@@ -38,7 +139,14 @@ function App() {
       return routes;
     });
   };
-
+  const cartTotalData: CartTotalCardProps = {
+    subtotal: "$73.96",
+    shipping: "Free",
+    discountCode: "FESTIVE10", // Optional, passed as present
+    discountAmount: "-$10.00", // Optional, passed as present
+    finalTotal: "$63.96",
+    onCheckout: () => {},
+  };
   return (
     <BrowserRouter>
       <Routes>
@@ -51,6 +159,11 @@ function App() {
               }}
             />
           }
+        />
+        <Route path="/receipt" element={<DemoReceiptScreen />} />
+        <Route
+          path="/cart-total-card"
+          element={<CartTotalCard {...cartTotalData} />}
         />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route
@@ -121,8 +234,6 @@ function App() {
           onDownloadCopy={() => { }}
         />} /> */}
 
-        <Route path="/receipt" element={<DemoReceiptScreen />} />
-
         <Route element={<MainLayout />}>
           <Route path="/login" element={<AuthCard />} />
           <Route path="/" element={<Home />} />
@@ -152,7 +263,16 @@ function App() {
               />
             }
           />
-          <Route path="/cart" element={<Cart />} />
+          <Route
+            path="/cart"
+            element={
+              <Cart
+                cartTotal={cartTotalData}
+                items={mockCartData}
+                productsData={productsTestData}
+              />
+            }
+          />
           <Route path="/order" element={<Orders />} />
           <Route path="/profile" element={<Profile />} />
         </Route>

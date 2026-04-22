@@ -1,0 +1,164 @@
+/* CartTotalCard.css */
+
+/* Reusable card container, matching reference styling */
+.cart-total-card-container {
+  /* Use font-family variable as requested */
+  font-family: var(--font-family);
+  background-color: #ffffff; /* Light background */
+  border: 1px solid #ededed; /* Light card border */
+  border-radius: 12px; /* Rounded card corners */
+  padding: 24px; /* Inside padding */
+  box-sizing: border-box; /* Standard box model */
+  max-width: 400px; /* Limit maximum width */
+  width: 100%; /* Fill container width */
+}
+
+/* Header Section */
+.cart-total-header-row {
+  margin-bottom: 24px;
+}
+
+.cart-total-title {
+  font-size: 20px;
+  font-weight: 700; /* Bold title */
+  color: #2d2d2d; /* Dark grey/black text */
+  margin: 0;
+}
+
+/* Price Item List & Single Item Styling */
+.cart-price-item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* Space between price items */
+  margin-bottom: 24px;
+  border-bottom: 1px solid #ededed; /* Section divider */
+  padding-bottom: 24px;
+}
+
+.cart-price-item {
+  display: flex;
+  justify-content: space-between; /* Ends for label and value */
+  align-items: center; /* Vertically centered */
+  width: 100%;
+}
+
+.cart-price-label {
+  font-size: 16px;
+  color: #6c6c6c; /* Grey text for labels */
+}
+
+.cart-price-value {
+  font-size: 16px;
+  color: #2d2d2d; /* Dark grey/black for values */
+  font-weight: 500;
+}
+
+/* Applied Discount Section (Special Styling for applied display) */
+.applied-discount-section {
+  display: flex;
+  flex-direction: column; /* Stack details parts */
+  align-items: flex-start; /* Label on top */
+}
+
+.discount-applied-details {
+  display: flex;
+  justify-content: space-between; /* Ends for code and amount */
+  align-items: center; /* Vertically centered */
+  width: 100%;
+  margin-top: 8px; /* Space from 'Discount' label */
+}
+
+/* Styling for deconstructed FESTIVE10 code tag */
+.discount-code-tag {
+  background-color: #f1f3f1; /* Light green-grey background deconstructed from FESTIVE10 */
+  color: #2d2d2d; /* Dark text */
+  border: 1px solid #e2e4e2; /* Accent border color */
+  border-radius: 6px; /* Rounded corners for the code tag */
+  padding: 6px 10px; /* Inside padding deconstructed from reference scale */
+  font-size: 14px;
+  font-weight: 600; /* Bold for the code */
+  box-sizing: border-box;
+}
+
+.discount-amount-value {
+  font-weight: 500;
+  color: #2d2d2d; /* Standard dark text */
+}
+
+/* Special styling deconstructed from reference labels */
+.shipping-value,
+.discount-amount-value {
+  color: #6c6c6c; /* Grey for specific static values */
+}
+
+/* Final Total Section */
+.cart-final-total-section {
+  display: flex;
+  flex-direction: column; /* Stack total row and subtext */
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.final-total-row {
+  display: flex;
+  justify-content: space-between; /* Ends for final label and value */
+  align-items: center; /* Vertically centered */
+  width: 100%;
+}
+
+.cart-final-total-label {
+  font-size: 18px;
+  font-weight: 700; /* Bolder total label */
+  color: #2d2d2d;
+}
+
+/* Final total value matching reference color theme */
+.cart-final-total-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #c19a6b; /* Specific gold accent color from deconstruction details */
+}
+
+/* Subtext row with deconstructed icons and text color */
+.cart-final-subtext-row {
+  display: flex;
+  align-items: center; /* Center check and text */
+  gap: 8px; /* Space between check and text */
+}
+
+.checkmark-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: #0d4f0fb6;
+}
+
+.cart-final-subtext {
+  font-size: 14px;
+  color: #5d755d; /* Dark green text from reference subtext details */
+  margin: 0;
+  flex-grow: 1; /* Occupy remaining width */
+}
+
+/* CSS for Deconstructed Icons */
+.checkmark-icon {
+  font-style: normal;
+  display: inline-block;
+  line-height: 1;
+  color: #5d755d; /* Dark green icon from deconstruction detail */
+}
+
+.arrow-right-icon {
+  font-style: normal;
+  display: inline-block;
+  line-height: 1;
+  color: #ffffff; /* White icon from button deconstruction details */
+  font-size: 1.2em; /* scaled up arrow for correct scale */
+}
+
+/* Footer Section */
+.cart-total-footer {
+  width: 100%;
+}

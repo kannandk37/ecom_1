@@ -33,19 +33,18 @@ body {
 }
 
 .category-scroll-viewport::-webkit-scrollbar-thumb {
-  background: #8c6d3f; /* Nature's Candy Brown */
+  background: var(--color-scroll-bar);
   border-radius: 10px;
-  border: 2px solid #fdfaf5; /* Matches background to look floating */
+  border: 2px solid #fdfaf5;
 }
 
 .category-scroll-viewport::-webkit-scrollbar-thumb:hover {
-  background: #6d4906;
+  background: var(--color-scroll-bar-hover);
 }
 
-/* Firefox support */
 .category-scroll-viewport {
   scrollbar-width: thin;
-  scrollbar-color: #8c6d3f transparent;
+  scrollbar-color: var(--color-scroll-bar) transparent;
 }
 
 /* Ensure the inner container fills the viewport width */

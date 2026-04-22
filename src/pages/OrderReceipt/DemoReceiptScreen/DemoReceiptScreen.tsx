@@ -1,24 +1,18 @@
 import React, { useRef } from "react";
-import OrderReceipt from "../OrderReceipt";
-import "../OrderReceipt.css"; // Importing the main styles
-import downloadReceiptAsPdf from "../../../utils/utils"; // Assuming a separate utility file
+import "../OrderReceipt.css";
+import downloadReceiptAsPdf from "../../../utils/utils";
 import DRY_FRUITS from "../../../../data/DRY_FRUITS.png";
 import DATES from "../../../../data/DATES.png";
 import NUTS from "../../../../data/NUTS.png";
-
-// Mock Button Components to satisfy requirements
-const Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
-  children,
-  ...props
-}) => (
-  <button className="generic-button" {...props}>
-    {children}
-  </button>
-);
+import { FaArrowLeftLong } from "react-icons/fa6";
+import OrderReceipt from "../OrderReceipt";
+import Button from "../../../assets/button/Button";
+import { useNavigate } from "react-router-dom";
 
 const DemoReceiptScreen: React.FC = () => {
   // Ref to target the receipt paper for download
   const receiptRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   // Mock data to match the image
   const receiptData = {
@@ -88,9 +82,14 @@ const DemoReceiptScreen: React.FC = () => {
     <div className="receipt-screen-container">
       {/* Back Button outside the receipt paper */}
       <div className="screen-header">
-        <Button onClick={() => alert("Going back!")}>
-          <span className="button-arrow">←</span> Back
-        </Button>
+        <Button
+          disabled={false}
+          name={"Back"}
+          icon={<FaArrowLeftLong />}
+          onClick={() => navigate("/")}
+          fontSize={"15px"}
+        />
+        <span className="button-arrow"></span>{" "}
       </div>
 
       {/* The reusable component, wrapped in a div with a ref for download */}

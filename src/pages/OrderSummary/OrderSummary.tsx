@@ -1,5 +1,6 @@
 import React from "react";
 import "./OrderSummary.css";
+import DashboardButton from "../../assets/ui/DashBoardButton/DashBoardButton";
 
 interface OrderSummaryProps {
   items: any[];
@@ -63,9 +64,10 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
           <span>₹{total}</span>
         </div>
 
-        <button className="summary-action-btn" onClick={onButtonClick}>
+        <DashboardButton name={buttonText} onClick={onButtonClick} />
+        {/* <button className="summary-action-btn" onClick={onButtonClick}>
           {buttonText}
-        </button>
+        </button> */}
       </div>
     </div>
   );

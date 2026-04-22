@@ -27,7 +27,7 @@ export interface ProductCardProps {
 export const ProductCardGridSingle: React.FC<ProductCardProps> = ({
   product,
   width = "240px",
-  height = "100px",
+  height = "180px",
   onClick,
 }) => {
   const cardStyle: React.CSSProperties = {

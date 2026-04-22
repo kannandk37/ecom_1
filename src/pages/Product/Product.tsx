@@ -204,16 +204,15 @@
 // export default ProductDetail;
 
 import React, { useEffect, useState } from "react";
-import "./index.css";
+import "./Product.css";
 import { FiMinus, FiPlus, FiHeart, FiShoppingCart } from "react-icons/fi";
-// Assuming your components are in these paths
 import ProductImageGallery from "../../assets/ProductImageGallery/ProductImageGallery";
 import ProductCardGrid from "../../assets/productCardGrid/ProductCardGrid";
 import Button from "../../assets/button/Button";
 import CustomerRievew from "../CustomerReview/CustomerRievew";
 import { productsData } from "../CategoryProducts/categoryProducts";
 import type { Product } from "../../assets/card2/ProductCard";
-import { FaHeart } from "react-icons/fa6";
+import { FaHeart, FaRegHeart } from "react-icons/fa6";
 import { StarRating } from "../../assets/review/Review";
 import { useNavigate } from "react-router-dom";
 
@@ -235,18 +234,11 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
       {product && (
         <div className="product-page-root">
           <div className="product-scroll-viewport">
-            <div
-              className="product-page"
-              // style={{ marginTop: "75px", marginBottom: "15px" }}
-            >
+            <div className="product-page">
               <div className="product-main-section">
-                {/* <div className="product-visuals"> */}
                 <ProductImageGallery images={product?.images} />
-                {/* </div> */}
 
-                {/* RIGHT: PRODUCT INFO */}
                 <div className="product-info">
-                  {/* BREADCRUMBS */}
                   <div className="breadcrumbs">
                     <h2>Home</h2>
                     <h2>{">"}</h2>
@@ -290,7 +282,6 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
                     ))}
                   </ul>
 
-                  {/* QUANTITY & ACTIONS */}
                   <div className="purchase-actions">
                     <h2 style={{ fontWidth: "bold" }}>Quantity:</h2>
                     <div className="quantity-selector">
@@ -311,28 +302,27 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
                       disabled={false}
                       onClick={() => {
                         console.log("Added to cart");
-                        navigate("/checkout");
+                        navigate("/cart");
                       }}
                     />
                     <Button
                       name="Add to Wishlist"
-                      icon={product?.isFav ? <FaHeart /> : <FiHeart />}
+                      icon={product?.isFav ? <FaRegHeart /> : <FaHeart />}
                       variant={"secondary"}
                       disabled={false}
                       onClick={() => {
-                        product.isFav = product?.isFav ? false : true;
-                        console.log("Added to wishlist");
+                        product.isFav = !product.isFav;
+                        setProduct(product);
+                        console.log("Added to wishlist", product);
                       }}
                     />
                   </div>
 
-                  {/* DESCRIPTION */}
                   <div className="description-section">
                     <h3>Product Description</h3>
                     <p>{product.description}</p>
                   </div>
 
-                  {/* SPECIFICATIONS GRID */}
                   <div className="specs-grid">
                     {product?.specs?.map((spec: any, i: number) => (
                       <div key={i} className="spec-card">
@@ -344,7 +334,6 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
                 </div>
               </div>
 
-              {/* FOOTER COMPONENTS */}
               <div className="related-section">
                 <h2 className="section-title">You May Also Like</h2>
                 {/* Using your existing component */}

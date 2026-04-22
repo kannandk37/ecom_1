@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactNode } from "react";
 import axiosinstance from "../../service";
 import { useNavigate } from "react-router-dom";
 import HomeBanner from "../../assets/banner/Banner";
@@ -10,14 +10,15 @@ import NUTS from "../../../data/NUTS.png";
 import DATES from "../../../data/DATES.png";
 import FRESH_JUICE from "../../../data/FRESH_JUICE.png";
 import Loader from "../../assets/loader/Loader";
-import CartItems, { CartItem } from "../../assets/cart/cartitems/cartitems";
+import CartItems, { CartItem } from "../../assets/cart/CartItems/CartItems";
 
 // import ProductCard from "../../assets/card2/ProductCard";
 // import ProductImageGallery from "../../assets/ProductImageGallery/ProductImageGallery";
 // import { Carousel } from "../../assets/CarouselTest/CarouselTest";
 // import ReviewCard from "../../assets/reviewCard/ReviewCard";
 // import ProductCardGrid from "../../assets/productCardGrid/ProductCardGrid";
-// import ProductCardGridSingle from "../../assets/ProductCardGridSingle/ProductCardGridSingle";
+import ProductCardGridSingle from "../../assets/ProductCardGridSingle/ProductCardGridSingle";
+import { Carousel } from "../../assets/CarouselTest/CarouselTest";
 // import CustomerRievew from "../CustomerReview/CustomerRievew";
 
 interface CardItem {
@@ -26,24 +27,28 @@ interface CardItem {
   title: string;
 }
 
-// const productsTestData: any = [
-//   { image: DRY_FRUITS, name: "Almond1", price: 10 },
-//   { image: NUTS, name: "Cashew2", price: 12 },
-//   { image: DATES, name: "Walnut3", price: 14 },
-//   { image: DRY_FRUITS, name: "Almond4", price: 10 },
-//   { image: NUTS, name: "Cashew5", price: 12 },
-//   { image: DATES, name: "Walnut6", price: 14 },
-//   { image: DRY_FRUITS, name: "Almond7", price: 10 },
-//   { image: NUTS, name: "Cashew8", price: 12 },
-//   { image: DATES, name: "Walnut9", price: 14 },
-//   { image: DRY_FRUITS, name: "Almond90", price: 10 },
-//   { image: NUTS, name: "Cashew11", price: 12 },
-//   { image: DATES, name: "Walnut12", price: 14 },
-//   { image: DATES, name: "Walnut92", price: 14 },
-//   { image: DRY_FRUITS, name: "Almond93", price: 10 },
-//   { image: NUTS, name: "Cashew13", price: 12 },
-//   { image: DATES, name: "Walnut14", price: 14 },
-// ];
+export const productsTestData: {
+  image: ReactNode;
+  name: string;
+  price: number;
+}[] = [
+  { image: DRY_FRUITS, name: "Almond1", price: 10 },
+  { image: NUTS, name: "Cashew2", price: 12 },
+  { image: DATES, name: "Walnut3", price: 14 },
+  { image: DRY_FRUITS, name: "Almond4", price: 10 },
+  { image: NUTS, name: "Cashew5", price: 12 },
+  { image: DATES, name: "Walnut6", price: 14 },
+  { image: DRY_FRUITS, name: "Almond7", price: 10 },
+  { image: NUTS, name: "Cashew8", price: 12 },
+  { image: DATES, name: "Walnut9", price: 14 },
+  { image: DRY_FRUITS, name: "Almond90", price: 10 },
+  { image: NUTS, name: "Cashew11", price: 12 },
+  { image: DATES, name: "Walnut12", price: 14 },
+  { image: DATES, name: "Walnut92", price: 14 },
+  { image: DRY_FRUITS, name: "Almond93", price: 10 },
+  { image: NUTS, name: "Cashew13", price: 12 },
+  { image: DATES, name: "Walnut14", price: 14 },
+];
 
 const myCards: CardItem[] = [
   {
@@ -120,7 +125,7 @@ const Home = () => {
     fetchProducts();
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 6000);
+    }, 1500);
   }, []);
 
   const fetchProducts = async () => {
@@ -208,24 +213,16 @@ const Home = () => {
     });
   };
 
-  const mockCartData: CartItem[] = [
-    {
-      id: "cj_001",
-      name: "Cashew",
-      description: "Fresh cashew",
-      price: "$22.50",
-      imageUrl: DRY_FRUITS,
-      quantity: 2,
-    },
-    {
-      id: "cj_001",
-      name: "Almonds",
-      description: "Roasted ALmonds",
-      price: "$18.50",
-      imageUrl: NUTS,
-      quantity: 1,
-    },
-  ];
+  const handleScrollDown = () => {
+    const scrollContainer =
+      document.querySelector(".scroll-viewport") || window;
+
+    scrollContainer.scrollBy({
+      top: 400,
+      left: 0,
+      behavior: "smooth",
+    });
+  };
 
   return (
     <>
@@ -243,17 +240,13 @@ const Home = () => {
                 fontSize2="22px"
                 buttonText="Shop Now"
                 buttonVariant="primary"
-                onButtonClick={() => {
-                  console.log("asda");
-                  // navigate("/order-status");
-                }}
+                onButtonClick={handleScrollDown}
                 showButton={true}
                 showTitle1={true}
                 showTitle2={true}
                 title1="PREMIUM QUALITY, NATURALLY DELICIOUS"
                 title2="Discover our curated collection of dry fruits, nuts, dates, and healthy snacks."
               />
-              {/* <CartItems data={mockCartData} /> */}
               <div className="categoreis-container">
                 <h2 className="categories-title">Categories</h2>
                 <div className="categories-cards-container">
@@ -291,8 +284,8 @@ const Home = () => {
               {/* <ReviewCard reviews={mockReviews} /> */}
               {/* <CustomerRievew /> */}
               {/* <Carousel
-              title="Our Best Sellers"
-              data={productsTestData}
+                title="Our Best Sellers"
+                data={productsTestData}
               renderItem={(item: any) => <ProductCardGridSingle product={item} />}
             /> */}
             </div>

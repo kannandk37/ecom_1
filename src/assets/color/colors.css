@@ -17,5 +17,8 @@
   --color-button-disable-background: #e0e0e0;
   --color-button-disable: #444343;
 
+  --color-scroll-bar: #8c6d3f;
+  --color-scroll-bar-hover: #6d4906;
+
   --font-family: "Fredoka", sans-serif;
 }

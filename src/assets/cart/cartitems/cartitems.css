@@ -1,167 +1,191 @@
-/* CartItems.css */
-
-/* The main container for the entire cart items list, which defaults to parent width */
-.cart-items-main-container {
-  /* Use font-family variable as requested */
-  font-family: var(--font-family);
-  background-color: var(--color-bg); /* Light background */
-  border: 1px solid #ededed; /* Light card border */
-  border-radius: 12px; /* Rounded card corners */
-  padding: 16px; /* Inside padding */
-  box-sizing: border-box; /* Standard box model */
-  overflow-y: auto; /* Allow vertical scroll for list spills */
-  display: flex; /* List items stacked vertically */
+.cart-items-container {
+  display: flex;
   flex-direction: column;
-  gap: 16px; /* Space between items in the list */
+  font-family: var(--font-family);
+  background-color: #ffffff;
+  border-radius: 16px;
+  /* Optional padding if you want it to look like a floating card */
+  /* padding: 20px; */
 }
 
-/* Individual card styling for a single cart item entry */
-.cart-items-item-card {
-  display: flex; /* Horizontal layout for image and details */
-  align-items: flex-start; /* Contents aligned to top */
-  width: 100%;
-  box-sizing: border-box;
-  background-color: #fff; /* Light background */
-  padding: 10px;
+/* CUSTOM SCROLLBAR (Applies if a strict height prop is passed) */
+.cart-items-container::-webkit-scrollbar {
+  width: 6px;
+}
+.cart-items-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+.cart-items-container::-webkit-scrollbar-thumb {
+  background: #e5e5e1;
+  border-radius: 10px;
+}
+.cart-items-container::-webkit-scrollbar-thumb:hover {
+  background: #8c6d3f;
 }
 
-/* Specific styling to match the image-in-a-dark-box theme */
-.cart-items-image-column {
-  margin-right: 16px; /* Space to details */
+/* INDIVIDUAL ITEM CARD */
+.cart-item-card {
+  display: flex;
+  gap: 20px;
+  padding: 24px;
+  transition: background-color 0.2s ease;
 }
 
-.cart-items-image-block {
-  width: 80px;
-  height: 80px;
-  background-color: #000; /* Dark background as in the image cluster */
-  border-radius: 8px; /* Rounded corners */
+/* Add border to all items except the last one */
+.cart-item-card.border-bottom {
+  border-bottom: 1px solid #eee;
+}
+
+/* IMAGE STYLING */
+.cart-item-image-wrapper {
+  flex-shrink: 0;
+}
+
+.cart-item-image {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px;
+  background-color: #f8f7f4;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+/* CONTENT STYLING */
+.cart-item-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cart-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.title-desc {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cart-item-name {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.cart-item-desc {
+  font-size: 0.85rem;
+  color: #888;
+  line-height: 1.4;
+  margin: 0;
+  max-width: 400px; /* Prevents description from running too long */
+}
+
+.cart-item-price {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  white-space: nowrap;
+}
+
+/* ACTIONS ROW */
+.cart-item-actions-row {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 8px; /* Inside padding */
-  box-sizing: border-box;
+  gap: 30px;
+  margin-top: 15px;
 }
 
-.cart-items-item-image {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain; /* Fit cashew cluster within */
-}
-
-/* Details column */
-.cart-items-details-column {
-  flex-grow: 1; /* Occupy remaining width */
+.text-action-buttons {
   display: flex;
-  flex-direction: column; /* Stack details parts */
-}
-
-/* Upper row: Name and Price group */
-.cart-items-upper-details-row {
-  display: flex;
-  justify-content: space-between; /* Ends for name and price */
-  align-items: baseline; /* Align by text baseline */
-  margin-bottom: 8px;
-}
-
-.cart-items-text-group {
-  flex-grow: 1;
-}
-
-.cart-items-item-name {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600; /* Bold for name */
-  color: #2d2d2d; /* Dark text */
-}
-
-.cart-items-item-description {
-  margin: 0;
-  font-size: 14px;
-  color: #6c6c6c; /* Gray for description */
-}
-
-.cart-items-price-group {
-  margin-left: 16px;
-  text-align: right;
-}
-
-.cart-items-item-price {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 700; /* Bolder for price */
-  color: #c19a6b; /* Specific gold accent color for price */
-}
-
-/* Lower row: Quantity and Actions group */
-.cart-items-lower-details-row {
-  display: flex;
-  align-items: center; /* Vertically centered contents */
-  margin-top: 8px;
-}
-
-/* Standard dummy styling for integration purposes */
-.cart-items-quantity-group {
-  margin-right: 24px;
-}
-
-/* (Dummy QuantitySelector styles start) */
-.cart-items-dummy-quantity-selector {
-  display: inline-flex;
   align-items: center;
-  border: 1px solid #d6ccbf; /* Accent border color */
-  border-radius: 6px;
-  overflow: hidden;
-  background-color: #fff;
+  gap: 15px;
 }
 
-.cart-items-dummy-quantity-selector button {
+.action-divider {
+  width: 1px;
+  height: 14px;
+  background-color: #ddd;
+}
+
+/* TEXT BUTTONS (Save & Remove) */
+.text-btn {
   background: none;
   border: none;
-  color: #64463c; /* Specific dark icon/link color */
-  font-size: 16px;
-  padding: 8px 12px;
-  cursor: pointer;
-}
-
-.cart-items-dummy-quantity-selector button:hover {
-  background-color: #fcf6ef;
-}
-
-.cart-items-dummy-quantity-display {
-  display: inline-block;
-  min-width: 20px;
-  text-align: center;
-  font-size: 16px;
-  color: #64463c;
-}
-/* (Dummy QuantitySelector styles end) */
-
-/* Actions group for links */
-.cart-items-actions-group {
-  display: flex;
-  gap: 16px;
-}
-
-/* Unified styling for action buttons Remove/Save */
-.cart-items-action-button {
-  background: none;
-  border: none;
-  color: #64463c; /* Accent text/icon color */
-  font-size: 14px;
-  padding: 0;
-  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 4px; /* Space to icon */
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.2s ease;
+  font-family: var(--font-family);
 }
 
-.cart-items-action-button:hover {
-  text-decoration: underline; /* Standard hover state for links */
+.text-btn:hover {
+  color: #1a1a1a;
 }
 
-/* Icon specific alignment if needed */
-.cart-items-action-icon {
-  font-style: normal;
-  display: flex;
-  align-items: center;
+/* HEART ANIMATION & COLOR */
+.heart-icon {
+  font-size: 1rem;
+  transition:
+    transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    color 0.2s;
+}
+
+.text-btn.save-btn:hover .heart-icon.outline {
+  color: #8c6d3f;
+}
+
+.text-btn.save-btn.saved {
+  color: #8c6d3f; /* Brand brown text when saved */
+}
+
+.heart-icon.filled {
+  color: #8c6d3f; /* Brand brown filled heart */
+  animation: heartPop 0.3s ease-out forwards;
+}
+
+@keyframes heartPop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* TRASH HOVER */
+.text-btn.remove-btn:hover {
+  color: #d93025; /* Subtle red on hover for delete actions */
+}
+
+/* RESPONSIVENESS */
+@media (max-width: 600px) {
+  .cart-item-card {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .cart-item-image {
+    width: 100%;
+    height: 160px;
+  }
+
+  .cart-item-actions-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
 }

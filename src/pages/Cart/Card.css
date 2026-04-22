@@ -1,0 +1,194 @@
+body {
+  margin: 0;
+}
+
+.cart-page-root {
+  width: 85%;
+  max-width: 100%; /* Adjust based on your container max-width */
+  margin: 0 auto;
+  padding: 20px 20px;
+  font-family: var(--font-family);
+  color: #1a1a1a;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.cart-fullscreen-wrapper {
+  width: 100vw;
+  margin-top: 70px;
+  height: calc(100vh - 118px);
+  overflow-y: auto; /* Triggers the custom internal scrollbar */
+  overflow-x: hidden;
+}
+
+.cart-fullscreen-wrapper::-webkit-scrollbar {
+  width: 8px;
+}
+
+.cart-fullscreen-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.cart-fullscreen-wrapper::-webkit-scrollbar-thumb {
+  background: var(--color-scroll-bar);
+  border-radius: 10px;
+  border: 2px solid #fdfaf5;
+}
+
+.cart-fullscreen-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #6d4906;
+}
+
+.cart-fullscreen-wrapper {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-scroll-bar) transparent;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* TOP NAVIGATION */
+.cart-top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.breadcrumbs {
+  font-size: 1.5rem;
+  color: #888;
+}
+
+.home:hover,
+.current:hover {
+  text-decoration: underline;
+}
+
+.breadcrumbs .current {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+.continue-shopping-btn {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #8c6d3f; /* Brand brown */
+  cursor: pointer;
+  transition: opacity 0.2s;
+  padding: 0;
+}
+
+.continue-shopping-btn:hover {
+  opacity: 0.8;
+}
+
+/* HEADER */
+.cart-header-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.cart-page-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin: 0;
+  color: #1a1a1a;
+}
+
+.cart-item-count {
+  background-color: #eee;
+  color: #555;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+/* MAIN TWO-COLUMN LAYOUT */
+.cart-main-layout {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  margin-bottom: 60px;
+}
+
+.cart-items-section {
+  flex: 1; /* Takes up remaining space (approx 65-70%) */
+  background: #fff;
+  border-radius: 16px;
+  /* Optional: Adds a subtle border around the items list area */
+  /* border: 1px solid #f0f0ed; */
+}
+
+.cart-summary-section {
+  width: 380px; /* Fixed width for the summary card */
+  flex-shrink: 0; /* Prevents the card from shrinking */
+  position: sticky;
+  top: 100px; /* Makes the summary card stick while scrolling items */
+}
+
+.empty-cart-message {
+  padding: 60px 20px;
+  text-align: center;
+  color: #888;
+  font-size: 1.1rem;
+  background: #fdfaf5;
+  border-radius: 12px;
+  border: 1px dashed #ddd;
+}
+
+/* RECOMMENDATIONS SECTION */
+.cart-recommendations-section {
+  display: flex;
+  flex-direction: column;
+  gap: 60px; /* Space between the two carousels */
+  margin-top: 40px;
+  border-top: 1px solid #eee;
+  padding-top: 60px;
+  margin-bottom: 50px;
+}
+
+.carousel-wrapper {
+  width: 100%;
+}
+
+/* RESPONSIVENESS */
+@media (max-width: 1024px) {
+  .cart-main-layout {
+    gap: 30px;
+  }
+  .cart-summary-section {
+    width: 320px;
+  }
+}
+
+@media (max-width: 800px) {
+  .cart-main-layout {
+    flex-direction: column;
+  }
+
+  .cart-summary-section {
+    width: 100%;
+    position: static; /* Disable sticky on mobile */
+  }
+
+  .cart-top-nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+}
