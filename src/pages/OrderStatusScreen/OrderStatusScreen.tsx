@@ -90,11 +90,11 @@ const OrderStatusScreen: React.FC<OrderStatusScreenProps> = ({
               <div className="item-section__header">
                 <h3>Curated Items ({totalItems})</h3>
                 <a
-                  href="/receipt"
                   className="item-section__receipt-link"
-                  onClick={() => {
-                    navigate("/receipt");
-                  }}
+                    onClick={(e) => {
+                      e.preventDefault(); // 👈 this is what was missing
+                      navigate('/receipt');
+                    }}
                 >
                   View Receipt
                 </a>
