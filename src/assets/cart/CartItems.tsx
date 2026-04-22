@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FiTrash2 } from "react-icons/fi";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import QuantitySelector from "../../quantitySelector/QuantitySelector";
+import QuantitySelector from "../quantitySelector/QuantitySelector";
 import "./CartItems.css";
 
 export type CartItem = {

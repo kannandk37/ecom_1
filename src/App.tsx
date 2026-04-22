@@ -22,7 +22,7 @@ import DemoReceiptScreen from "./pages/OrderReceipt/DemoReceiptScreen/DemoReceip
 import CartTotalCard, {
   CartTotalCardProps,
 } from "./pages/CartTotalCard/CardTotalCard";
-import { CartItem } from "./assets/cart/cartitems/CartItems";
+import { CartItem } from "./assets/cart/CartItems";
 import Cart from "./pages/Cart/Card";
 
 const mockCartData: CartItem[] = [
