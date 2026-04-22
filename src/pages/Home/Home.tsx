@@ -10,17 +10,6 @@ import NUTS from "../../../data/NUTS.png";
 import DATES from "../../../data/DATES.png";
 import FRESH_JUICE from "../../../data/FRESH_JUICE.png";
 import Loader from "../../assets/loader/Loader";
-import CartItems, { CartItem } from "../../assets/cart/CartItems/CartItems";
-
-// import ProductCard from "../../assets/card2/ProductCard";
-// import ProductImageGallery from "../../assets/ProductImageGallery/ProductImageGallery";
-// import { Carousel } from "../../assets/CarouselTest/CarouselTest";
-// import ReviewCard from "../../assets/reviewCard/ReviewCard";
-// import ProductCardGrid from "../../assets/productCardGrid/ProductCardGrid";
-import ProductCardGridSingle from "../../assets/ProductCardGridSingle/ProductCardGridSingle";
-import { Carousel } from "../../assets/CarouselTest/CarouselTest";
-// import CustomerRievew from "../CustomerReview/CustomerRievew";
-
 interface CardItem {
   id: Number;
   image: string;
