@@ -1,6 +1,5 @@
 import React from "react";
 import { FiArrowLeft } from "react-icons/fi";
-import CartItems, { CartItem } from "../../assets/cart/CartItems/CartItems";
 import CartTotalCard, {
   CartTotalCardProps,
 } from "../../pages/CartTotalCard/CardTotalCard";
@@ -9,6 +8,7 @@ import "./Card.css";
 import { Button } from "../../assets/button/Button";
 import ProductCardGridSingle from "../../assets/ProductCardGridSingle/ProductCardGridSingle";
 import { useNavigate } from "react-router-dom";
+import CartItems, { CartItem } from "../../assets/cart/CartItems/CartItems";
 
 export interface CartProps {
   items: CartItem[];

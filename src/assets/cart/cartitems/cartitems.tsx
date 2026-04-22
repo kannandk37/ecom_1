@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { FiTrash2 } from "react-icons/fi";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-// Import your existing Quantity component here
 import QuantitySelector from "../../quantitySelector/QuantitySelector";
 import "./CartItems.css";
 
