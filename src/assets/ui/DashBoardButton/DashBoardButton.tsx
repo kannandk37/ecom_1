@@ -30,7 +30,6 @@ export const DashboardButton: React.FC<ButtonProps> = ({
   showBg = true,
   side,
 }) => {
-  // Logic to handle numeric or string dimensions
   const buttonStyle: React.CSSProperties = {
     "--btn-width": typeof width === "number" ? `${width}px` : width,
     "--btn-height": typeof height === "number" ? `${height}px` : height,

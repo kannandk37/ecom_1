@@ -1,6 +1,4 @@
-// import { Revenue } from '@/src/pages/Revenue';
-import Orders from "../pages/Order";
-// import { Products } from '@/src/pages/pages/Products';
+import { Order, OrderProps } from "../pages/Order/Order";
 import type { JSX } from "react";
 import {
   FiShoppingBag,
@@ -21,6 +19,9 @@ import {
 } from "react-icons/fi";
 import Products from "../pages/Products/Products";
 import Home from "../pages/Home/Home";
+import DRY_FRUITS from "../../data/DRY_FRUITS.png";
+import NUTS from "../../data/NUTS.png";
+import DATES from "../../data/DATES.png";
 export interface NavItem {
   id: string;
   name: string;
@@ -29,14 +30,83 @@ export interface NavItem {
   component?: JSX.Element;
   children?: NavItem[];
 }
-
+const mockOrderData: OrderProps = {
+  orderNumber: "DF-98231",
+  orderDate: "October 24, 2023 at 10:42 AM",
+  status: "Delivered",
+  items: [
+    {
+      name: "Heritage Sourdough Boule",
+      variant: "800g Standard",
+      quantity: 2,
+      price: 12.0,
+      thumbnail: DRY_FRUITS,
+    },
+    {
+      name: "Wildflower Raw Honey",
+      variant: "500g Jar",
+      quantity: 1,
+      price: 18.5,
+      thumbnail: NUTS,
+    },
+    {
+      name: "Heritage Sourdough Boule",
+      variant: "800g Standard",
+      quantity: 2,
+      price: 12.0,
+      thumbnail: DRY_FRUITS,
+    },
+    {
+      name: "Wildflower Raw Honey",
+      variant: "500g Jar",
+      quantity: 1,
+      price: 18.5,
+      thumbnail: NUTS,
+    },
+    {
+      name: "Heritage Sourdough Boule",
+      variant: "800g Standard",
+      quantity: 2,
+      price: 12.0,
+      thumbnail: DRY_FRUITS,
+    },
+    {
+      name: "Wildflower Raw Honey",
+      variant: "500g Jar",
+      quantity: 1,
+      price: 18.5,
+      thumbnail: NUTS,
+    },
+  ],
+  shippingAddress: {
+    name: "Eleanor Vance",
+    street: "124 Hill House Lane",
+    apt: "Apt 3B",
+    city: "Berkshire",
+    state: "MA",
+    zip: "01220",
+    country: "United States",
+  },
+  paymentInfo: {
+    method: "Google Pay",
+    transactionId: "TXN-88492019-GPAY",
+    date: "Oct 24, 2023, 10:42 AM",
+  },
+  summary: [
+    { label: "Subtotal (3 items)", value: 42.5 },
+    { label: "Discount (AUTUMN15)", value: -6.38 },
+    { label: "Shipping Charges", value: 5.0 },
+    { label: "Estimated Tax", value: 3.4 },
+    { label: "Total Paid", value: 44.52, isTotal: true },
+  ],
+};
 export const NAV_OPTIONS: NavItem[] = [
   {
     id: "orders",
     name: "Orders",
     icon: <FiShoppingBag />,
     path: "/dashboard/orders",
-    component: <Orders />,
+    component: <Order {...mockOrderData} />,
     // children: [
     //   {
     //     id: "all-orders",

@@ -1,0 +1,71 @@
+.orders-page {
+  font-family: inherit;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.orders-main-content {
+  margin-top: 70px;
+  margin-bottom: 50px;
+  flex-grow: 1;
+  width: 100%;
+  height: calc(100vh - 10px);
+  overflow-y: auto;
+
+  background-color: #fdfbf7;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-scroll-bar);
+    border-radius: 10px;
+    border: 2px solid #fdfbf5;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-scroll-bar-hover);
+  }
+}
+
+.content-wrapper {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.breadcrumbs {
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #6c6c6c;
+}
+
+.breadcrumbs span {
+  cursor: pointer;
+}
+
+.breadcrumbs span:hover {
+  text-decoration: underline;
+}
+
+.active-crumb {
+  color: #2d2d2d;
+  font-weight: 500;
+}
+
+.orders-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #2d2d2d;
+  margin: 0 0 40px 0;
+}

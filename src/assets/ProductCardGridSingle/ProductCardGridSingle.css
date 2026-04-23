@@ -1,8 +1,5 @@
-/* ProductCard.css */
-
 .pc-single-card {
   background-color: #fdfaf5;
-  /* margin: 12px; */
   display: flex;
   flex-direction: column;
   transition:

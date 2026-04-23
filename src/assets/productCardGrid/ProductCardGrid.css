@@ -1,8 +1,5 @@
-/* ProductCardGrid.css */
-
 .pc-grid {
   display: grid;
-  /* Use auto-fill to wrap cards naturally based on parent width */
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 24px;
   background: transparent;
@@ -10,7 +7,7 @@
 }
 
 .pc-card {
-  background-color: #fdfaf5; /* Warm cream background */
+  background-color: #fdfaf5;
   border-radius: 20px;
   padding: 12px;
   display: flex;
@@ -26,7 +23,6 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
-/* Image Styling */
 .pc-card__image-container {
   width: 100%;
   border-radius: 16px;
@@ -41,7 +37,6 @@
   display: block;
 }
 
-/* Typography & Layout */
 .pc-card__body {
   display: flex;
   flex-direction: column;
@@ -72,7 +67,6 @@
   color: #222;
 }
 
-/* Button Styling (Pill shape and Gold color) */
 .pc-card__btn {
   background-color: var(--color-primary);
   color: #fff;
@@ -90,7 +84,6 @@
   background-color: #a6854d;
 }
 
-/* Ensure responsiveness on very small screens */
 @media (max-width: 400px) {
   .pc-grid {
     grid-template-columns: 1fr;

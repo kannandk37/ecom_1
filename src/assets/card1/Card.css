@@ -3,11 +3,9 @@
 .card-grid-container {
   display: grid;
   grid-auto-flow: column;
-  /* --cards-per-column is passed as a style prop from React */
   grid-template-rows: repeat(var(--cards-per-column, 3), min-content);
   gap: 20px;
   padding: 12px;
-  /* background-color: #fdf8f1; */
   width: 100%;
   overflow-x: auto;
   border-radius: 12px;
@@ -15,7 +13,7 @@
 
 .card-item {
   background-color: #ffffff;
-  border-radius: 28px; /* Outer Radius */
+  border-radius: 28px;
   padding: 12px;
   box-shadow: 0 8px 8px rgba(0, 0, 0, 0.12);
   display: flex;
@@ -35,7 +33,7 @@
 .image-wrapper {
   width: 100%;
   aspect-ratio: 1 / 1;
-  border-radius: 20px; /* Inner Radius */
+  border-radius: 20px;
   overflow: hidden;
   margin-bottom: 14px;
 }

@@ -1,7 +1,6 @@
 import React from "react";
 import "./ProductCard.css";
 import IconButton from "../icon_button/IconButton";
-// --- Interfaces ---
 export type ProductCardVariant = "primary" | "secondary" | "outline";
 export type ProductCardSize = "small" | "medium" | "large";
 import { RiHeart3Line } from "react-icons/ri";
@@ -39,8 +38,6 @@ export interface ProductCardProps {
   onToggleFav?: (el: any) => void;
 }
 
-// --- Component ---
-
 export const ProductCard: React.FC<ProductCardProps> = ({
   products,
   height,
@@ -67,7 +64,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           style={cardDynamicStyle}
           onClick={() => onClick?.(product)}
         >
-          {/* Image Section */}
           <div className="product-card__image-wrapper">
             <img
               src={product.image}
@@ -91,7 +87,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             </div>
           </div>
 
-          {/* Content Section */}
           <div className="product-card__content">
             <h3 className="product-card__title">{product.title}</h3>
             <p className="product-card__description">{product.description}</p>
@@ -108,7 +103,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               </span>
             </div>
 
-            {/* Button Section */}
             <button
               className="product-card__add-btn"
               onClick={(e) => {

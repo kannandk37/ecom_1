@@ -7,8 +7,6 @@ import {
   FaCheckCircle,
 } from "react-icons/fa";
 
-// --- Interfaces ---
-
 export interface Review {
   id: string | number;
   name: string;
@@ -23,8 +21,6 @@ export interface ReviewCardProps {
   reviews: Review[];
 }
 
-// --- Helper Component: StarRating ---
-
 const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
   const stars = [];
   for (let i = 1; i <= 5; i++) {
@@ -38,8 +34,6 @@ const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
   }
   return <div className="review-card__stars">{stars}</div>;
 };
-
-// --- Main Component ---
 
 export const ReviewCard: React.FC<ReviewCardProps> = ({
   width = "100%",
@@ -59,7 +53,6 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
             <div className="review-card__user-info">
               <span className="review-card__name">{review.name}</span>
 
-              {/* Conditional rendering with reserved space */}
               <div
                 className={`review-card__verified ${!review.isVerified ? "hidden" : ""}`}
               >

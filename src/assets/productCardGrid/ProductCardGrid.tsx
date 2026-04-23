@@ -1,8 +1,6 @@
 import React from "react";
 import "./ProductCardGrid.css";
 
-// --- Interfaces ---
-
 export interface Product {
   id?: string | number;
   productName: string;
@@ -11,21 +9,16 @@ export interface Product {
 }
 
 export interface ProductCardGridProps {
-  /** Width for each individual card (default 75px) */
   width?: number | string;
-  /** Height for the image area inside the card (default 60px) */
   height?: number | string;
   products: Product[];
 }
 
-// --- Component ---
-
 export const ProductCardGrid: React.FC<ProductCardGridProps> = ({
-  width = "240px", // Adjusted default to match image proportions better than 75px
-  height = "180px", // Adjusted default to match image proportions better than 60px
+  width = "240px",
+  height = "180px",
   products = [],
 }) => {
-  // Style object for dynamic dimensions
   const cardStyle: React.CSSProperties = {
     width: typeof width === "number" ? `${width}px` : width,
   };
@@ -38,7 +31,6 @@ export const ProductCardGrid: React.FC<ProductCardGridProps> = ({
     <div className="pc-grid">
       {products.map((product) => (
         <div key={product.id} className="pc-card" style={cardStyle}>
-          {/* Image Section */}
           <div className="pc-card__image-container" style={imageStyle}>
             <img
               src={product.image}
@@ -47,7 +39,6 @@ export const ProductCardGrid: React.FC<ProductCardGridProps> = ({
             />
           </div>
 
-          {/* Info Section */}
           <div className="pc-card__body">
             <h3 className="pc-card__title">{product.productName}</h3>
 

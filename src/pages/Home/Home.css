@@ -36,7 +36,7 @@ body {
 }
 
 .scroll-viewport::-webkit-scrollbar-thumb:hover {
-  background: #6d4906;
+  background: var(--color-scroll-bar-hover);
 }
 
 .scroll-viewport {

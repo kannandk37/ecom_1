@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./PerformanceBar.css";
-import { FiMoreHorizontal } from "react-icons/fi"; // npm install react-icons
+import { FiMoreHorizontal } from "react-icons/fi";
 import { colors } from "../../../utils/utils";
 
-// Interface for each product data point
 interface ProductPerformance {
   name: string;
   count: number;
-  percentage: number; // Value between 0 and 100
+  percentage: number;
 }
 
 interface PerformanceBarProps {
@@ -19,7 +18,7 @@ interface PerformanceBarProps {
   width?: string | number;
   height?: string | number;
   className?: string;
-  maxBars?: number; // Built-in flexibility: limit how many are shown
+  maxBars?: number;
   customColors?: string[];
 }
 
@@ -29,23 +28,20 @@ export const PerformanceBar: React.FC<PerformanceBarProps> = ({
   showMoreOptions = true,
   showTooltip = true,
   onMoreOptionsClick,
-  width = "100%", // Container fills available width
+  width = "100%",
   height = "auto",
   className = "",
-  maxBars = 5, // Currently showing up to 5
+  maxBars = 5,
   customColors,
 }) => {
-  // Logic: Ensure we only show up to maxBars to maintain design
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const visibleData = data.slice(0, maxBars);
 
-  // Trigger animation after the component mounts
   useEffect(() => {
     const timer = setTimeout(() => setIsLoaded(true), 100);
     return () => clearTimeout(timer);
   }, []);
 
-  // Dynamic Sizing Prop Handling
   const containerStyle = {
     width: typeof width === "number" ? `${width}px` : width,
     height: typeof height === "number" ? `${height}px` : height,
@@ -53,7 +49,6 @@ export const PerformanceBar: React.FC<PerformanceBarProps> = ({
 
   return (
     <div className={`p-bar-card ${className}`} style={containerStyle}>
-      {/* HEADER SECTION */}
       <div className="p-bar-header">
         <h3 className="p-bar-title">{title}</h3>
         {showMoreOptions && (
@@ -68,21 +63,15 @@ export const PerformanceBar: React.FC<PerformanceBarProps> = ({
         )}
       </div>
 
-      {/* DATA & BARS SECTION */}
       <div className="p-bar-list">
         {visibleData.map((item, index) => {
-          // Progressive color assignment
           const barColor = customColors
             ? customColors[index % customColors.length]
             : colors[index % colors.length];
-          // const barWidth = `${item.percentage}%`;
-          // ANIMATION LOGIC:
-          // If not loaded, width is 0. If loaded, width is the actual percentage.
           const animatedWidth = isLoaded ? `${item.percentage}%` : "0%";
 
           return (
             <div key={`${item.name}-${index}`} className="p-bar-item">
-              {/* Product Info (Left Text, Right Percentage) */}
               <div className="p-bar-info">
                 <span className="p-bar-product-name">{item.name}</span>
                 <span className="p-bar-percentage-label">
@@ -90,13 +79,10 @@ export const PerformanceBar: React.FC<PerformanceBarProps> = ({
                 </span>
               </div>
 
-              {/* Progress Bar Track */}
               <div className="p-bar-track">
-                {/* Colored Progress Fill */}
                 <div
                   className={`p-bar-fill ${showTooltip ? "has-tooltip" : ""}`}
                   style={{
-                    // width: barWidth,
                     width: animatedWidth,
                     backgroundColor: barColor,
                   }}

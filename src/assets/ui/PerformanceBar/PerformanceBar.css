@@ -1,10 +1,8 @@
-/* PerformanceBar.css */
-
 :root {
   --p-bar-bg-card: #ffffff;
-  --p-bar-bg-track: #f3f1ec; /* Cream/grey background from your theme */
+  --p-bar-bg-track: #f3f1ec;
   --p-bar-text-title: #1a1a1a;
-  --p-bar-text-product: #5c4d3b; /* Muted brown from reference image */
+  --p-bar-text-product: #5c4d3b;
   --p-bar-text-percent: #71604d;
   --p-bar-icon: #71604d;
 }
@@ -19,7 +17,6 @@
   box-sizing: border-box;
 }
 
-/* Header: Title and Options Button */
 .p-bar-header {
   display: flex;
   justify-content: space-between;
@@ -52,21 +49,18 @@
   background-color: #f3f1ec;
 }
 
-/* The Data List */
 .p-bar-list {
   display: flex;
   flex-direction: column;
-  gap: 24px; /* Space between each product block */
+  gap: 24px;
 }
 
-/* Individual Product Block */
 .p-bar-item {
   display: flex;
   flex-direction: column;
-  gap: 8px; /* Space between text and bar */
+  gap: 8px;
 }
 
-/* Info: Product Name and Percentage */
 .p-bar-info {
   display: flex;
   justify-content: space-between;
@@ -83,21 +77,19 @@
   color: var(--p-bar-text-percent);
 }
 
-/* Bar Track (Grey Background) */
 .p-bar-track {
   width: 100%;
-  height: 12px; /* Thicker, high-end look */
+  height: 12px;
   background-color: var(--p-bar-bg-track);
   border-radius: 6px;
-  overflow: visible; /* Clips the internal fill */
+  overflow: visible;
   position: relative;
 }
 
-/* Bar Fill (Progressive Color) */
 .p-bar-fill {
   height: 100%;
   border-radius: 6px;
-  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); /* Professional animation */
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   cursor: pointer;
 }
@@ -107,7 +99,6 @@
   transition: filter 0.2s ease;
 }
 
-/* Responsiveness: Maintain padding and size on small screens */
 @media (max-width: 480px) {
   .p-bar-card {
     padding: 24px;
@@ -118,11 +109,10 @@
   }
 }
 
-/* TOOLTIP LOGIC */
 .p-bar-fill.has-tooltip:hover::after {
   content: attr(data-tooltip);
   position: absolute;
-  top: -35px; /* Position above the bar */
+  top: -35px;
   right: 0;
   background-color: #1a1a1a;
   color: #ffffff;
@@ -134,11 +124,9 @@
   z-index: 10;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   pointer-events: none;
-  /* animation: fadeInTooltip 0.2s ease-out; */
   animation: fadeIn 0.4s ease-in forwards;
 }
 
-/* Tooltip Arrow */
 .p-bar-fill.has-tooltip:hover::before {
   content: "";
   position: absolute;

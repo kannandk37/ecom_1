@@ -1,19 +1,16 @@
-/* IconButton.css */
-
 .icon-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%; /* Always circular */
+  border-radius: 50%;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   border: 2px solid transparent;
   outline: none;
-  padding: 0; /* Important for perfect centering */
+  padding: 0;
   flex-shrink: 0;
 }
 
-/* Size Presets */
 .icon-button--small {
   width: 32px;
   height: 32px;
@@ -32,7 +29,6 @@
   font-size: 24px;
 }
 
-/* Variant: Primary (Matches Design) */
 .icon-button--primary {
   background-color: var(--color-primary);
   color: var(--color-text-primary);
@@ -43,7 +39,6 @@
   box-shadow: 0 4px 12px var(--color-primary);
 }
 
-/* Variant: Secondary */
 .icon-button--secondary {
   background-color: var(--color-secondary);
   color: var(--color-primary);
@@ -53,7 +48,6 @@
   background-color: var(--color-secondary-hover);
 }
 
-/* Variant: Outline */
 .icon-button--outline {
   background-color: var(--color-outline);
   border-color: var(--color-primary);
@@ -66,7 +60,6 @@
   color: var(--color-outline-hover);
 }
 
-/* Shared States */
 .icon-button:active:not(:disabled) {
   transform: scale(0.92);
 }

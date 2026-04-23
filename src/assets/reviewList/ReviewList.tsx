@@ -7,8 +7,6 @@ import {
   FaCheckCircle,
 } from "react-icons/fa";
 
-// --- Interfaces (Should be in a shared types file in production) ---
-
 export interface Review {
   id: string | number;
   name: string;
@@ -23,8 +21,6 @@ interface ReviewListProps {
   incrementBy?: number;
 }
 
-// --- Helper Component: StarRating (Atomic Presentational) ---
-
 const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
   const stars = [];
   for (let i = 1; i <= 5; i++) {
@@ -38,8 +34,6 @@ const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
   }
   return <div className="rl-stars-wrapper">{stars}</div>;
 };
-
-// --- Main Component ---
 
 export const ReviewList: React.FC<ReviewListProps> = ({
   reviews = [],
@@ -56,7 +50,6 @@ export const ReviewList: React.FC<ReviewListProps> = ({
 
   return (
     <div className="rl-container">
-      {/* Review Cards (Stacked Vertically) */}
       <div className="rl-card-list">
         {reviews.slice(0, visibleCount).map((review) => (
           <div key={review.id} className="rl-card">
@@ -77,7 +70,6 @@ export const ReviewList: React.FC<ReviewListProps> = ({
         ))}
       </div>
 
-      {/* Show More Button (Conditional) */}
       {hasMoreReviews && (
         <button className="rl-show-more-btn" onClick={showMoreReviews}>
           Show More

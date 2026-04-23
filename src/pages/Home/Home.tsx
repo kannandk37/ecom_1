@@ -10,6 +10,9 @@ import NUTS from "../../../data/NUTS.png";
 import DATES from "../../../data/DATES.png";
 import FRESH_JUICE from "../../../data/FRESH_JUICE.png";
 import Loader from "../../assets/loader/Loader";
+import CartItems, { CartItem } from "../../assets/cart/CartItems";
+import OrderItems from "../../assets/orderitemscard/OrderItemsCard";
+
 interface CardItem {
   id: Number;
   image: string;
@@ -248,6 +251,50 @@ const Home = () => {
                   {/* <ProductCard /> */}
                 </div>
               </div>
+              {/* <OrderItems orders={[{
+                id: '#DF-98231',
+                status: 'Delivered',
+                date: 'Oct 24, 2024',
+                totalPrice: '4,225.00',
+                address: '42 Lavender Lane, Botanical Gardens, Bangalore, 560004',
+                itemThumbnails: [
+                  DRY_FRUITS,
+                  DATES,
+                  NUTS,
+                  DRY_FRUITS,
+                  DATES
+                ],
+              },
+              {
+                id: '#DF-98104',
+                status: 'In Process',
+                date: 'Oct 22, 2024',
+                totalPrice: '1,850.00',
+                address: '88 Heritage Street, Fort Area, Mumbai, 400001',
+                itemThumbnails: [
+                  DRY_FRUITS
+                ],
+                itemDescription: 'Himalayan Green Tea (250g)',
+              },
+              {
+                id: '#DF-97882',
+                status: 'Pending Payment',
+                date: 'Oct 15, 2024',
+                totalPrice: '5,100.00',
+                address: '15 Sunrise Boulevard, IT Park, Pune, 411057',
+                itemThumbnails: [
+                  DRY_FRUITS,
+                  DATES,
+                  NUTS,
+                  DRY_FRUITS,
+                  DATES,
+                  DRY_FRUITS,
+                  DATES,
+                  NUTS,
+                  DRY_FRUITS,
+                  DATES
+                ],
+              },]} /> */}
               {/* <ProductImageGallery images={images} height={"650px"} width={"650px"} /> */}
               {/* <ProductCarousel /> */}
               {/* <Carousel

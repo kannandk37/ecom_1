@@ -76,7 +76,7 @@ const Cart = () => {
                   height: "35px",
                 }}
                 onClick={() => {
-                  navigate("/order");
+                  navigate(`/order/123`);
                 }}
               >
                 Orders

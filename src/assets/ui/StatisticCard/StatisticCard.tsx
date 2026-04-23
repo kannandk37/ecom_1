@@ -7,7 +7,7 @@ interface StatisticCardProps {
   icon?: ReactNode;
   iconBgColor?: string;
   iconColor?: string;
-  trendValue?: string; // e.g., "+12%"
+  trendValue?: string;
   trendBgColor?: string;
   trendColor?: string;
   showBackground?: boolean;
@@ -20,8 +20,8 @@ export const StatisticCard: React.FC<StatisticCardProps> = ({
   title,
   value,
   icon,
-  iconBgColor = "#dcf0d2", // Default light green
-  iconColor = "#4b633d", // Default dark green
+  iconBgColor = "#dcf0d2",
+  iconColor = "#4b633d",
   trendValue,
   trendBgColor = "#dcf0d2",
   trendColor = "#4b633d",

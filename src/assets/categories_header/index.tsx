@@ -2,7 +2,6 @@ import React from "react";
 import "./index.css";
 import { FiBox, FiPackage, FiTruck, FiUsers, FiPieChart } from "react-icons/fi";
 
-// Example categories - you can import these from your config
 const CATEGORIES = [
   { id: "nuts", name: "Nuts & Seeds", icon: <FiBox /> },
   { id: "dried", name: "Dried Fruits", icon: <FiPackage /> },

@@ -3,7 +3,7 @@ import Home, { productsTestData } from "./pages/Home/Home";
 import Login from "./pages/Login";
 import ConfirmCheckout from "./pages/Checkout";
 import Profile from "./pages/Profile";
-import Orders from "./pages/Order";
+import Orders from "./pages/Orders/Orders";
 import CategoryProducts, {
   productsData,
 } from "./pages/CategoryProducts/categoryProducts";
@@ -24,6 +24,78 @@ import CartTotalCard, {
 } from "./pages/CartTotalCard/CardTotalCard";
 import { CartItem } from "./assets/cart/CartItems";
 import Cart from "./pages/Cart/Card";
+import { Order, OrderProps } from "./pages/Order/Order";
+
+const mockOrderData: OrderProps = {
+  orderNumber: "DF-98231",
+  orderDate: "October 24, 2023 at 10:42 AM",
+  status: "Delivered",
+  items: [
+    {
+      name: "Heritage Sourdough Boule",
+      variant: "800g Standard",
+      quantity: 2,
+      price: 12.0,
+      thumbnail: DRY_FRUITS,
+    },
+    {
+      name: "Wildflower Raw Honey",
+      variant: "500g Jar",
+      quantity: 1,
+      price: 18.5,
+      thumbnail: NUTS,
+    },
+    {
+      name: "Heritage Sourdough Boule",
+      variant: "800g Standard",
+      quantity: 2,
+      price: 12.0,
+      thumbnail: DRY_FRUITS,
+    },
+    {
+      name: "Wildflower Raw Honey",
+      variant: "500g Jar",
+      quantity: 1,
+      price: 18.5,
+      thumbnail: NUTS,
+    },
+    {
+      name: "Heritage Sourdough Boule",
+      variant: "800g Standard",
+      quantity: 2,
+      price: 12.0,
+      thumbnail: DRY_FRUITS,
+    },
+    {
+      name: "Wildflower Raw Honey",
+      variant: "500g Jar",
+      quantity: 1,
+      price: 18.5,
+      thumbnail: NUTS,
+    },
+  ],
+  shippingAddress: {
+    name: "Eleanor Vance",
+    street: "124 Hill House Lane",
+    apt: "Apt 3B",
+    city: "Berkshire",
+    state: "MA",
+    zip: "01220",
+    country: "United States",
+  },
+  paymentInfo: {
+    method: "Google Pay",
+    transactionId: "TXN-88492019-GPAY",
+    date: "Oct 24, 2023, 10:42 AM",
+  },
+  summary: [
+    { label: "Subtotal (3 items)", value: 42.5 },
+    { label: "Discount (AUTUMN15)", value: -6.38 },
+    { label: "Shipping Charges", value: 5.0 },
+    { label: "Estimated Tax", value: 3.4 },
+    { label: "Total Paid", value: 44.52, isTotal: true },
+  ],
+};
 
 const mockCartData: CartItem[] = [
   {
@@ -237,6 +309,11 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/login" element={<AuthCard />} />
           <Route path="/" element={<Home />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route
+            path="/order/:orderId"
+            element={<Order {...mockOrderData} />}
+          />
           <Route
             path="/categories/:categoryId/products"
             element={<CategoryProducts />}

@@ -4,6 +4,8 @@ import { FiSearch, FiUser, FiShoppingCart } from "react-icons/fi";
 import Button from "../../assets/button/Button";
 import IconButton from "../../assets/icon_button/IconButton";
 import { LOGO } from "../../utils/utils";
+import { BsFillBoxSeamFill } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
   siteName: string;
@@ -21,7 +23,7 @@ export const Header: React.FC<HeaderProps> = ({
   onEnterpriseSignInClick,
 }) => {
   const [query, setQuery] = useState("");
-
+  const navigate = useNavigate();
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSearch(query);
@@ -83,6 +85,14 @@ export const Header: React.FC<HeaderProps> = ({
           {/* <button className="signin-btn" onClick={onSignInClick}>
             Sign In <FiUser className="btn-icon" />
           </button> */}
+          <IconButton
+            height="40px"
+            icon={<BsFillBoxSeamFill />}
+            variant="primary"
+            disabled={false}
+            size="medium"
+            onClick={() => navigate("/orders")}
+          />
           <IconButton
             height="40px"
             icon={<FiShoppingCart />}

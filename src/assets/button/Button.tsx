@@ -24,7 +24,6 @@ export const Button: React.FC<ButtonProps> = ({
   fontSize,
   onClick,
 }) => {
-  // Combine dynamic styles for width/height with the CSS classes
   const customStyles = {
     width: width || "auto",
     height: height || "auto",

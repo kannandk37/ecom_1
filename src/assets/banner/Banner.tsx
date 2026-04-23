@@ -3,22 +3,18 @@ import "./Banner.css";
 import Button from "../button/Button";
 
 interface HomeBannerProps {
-  // Image & Layout
   image: string;
   width?: string;
   height?: string;
   borderRadius?: string;
 
-  // Text Content
   title1?: string; // Main heading (e.g., PREMIUM QUALITY)
   title2?: string; // Subheading (e.g., Discover our curated...)
 
-  // Visibility Controls
   showTitle1?: boolean;
   showTitle2?: boolean;
   showButton?: boolean;
 
-  // Button
   buttonText?: string;
   buttonVariant?: "primary" | "secondary" | "outline";
   buttonDisabled?: boolean;
@@ -68,6 +64,7 @@ const HomeBanner: React.FC<HomeBannerProps> = ({
               {title1}
             </h1>
           )}
+
           {showTitle2 && (
             <p className="home-banner-title-sub" style={Title2Style}>
               {title2}
@@ -84,13 +81,6 @@ const HomeBanner: React.FC<HomeBannerProps> = ({
               fontSize="22px"
               onClick={() => onButtonClick?.()}
             />
-            // <button
-            //   className={`home-banner-button ${buttonVariant}`}
-            //   onClick={onButtonClick}
-            //   disabled={buttonDisabled}
-            // >
-            //   {buttonText}
-            // </button>
           )}
         </div>
       </div>

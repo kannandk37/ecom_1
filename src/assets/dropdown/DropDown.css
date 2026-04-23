@@ -1,5 +1,3 @@
-/* Dropdown.css */
-
 .ds-dropdown-container {
   position: relative;
   font-family: var(--font-family);
@@ -12,9 +10,9 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
-  background-color: #fdfaf5; /* Matches the warm cream background */
-  border: 1px solid #e2ddd3; /* Subtle border from image */
-  border-radius: 14px; /* Matches the rounded corners in image */
+  background-color: #fdfaf5;
+  border: 1px solid #e2ddd3;
+  border-radius: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
   outline: none;
@@ -26,7 +24,7 @@
 }
 
 .ds-dropdown-header--active {
-  border-color: #bc9a5c; /* Gold accent on open */
+  border-color: #bc9a5c;
   box-shadow: 0 0 0 3px rgba(188, 154, 92, 0.1);
 }
 
@@ -49,7 +47,6 @@
   transform: rotate(180px);
 }
 
-/* Dropdown Menu List */
 .ds-dropdown-list {
   position: absolute;
   top: calc(100% + 8px);
@@ -63,7 +60,6 @@
   margin: 0;
   list-style: none;
   z-index: 100;
-  /* Entrance animation */
   animation: dsDropdownFadeIn 0.2s ease-out;
 }
 

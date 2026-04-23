@@ -1,10 +1,6 @@
 import React, { useState } from "react";
-import {
-  FiChevronDown,
-  FiCreditCard,
-  FiDollarSign,
-  FiUser,
-} from "react-icons/fi";
+import { FiChevronDown, FiCreditCard, FiUser } from "react-icons/fi";
+import { RiMoneyRupeeCircleFill } from "react-icons/ri";
 import DashboardInput from "../../assets/ui/DashBoardInput/DashBoardInput";
 import DashboardButton from "../../assets/ui/DashBoardButton/DashBoardButton";
 import "./PaymentForm.css";
@@ -19,7 +15,7 @@ const PAYMENT_METHODS = [
   {
     id: "cod",
     label: "Cash on Delivery (COD)",
-    icon: <FiDollarSign size={20} />,
+    icon: <RiMoneyRupeeCircleFill size={20} />,
   },
   {
     id: "card",

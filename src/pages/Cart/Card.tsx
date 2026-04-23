@@ -3,7 +3,7 @@ import { FiArrowLeft } from "react-icons/fi";
 import CartTotalCard, {
   CartTotalCardProps,
 } from "../../pages/CartTotalCard/CardTotalCard";
-import { Carousel } from "../../assets/CarouselTest/CarouselTest";
+import { Carousel } from "../../assets/Carousel/Carousel";
 import "./Card.css";
 import { Button } from "../../assets/button/Button";
 import ProductCardGridSingle from "../../assets/ProductCardGridSingle/ProductCardGridSingle";

@@ -5,8 +5,6 @@ import React, {
 } from "react";
 import "./IconButton.css";
 
-// --- Types & Interfaces ---
-
 export type IconButtonVariant = "primary" | "secondary" | "outline";
 export type IconButtonSize = "small" | "medium" | "large";
 
@@ -31,7 +29,6 @@ export const IconButton: React.FC<IconButtonProps> = ({
   onClick,
   ...rest
 }) => {
-  // Calculate final dimensions while maintaining circularity
   const finalDimensions = useMemo(() => {
     if (width || height) {
       const dimension = width || height;
@@ -40,7 +37,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
         height: typeof dimension === "number" ? `${dimension}px` : dimension,
       };
     }
-    return {}; // CSS classes handle size presets
+    return {};
   }, [width, height]);
 
   const combinedStyles: React.CSSProperties = {

@@ -56,7 +56,6 @@
   letter-spacing: 0.08em;
 }
 
-/* On mobile, make it scrollable so it doesn't break */
 @media (max-width: 768px) {
   .category-nav {
     gap: 20px;
@@ -68,6 +67,6 @@
     display: none;
   }
   .nav-text {
-    display: none; /* Show icons only on very small screens or keep text if space allows */
+    display: none;
   }
 }

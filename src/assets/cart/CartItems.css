@@ -4,26 +4,26 @@
   font-family: var(--font-family);
   background-color: #ffffff;
   border-radius: 16px;
-  /* Optional padding if you want it to look like a floating card */
-  /* padding: 20px; */
 }
 
-/* CUSTOM SCROLLBAR (Applies if a strict height prop is passed) */
 .cart-items-container::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
+
 .cart-items-container::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .cart-items-container::-webkit-scrollbar-thumb {
-  background: #e5e5e1;
+  background: var(--color-scroll-bar);
   border-radius: 10px;
-}
-.cart-items-container::-webkit-scrollbar-thumb:hover {
-  background: #8c6d3f;
+  border: 2px solid #fdfaf5;
 }
 
-/* INDIVIDUAL ITEM CARD */
+.cart-items-container::-webkit-scrollbar-thumb:hover {
+  background: var(--color-scroll-bar-hover);
+}
+
 .cart-item-card {
   display: flex;
   gap: 20px;
@@ -31,12 +31,10 @@
   transition: background-color 0.2s ease;
 }
 
-/* Add border to all items except the last one */
 .cart-item-card.border-bottom {
   border-bottom: 1px solid #eee;
 }
 
-/* IMAGE STYLING */
 .cart-item-image-wrapper {
   flex-shrink: 0;
 }
@@ -50,7 +48,6 @@
   border: 1px solid rgba(0, 0, 0, 0.03);
 }
 
-/* CONTENT STYLING */
 .cart-item-content {
   flex: 1;
   display: flex;
@@ -83,7 +80,7 @@
   color: #888;
   line-height: 1.4;
   margin: 0;
-  max-width: 400px; /* Prevents description from running too long */
+  max-width: 400px;
 }
 
 .cart-item-price {
@@ -93,7 +90,6 @@
   white-space: nowrap;
 }
 
-/* ACTIONS ROW */
 .cart-item-actions-row {
   display: flex;
   align-items: center;
@@ -113,7 +109,6 @@
   background-color: #ddd;
 }
 
-/* TEXT BUTTONS (Save & Remove) */
 .text-btn {
   background: none;
   border: none;
@@ -133,7 +128,6 @@
   color: #1a1a1a;
 }
 
-/* HEART ANIMATION & COLOR */
 .heart-icon {
   font-size: 1rem;
   transition:
@@ -146,11 +140,11 @@
 }
 
 .text-btn.save-btn.saved {
-  color: #8c6d3f; /* Brand brown text when saved */
+  color: #8c6d3f;
 }
 
 .heart-icon.filled {
-  color: #8c6d3f; /* Brand brown filled heart */
+  color: #8c6d3f;
   animation: heartPop 0.3s ease-out forwards;
 }
 
@@ -166,12 +160,10 @@
   }
 }
 
-/* TRASH HOVER */
 .text-btn.remove-btn:hover {
-  color: #d93025; /* Subtle red on hover for delete actions */
+  color: #d93025;
 }
 
-/* RESPONSIVENESS */
 @media (max-width: 600px) {
   .cart-item-card {
     flex-direction: column;

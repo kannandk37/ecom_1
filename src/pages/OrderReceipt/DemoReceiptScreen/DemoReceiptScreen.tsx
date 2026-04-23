@@ -86,7 +86,7 @@ const DemoReceiptScreen: React.FC = () => {
           disabled={false}
           name={"Back"}
           icon={<FaArrowLeftLong />}
-          onClick={() => navigate("/")}
+          onClick={() => navigate(`/order/123`)}
           fontSize={"15px"}
         />
         <span className="button-arrow"></span>{" "}

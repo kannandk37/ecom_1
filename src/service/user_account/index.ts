@@ -1,7 +1,7 @@
 import { AxiosInstance, AxiosResponse } from "axios";
 import axiosinstance from "..";
 
-class UserAccountService {
+export class UserAccountService {
     private axiosInstance: AxiosInstance;
 
     constructor() {

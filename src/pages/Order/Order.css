@@ -1,0 +1,258 @@
+:root {
+  font-family: var(--font-family);
+  --color-beige-bg: #fdfbf7;
+  --color-brown-text: #2d1e0f;
+  --color-light-brown-text: #6c6c6c;
+  --color-delivered-green: #e6efe6;
+  --color-delivered-green-text: #2d1e0f;
+  --color-card-border: #f0f0f5;
+  --color-card-bg: #ffffff;
+}
+
+.order-root-container {
+  margin-top: 80px;
+  height: calc(100vh - 120px);
+  overflow-y: auto;
+  background-color: var(--color-beige-bg);
+  color: var(--color-brown-text);
+  box-sizing: border-box;
+}
+
+.order-root-container::-webkit-scrollbar {
+  width: 10px;
+}
+
+.order-root-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.order-root-container::-webkit-scrollbar-thumb {
+  background: #c0c0c0;
+  border-radius: 5px;
+  border: 2px solid var(--color-beige-bg);
+}
+
+.order-root-container::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
+}
+
+.order-content-wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.order-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.order-header-row {
+  margin-bottom: 24px;
+}
+
+.order-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.order-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.order-status-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.status-delivered {
+  background-color: var(--color-delivered-green);
+  color: var(--color-delivered-green-text);
+}
+
+.order-date-label {
+  color: var(--color-light-brown-text);
+  margin: 4px 0 0 0;
+}
+
+.order-actions-row {
+  display: flex;
+  gap: 16px;
+  justify-content: end;
+}
+
+.order-card-container {
+  width: 100%;
+  background-color: var(--color-card-bg);
+  border: 1px solid var(--color-card-border);
+  border-radius: 12px;
+  padding: 24px;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+}
+
+.order-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.section-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-brown-text);
+}
+
+.items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ordered-item-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.item-thumbnail {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.item-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.item-name {
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-brown-text);
+}
+
+.item-variant,
+.item-qty {
+  color: var(--color-light-brown-text);
+  font-size: 14px;
+  margin: 0;
+}
+
+.item-price {
+  font-weight: 700;
+  color: var(--color-brown-text);
+  margin: 0;
+}
+
+.order-two-column-row {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 6px;
+}
+
+.order-two-column-row .order-card-container {
+  flex: 1;
+}
+
+.address-name {
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-brown-text);
+}
+
+.address-line {
+  color: var(--color-brown-text);
+  margin: 2px 0 0 0;
+}
+
+.payment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.payment-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.payment-label {
+  color: var(--color-brown-text);
+  font-weight: 600;
+  margin: 0;
+}
+
+.payment-value {
+  color: var(--color-brown-text);
+  margin: 0;
+  text-align: right;
+}
+
+.method-value {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.summary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.summary-label {
+  color: var(--color-light-brown-text);
+  margin: 0;
+}
+
+.summary-value {
+  color: var(--color-light-brown-text);
+  margin: 0;
+  font-size: 14px;
+}
+
+.total-row {
+  margin-top: 10px;
+  border-top: 1px solid var(--color-card-border);
+  padding-top: 10px;
+}
+
+.total-row .summary-label {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-brown-text);
+}
+
+.total-row .summary-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-brown-text);
+}

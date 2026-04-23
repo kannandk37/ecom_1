@@ -1,8 +1,6 @@
-/* LeaderboardCard.css */
-
 :root {
   --lbrd-bg-card: #ffffff;
-  --lbrd-bg-track: #f3f1ec; /* Cream background from reference image */
+  --lbrd-bg-track: #f3f1ec;
   --lbrd-text-title: #1a1a1a;
   --lbrd-text-main: #333333;
   --lbrd-text-muted: #71604d;
@@ -19,7 +17,6 @@
   box-sizing: border-box;
 }
 
-/* Header */
 .lbrd-header {
   display: flex;
   justify-content: space-between;
@@ -52,22 +49,19 @@
   background-color: #f3f1ec;
 }
 
-/* List/Layout */
 .lbrd-list {
   display: flex;
   flex-direction: column;
-  gap: 20px; /* Space between each row block */
+  gap: 20px;
 }
 
-/* Individual Row Block */
 .lbrd-row {
   display: flex;
   align-items: center;
   width: 100%;
-  gap: 16px; /* Primary separation between main blocks */
+  gap: 16px;
 }
 
-/* Left: Avatar */
 .lbrd-avatar-wrapper {
   flex-shrink: 0;
   width: 52px;
@@ -80,15 +74,14 @@
 .lbrd-avatar {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Ensures pic scales without stretching */
+  object-fit: cover;
 }
 
-/* Middle: Name & Price */
 .lbrd-info {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  min-width: 140px; /* Safety to prevent too much compression */
+  min-width: 140px;
 }
 
 .lbrd-item-name {
@@ -103,19 +96,18 @@
   font-weight: 600;
 }
 
-/* Right: Bar Track */
 .lbrd-track-container {
-  flex-grow: 1; /* Key: makes the bar take up remaining space */
+  flex-grow: 1;
   display: flex;
-  justify-content: flex-end; /* Pushes track to the right edge */
+  justify-content: flex-end;
 }
 
 .lbrd-track {
-  width: 120px; /* Fixed track width to match design fidelity */
-  height: 8px; /* High-end, thinner bar design */
+  width: 120px;
+  height: 8px;
   background-color: var(--lbrd-bg-track);
   border-radius: 4px;
-  overflow: visible; /* Must be visible to allow tooltip to pop out */
+  overflow: visible;
   position: relative;
 }
 
@@ -124,18 +116,15 @@
   border-radius: 4px;
   position: relative;
 
-  /* THE FILL ANIMATION ENGINE */
-  /* duration: 1s, timing: fast then slow (Ease-out) */
   transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
   transform-origin: left;
 }
 
-/* CSS-ONLY TOOLTIP LOGIC */
 .lbrd-fill.has-tooltip:hover::after {
   content: attr(data-tooltip);
   position: absolute;
-  top: -35px; /* Above the bar */
-  right: 0; /* Pinned to right of the fill */
+  top: -35px;
+  right: 0;
   background-color: #1a1a1a;
   color: #ffffff;
   padding: 4px 12px;
@@ -149,7 +138,6 @@
   animation: fadeInTooltip 0.2s ease-out;
 }
 
-/* Tooltip Arrow */
 .lbrd-fill.has-tooltip:hover::before {
   content: "";
   position: absolute;
@@ -172,7 +160,6 @@
   }
 }
 
-/* Responsiveness for Mobile */
 @media (max-width: 480px) {
   .lbrd-card {
     padding: 24px;
@@ -183,7 +170,7 @@
   }
 
   .lbrd-track {
-    width: 80px; /* Smaller track on mobile */
+    width: 80px;
   }
 
   .lbrd-avatar-wrapper {

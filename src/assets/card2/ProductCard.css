@@ -1,8 +1,5 @@
-/* ProductCard.css */
-
 .product-grid-container {
   display: grid;
-  /* Automatic wrapping logic: Min 260px, expand to fill available space */
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 24px;
   padding: 20px;
@@ -28,7 +25,6 @@
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
 
-/* Image Wrapper and Fav Button */
 .product-card__image-wrapper {
   position: relative;
   width: 100%;
@@ -64,7 +60,6 @@
   height: 20px;
 }
 
-/* Content */
 .product-card__content {
   padding: 16px 4px 8px 4px;
   display: flex;
@@ -103,7 +98,6 @@
   font-size: 1.2em;
 }
 
-/* Add to Cart Button */
 .product-card__add-btn {
   margin-top: 12px;
   background-color: #bc9a5c;
@@ -128,7 +122,6 @@
   height: 18px;
 }
 
-/* Variants */
 .product-card--secondary {
   background-color: #fff;
   border: 1px solid #eee;
@@ -139,7 +132,6 @@
   box-shadow: none;
 }
 
-/* Sizes */
 .product-card--small .product-card__title {
   font-size: 1.1rem;
 }

@@ -1,18 +1,10 @@
 import React from "react";
 import "./OrderReceipt.css";
-
-// Mock DashboardButton Component to satisfy requirements
-interface DashboardButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode;
-}
-const DashboardButton: React.FC<DashboardButtonProps> = ({
-  children,
-  ...props
-}) => (
-  <button className="dashboard-button" {...props}>
-    {children}
-  </button>
-);
+import { FaCheck, FaFileDownload } from "react-icons/fa";
+import { MdLocalShipping } from "react-icons/md";
+import { RiMoneyRupeeCircleFill } from "react-icons/ri";
+import { TbReceiptFilled } from "react-icons/tb";
+import DashboardButton from "../../assets/ui/DashBoardButton/DashBoardButton";
 
 interface OrderItem {
   id: string;
@@ -83,7 +75,10 @@ const OrderReceipt: React.FC<OrderReceiptProps> = ({
         <div className="receipt-column receipt-col-left">
           <div className="receipt-info-block">
             <h3 className="receipt-block-heading">
-              <span className="icon-shipping">🚚</span> SHIPPING TO
+              <span className="icon-shipping">
+                <MdLocalShipping />
+              </span>{" "}
+              SHIPPING TO
             </h3>
             <p className="receipt-shipping-name">{shipping.name}</p>
             <p className="receipt-shipping-phone">{shipping.phone}</p>
@@ -95,14 +90,12 @@ const OrderReceipt: React.FC<OrderReceiptProps> = ({
           </div>
           <div className="receipt-info-block">
             <h3 className="receipt-block-heading">
-              <span className="icon-payment">💳</span> PAYMENT INFO
+              <span className="icon-payment">
+                <RiMoneyRupeeCircleFill />
+              </span>{" "}
+              PAYMENT INFO
             </h3>
             <div className="receipt-payment-method">
-              <img
-                src={payment.method.icon}
-                alt={payment.method.text}
-                className="receipt-payment-icon"
-              />
               <p className="receipt-payment-text">{payment.method.text}</p>
             </div>
             <p className="receipt-payment-label">METHOD</p>
@@ -114,7 +107,10 @@ const OrderReceipt: React.FC<OrderReceiptProps> = ({
         {/* Middle Column: Order Details */}
         <div className="receipt-column receipt-col-middle">
           <h3 className="receipt-block-heading">
-            <span className="icon-order">📋</span> ORDER DETAILS
+            <span className="icon-order">
+              <TbReceiptFilled />
+            </span>{" "}
+            ORDER DETAILS
           </h3>
           <div className="receipt-items-list">
             {items.map((item) => (
@@ -158,7 +154,9 @@ const OrderReceipt: React.FC<OrderReceiptProps> = ({
               <span className="grand-total-label">GRAND TOTAL</span>
               <div className="grand-total-value-wrapper">
                 <span className="grand-total-value">{pricing.grandTotal}</span>
-                <span className="icon-check-circle">✔️</span>
+                <span className="icon-check-circle">
+                  <FaCheck />
+                </span>
               </div>
             </div>
           </div>
@@ -168,9 +166,11 @@ const OrderReceipt: React.FC<OrderReceiptProps> = ({
             <p className="receipt-barcode-text">98231000772910</p>
           </div>
           <div className="receipt-download-section">
-            <DashboardButton onClick={onDownloadCopy}>
-              <span className="icon-download">⬇️</span> DOWNLOAD COPY
-            </DashboardButton>
+            <DashboardButton
+              onClick={onDownloadCopy}
+              icon={<FaFileDownload />}
+              name="DOWNLOAD COPY"
+            />
           </div>
         </div>
       </div>

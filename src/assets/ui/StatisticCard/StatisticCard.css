@@ -47,7 +47,7 @@
 }
 
 .stat-card__title {
-  color: #71604d; /* Muted brown from your theme */
+  color: #71604d;
   font-size: 0.85rem;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -61,7 +61,6 @@
   letter-spacing: -0.02em;
 }
 
-/* Responsiveness */
 @media (max-width: 480px) {
   .stat-card {
     padding: 24px;
