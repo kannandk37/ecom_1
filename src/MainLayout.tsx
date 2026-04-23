@@ -61,7 +61,6 @@ const MainLayout: React.FC = () => {
   let FooterMenus: MenuProps[] = [
     { menuName: "Home", onClick: () => navigate("/") },
     { menuName: "About Us", onClick: () => console.log("About clicked") },
-    { menuName: "Services", onClick: () => console.log("Services clicked") },
     { menuName: "Contact", onClick: () => console.log("Contact clicked") },
   ];
   return (

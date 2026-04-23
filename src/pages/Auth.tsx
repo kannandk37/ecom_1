@@ -8,12 +8,13 @@ import {
   FiArrowRight,
   FiEyeOff,
 } from "react-icons/fi";
-import BANNNER from "../../data/banner.png";
+import BANNNER from "../../data/Banner nuts.png";
 import BANNNER2 from "../../data/Banner dates.png";
 import LOGO from "../../data/logo.png";
 import AuthHeader from "../assets/categories_header";
 import DashboardButton from "../assets/ui/DashBoardButton/DashBoardButton";
 import { useNavigate } from "react-router-dom";
+import { siteName } from "../utils/utils";
 
 const AuthCard: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -32,10 +33,9 @@ const AuthCard: React.FC = () => {
       <AuthHeader />
       <div className="auth-container">
         <div className="auth-card">
-          {/* LEFT SIDE: IMAGE PANEL */}
           <div className="auth-image-panel" style={panelStyle}>
             <div className="overlay-content">
-              <h1 className="brand-logo-text">{/* Nature's Candy */}</h1>
+              <h1 className="brand-logo-text">{siteName}</h1>
               <div className="image-footer-card">
                 <span className="sparkle-icon">✨</span>
                 <p>
@@ -46,17 +46,18 @@ const AuthCard: React.FC = () => {
             </div>
           </div>
 
-          {/* RIGHT SIDE: FORM PANEL */}
           <div className="auth-form-panel">
             <div className="form-header">
               <div className="leaf-logo">
                 <img src={LOGO} width={50} height={50}></img>
               </div>
-              <h2 className="brand-title">Nature's Candy</h2>
+              <h2 className="brand-title">{siteName}</h2>
             </div>
 
             <div className="form-content">
-              <h1>{isLogin ? "Welcome Back" : "Join The Organic Journey"}</h1>
+              <h1 className="title">
+                {isLogin ? "Welcome Back" : "Join The Organic Journey"}
+              </h1>
               <p className="subtitle">
                 {isLogin
                   ? "Sign in to continue your organic journey."
@@ -128,15 +129,6 @@ const AuthCard: React.FC = () => {
                   icon={<FiArrowRight />}
                   onClick={isLogin ? () => {} : () => {}}
                 />
-                {/* <button type="submit" className="submit-btn">
-                  {isLogin ? (
-                    <>
-                      Sign In <FiArrowRight />
-                    </>
-                  ) : (
-                    "Create Account"
-                  )}
-                </button> */}
               </form>
 
               <div className="auth-footer">

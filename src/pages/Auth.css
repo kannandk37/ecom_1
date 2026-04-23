@@ -6,7 +6,7 @@
   background-color: #f9f8f4;
   font-family: var(--font-family);
   padding: 20px;
-  padding-top: 120px;
+  margin-top: 50px;
   /* min-width: 662.8px; */
 }
 
@@ -26,7 +26,7 @@
   background-size: cover;
   background-position: center;
   position: relative;
-  min-height: 500px;
+  min-height: 683px;
 }
 
 .overlay-content {
@@ -80,6 +80,10 @@
   font-size: 1.2rem;
   color: #1a1a1a;
   font-weight: 800;
+}
+
+.form-content {
+  width: 100%;
 }
 
 .form-content h1 {

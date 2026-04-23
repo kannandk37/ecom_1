@@ -1,8 +1,8 @@
 .main-footer {
-  background-color: #fcf9f1; /* Matching the cream background from your image */
+  background-color: #fcf9f1;
   padding: 10px 40px;
   border-top: 1px solid #e8e4d9;
-  font-family: var(--font-family); /* Maintaining brand consistency */
+  font-family: var(--font-family);
   position: fixed;
   bottom: 0;
   left: 0;
@@ -22,7 +22,6 @@
   display: flex;
 }
 
-/* Left Section Alignment */
 .footer-section.left {
   justify-content: flex-start;
 }
@@ -44,10 +43,9 @@
 }
 
 .menu-item:hover {
-  color: #c29d4d; /* Golden hover effect */
+  color: #c29d4d;
 }
 
-/* Middle Section Alignment */
 .footer-section.middle {
   justify-content: center;
 }
@@ -81,7 +79,6 @@
   cursor: pointer;
 }
 
-/* Right Section Alignment */
 .footer-section.right {
   justify-content: flex-end;
 }
@@ -92,7 +89,6 @@
   margin: 0;
 }
 
-/* Responsive Design */
 @media (max-width: 900px) {
   .footer-container {
     flex-direction: column;

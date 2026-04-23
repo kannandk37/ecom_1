@@ -3,11 +3,11 @@ import "./index.css";
 import { FiBox, FiPackage, FiTruck, FiUsers, FiPieChart } from "react-icons/fi";
 
 const CATEGORIES = [
-  { id: "nuts", name: "Nuts & Seeds", icon: <FiBox /> },
-  { id: "dried", name: "Dried Fruits", icon: <FiPackage /> },
-  { id: "exotic", name: "Exotic Mix", icon: <FiTruck /> },
-  { id: "offers", name: "Bulk Offers", icon: <FiUsers /> },
-  { id: "best", name: "Best Sellers", icon: <FiPieChart /> },
+  { id: "dryfruits", name: "Dry Fruits", icon: <FiPackage /> },
+  { id: "nuts", name: "Nuts", icon: <FiBox /> },
+  { id: "dates", name: "Dates", icon: <FiTruck /> },
+  { id: "chocolate", name: "Chocolate", icon: <FiUsers /> },
+  { id: "freshjuice", name: "Fresh Juice", icon: <FiPieChart /> },
 ];
 
 const AuthHeader: React.FC = () => {
