@@ -13,7 +13,7 @@ import DashboardLayout from "./assets/ui/DashBoardLayout/DashBoardLayout";
 import type { NavItem } from "./config/navigation";
 import { NAV_OPTIONS } from "./config/navigation";
 import ProductDetails from "./pages/Product/Product";
-import AuthCard from "./pages/Auth";
+import AuthCard from "./pages/Auth/Auth";
 import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import OrderStatusScreen from "./pages/OrderStatusScreen/OrderStatusScreen";
 import DRY_FRUITS from "../data/DRY_FRUITS.png";
@@ -306,8 +306,8 @@ function App() {
           onDownloadCopy={() => { }}
         />} /> */}
 
-        <Route element={<MainLayout />}>
           <Route path="/login" element={<AuthCard />} />
+        <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/orders" element={<Orders />} />
           <Route
