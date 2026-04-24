@@ -8,13 +8,13 @@ import {
   FiArrowRight,
   FiEyeOff,
 } from "react-icons/fi";
-import BANNNER from "../../data/Banner nuts.png";
-import BANNNER2 from "../../data/Banner dates.png";
-import LOGO from "../../data/logo.png";
-import AuthHeader from "../assets/categories_header";
-import DashboardButton from "../assets/ui/DashBoardButton/DashBoardButton";
+import BANNNER from "../../../data/Banner nuts.png";
+import BANNNER2 from "../../../data/Banner dates.png";
+import LOGO from "../../../data/logo.png";
+import AuthHeader from "../../assets/categories_header";
+import DashboardButton from "../../assets/ui/DashBoardButton/DashBoardButton";
 import { useNavigate } from "react-router-dom";
-import { siteName } from "../utils/utils";
+import { siteName } from "../../utils/utils";
 
 const AuthCard: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -30,14 +30,20 @@ const AuthCard: React.FC = () => {
 
   return (
     <>
-      <AuthHeader />
-      <div className="auth-container">
-        <div className="auth-card">
-          <div className="auth-image-panel" style={panelStyle}>
-            <div className="overlay-content">
-              <h1 className="brand-logo-text">{siteName}</h1>
-              <div className="image-footer-card">
-                <span className="sparkle-icon">✨</span>
+      <AuthHeader marginTop="0px" />
+      <div className="login-signup-auth-container">
+        <div className="login-signup-auth-card">
+          <div className="login-signup-auth-image-panel" style={panelStyle}>
+            <div className="login-signup-overlay-content">
+              <h1 className="login-signup-brand-logo-text">
+                <img src={LOGO} width={70} height={70}></img>
+                {siteName}
+              </h1>
+              <h1 className="login-signup-title" style={{marginTop: isLogin ? '-145px' : '-240px', marginLeft: isLogin ? '75px' : ''}}>
+                {isLogin ? "Welcome Back" : "Join The Organic Journey"}
+              </h1>
+              <div className="login-signup-image-footer-card">
+                <span className="login-signup-sparkle-icon">✨</span>
                 <p>
                   Nature's finest treasures, curated for your sophisticated
                   palate.
@@ -46,19 +52,10 @@ const AuthCard: React.FC = () => {
             </div>
           </div>
 
-          <div className="auth-form-panel">
-            <div className="form-header">
-              <div className="leaf-logo">
-                <img src={LOGO} width={50} height={50}></img>
-              </div>
-              <h2 className="brand-title">{siteName}</h2>
-            </div>
+          <div className="login-signup-auth-form-panel">
 
-            <div className="form-content">
-              <h1 className="title">
-                {isLogin ? "Welcome Back" : "Join The Organic Journey"}
-              </h1>
-              <p className="subtitle">
+            <div className="login-signup-form-content">
+              <p className="login-signup-subtitle">
                 {isLogin
                   ? "Sign in to continue your organic journey."
                   : "Create an account to start your organic journey."}
@@ -66,42 +63,42 @@ const AuthCard: React.FC = () => {
 
               <form onSubmit={(e) => e.preventDefault()}>
                 {!isLogin && (
-                  <div className="input-group">
+                  <div className="login-signup-input-group">
                     <label>FULL NAME</label>
-                    <div className="input-wrapper">
-                      <FiUser className="input-icon" />
+                    <div className="login-signup-input-wrapper">
+                      <FiUser className="login-signup-input-icon" />
                       <input type="text" placeholder="Johnathan Appleseed" />
                     </div>
                   </div>
                 )}
 
-                <div className="input-group">
+                <div className="login-signup-input-group">
                   <label>EMAIL ADDRESS</label>
-                  <div className="input-wrapper">
-                    <FiMail className="input-icon" />
+                  <div className="login-signup-input-wrapper">
+                    <FiMail className="login-signup-input-icon" />
                     <input type="email" placeholder="curator@gmail.com" />
                   </div>
                 </div>
 
                 {!isLogin && (
-                  <div className="input-group">
+                  <div className="login-signup-input-group">
                     <label>MOBILE NUMBER</label>
-                    <div className="input-wrapper">
-                      <FiPhone className="input-icon" />
+                    <div className="login-signup-input-wrapper">
+                      <FiPhone className="login-signup-input-icon" />
                       <input type="text" placeholder="+1 (555) 000-0000" />
                     </div>
                   </div>
                 )}
 
-                <div className="password-row">
-                  <div className="input-group">
+                <div className="login-signup-password-row">
+                  <div className="login-signup-input-group">
                     <label>PASSWORD</label>
-                    <div className="input-wrapper">
-                      <FiLock className="input-icon" />
+                    <div className="login-signup-input-wrapper">
+                      <FiLock className="login-signup-input-icon" />
                       <input type="password" placeholder="••••••••" />
                       {isLogin && (
                         <span
-                          className="forgot-link"
+                          className="login-signup-forgot-link"
                           onClick={() => {
                             //TODO: need to navigate to screen saying email sent to email
                           }}
@@ -113,38 +110,36 @@ const AuthCard: React.FC = () => {
                   </div>
 
                   {!isLogin && (
-                    <div className="input-group">
+                    <div className="login-signup-input-group">
                       <label>RE-TYPE PASSWORD</label>
-                      <div className="input-wrapper">
-                        <FiLock className="input-icon" />
+                      <div className="login-signup-input-wrapper">
+                        <FiLock className="login-signup-input-icon" />
                         <input type="password" placeholder="••••••••" />
                       </div>
                     </div>
                   )}
                 </div>
 
+              </form>
+
+              <div className="login-signup-auth-footer">
                 <DashboardButton
                   name={isLogin ? "Create Account" : "Sign In"}
                   variant="primary"
                   icon={<FiArrowRight />}
-                  onClick={isLogin ? () => {} : () => {}}
+                  onClick={isLogin ? () => { } : () => { }}
                 />
-              </form>
-
-              <div className="auth-footer">
                 <p>
                   {isLogin
                     ? "Don't have an account?"
                     : "Already have an account?"}{" "}
-                  <span className="toggle-link" onClick={toggleAuth}>
+                  <span className="login-signup-toggle-link" onClick={toggleAuth}>
                     {isLogin ? "Sign Up" : "Log In"}
                   </span>
                 </p>
-                {isLogin && (
-                  <div className="sustainability-tag">
-                    🍃 SUSTAINABLY SOURCED 🍃
+                  <div className="login-signup-sustainability-tag">
+                    🍃 Farm-to-Table Quality 🍃
                   </div>
-                )}
               </div>
             </div>
           </div>

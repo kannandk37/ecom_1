@@ -9,34 +9,34 @@ const ResetPassword: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <div className="auth-form-panel">
-          <div className="form-header" onClick={() => navigate("/")}>
+    <div className="reset-password-auth-container">
+      <div className="reset-password-auth-card">
+        <div className="reset-password-auth-form-panel">
+          <div className="reset-password-form-header" onClick={() => navigate("/")}>
             <img src={LOGO} width={50} height={50}></img>
-            <h2 className="brand-title">Nature's Candy</h2>
+            <h2 className="reset-password-brand-title">Nature's Candy</h2>
           </div>
 
-          <div className="form-content">
+          <div className="reset-password-form-content">
             <h1>Reset Your Password</h1>
-            <p className="subtitle">
+            <p className="reset-password-subtitle">
               Enter and Confirm your new password to continue.
             </p>
 
             {/* //TODO: need to add the visible icon to revel the password */}
             <form onSubmit={(e) => e.preventDefault()}>
-              <div className="input-group">
+              <div className="reset-password-input-group">
                 <label>NEW PASSWORD</label>
-                <div className="input-wrapper">
-                  <FiLock className="input-icon" />
+                <div className="reset-password-input-wrapper">
+                  <FiLock className="reset-password-input-icon" />
                   <input type="password" placeholder="••••••••" />
                 </div>
               </div>
 
-              <div className="input-group">
+              <div className="reset-password-input-group">
                 <label>RE-TYPE PASSWORD</label>
-                <div className="input-wrapper">
-                  <FiLock className="input-icon" />
+                <div className="reset-password-input-wrapper">
+                  <FiLock className="reset-password-input-icon" />
                   <input type="password" placeholder="••••••••" />
                 </div>
               </div>
@@ -49,9 +49,9 @@ const ResetPassword: React.FC = () => {
               />
             </form>
 
-            <div className="auth-footer">
+            <div className="reset-password-auth-footer">
               <span
-                className="toggle-link"
+                className="reset-password-toggle-link"
                 onClick={() => {
                   navigate("/login");
                 }}
@@ -63,9 +63,9 @@ const ResetPassword: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="support-div">
-        <p className="support">For Support</p>
-        <p className="support">naturecandy@gmail.com</p>
+      <div className="reset-password-support-div">
+        <p className="reset-password-support">For Support</p>
+        <p className="reset-password-support">naturecandy@gmail.com</p>
       </div>
     </div>
   );
