@@ -39,10 +39,10 @@ const AddAddress = ({onClickBack, onSubmit}: AddAddressInterface) => {
     const navigate = useNavigate();
 
     return (
-        <div className="address-container">
-            <div className="address-card">
-                <div className="address-header">
-                    <h2 className="address-title">Add New Address</h2>
+        <div className="add-address-address-container">
+            <div className="add-address-address-card">
+                <div className="add-address-address-header">
+                    <h2 className="add-address-address-title">Add New Address</h2>
                     <DashBoardButton
                         variant='secondary'
                         onClick={() => onClickBack?.()}
@@ -52,15 +52,15 @@ const AddAddress = ({onClickBack, onSubmit}: AddAddressInterface) => {
                     />
                 </div>
 
-                <form className="address-form">
+                <form className="add-address-address-form">
                     {/* Address Type Selection */}
-                    <div className="form-section">
-                        <label className="input-label">ADDRESS TYPE</label>
-                        <div className="radio-group">
+                    <div className="add-address-form-section">
+                        <label className="add-address-input-label">ADDRESS TYPE</label>
+                        <div className="add-address-radio-group">
                             {[AddressType.HOME, AddressType.OFFICE, AddressType.OTHERS].map((type) => (
                                 <div
                                     key={type}
-                                    className={`radio-item ${addressType === type ? 'active' : ''}`}
+                                    className={`add-address-radio-item ${addressType === type ? 'active' : ''}`}
                                     onClick={() => { setAddressType(type); address.type = type; setAddress(address) }}
                                 >
                                     <input
@@ -75,7 +75,7 @@ const AddAddress = ({onClickBack, onSubmit}: AddAddressInterface) => {
                     </div>
 
                     {/* Address Lines */}
-                    <div className="input-row">
+                    <div className="add-address-input-row">
                         <DashBoardInput
                             value={address.line1 || ''}
                             onChange={() => { }}
@@ -84,7 +84,7 @@ const AddAddress = ({onClickBack, onSubmit}: AddAddressInterface) => {
                         />
                     </div>
 
-                    <div className="input-row">
+                    <div className="add-address-input-row">
                         <DashBoardInput
                             value={address.line2 || ''}
                             onChange={() => { }}
@@ -94,8 +94,8 @@ const AddAddress = ({onClickBack, onSubmit}: AddAddressInterface) => {
                     </div>
 
                     {/* City and State */}
-                    <div className="grid-row">
-                        <div className="input-row">
+                    <div className="add-address-grid-row">
+                        <div className="add-address-input-row">
                             <DashBoardInput
                                 value={address.city || ''}
                                 onChange={() => { }}
@@ -103,18 +103,18 @@ const AddAddress = ({onClickBack, onSubmit}: AddAddressInterface) => {
                                 placeholder="Town/City"
                             />
                         </div>
-                        <div className="input-row">
+                        <div className="add-address-input-row">
                             <Dropdown label="State" options={sortOptions} onSelect={(el) => {address.state = el.value; setAddress(address)}} />
-                            <label className="input-label">State</label>
-                            <select className="custom-select error-border">
+                            <label className="add-address-input-label">State</label>
+                            <select className="add-address-custom-select error-border">
                                 <option onSelect={(el) => console.log(el)}>Select State</option>
                             </select>
-                            <span className="error-text">This field is required</span>
+                            <span className="add-address-error-text">This field is required</span>
                         </div>
                     </div>
 
                     {/* Mobile Number */}
-                    <div className="input-row">
+                    <div className="add-address-input-row">
                             <DashBoardInput
                                 label='Mobile Number'
                                 value={address.mobile || ''}
@@ -124,7 +124,7 @@ const AddAddress = ({onClickBack, onSubmit}: AddAddressInterface) => {
                     </div>
 
                     {/* Action Button */}
-                    <div className="form-footer">
+                    <div className="add-address-form-footer">
                         <DashBoardButton
                             variant='primary'
                             onClick={() => { console.log('asdas'); onSubmit; }}

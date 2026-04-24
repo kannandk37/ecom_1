@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import "./CheckoutSideBar.css";
 import { FiUser, FiTruck, FiCreditCard, FiClipboard } from "react-icons/fi";
 
@@ -26,6 +26,11 @@ const CheckoutSidebar: React.FC<CheckoutSidebarProps> = ({
 }) => {
   const [currentStep, setCurrentStep] = useState(activeStep);
 
+  useEffect(() => {
+    setCurrentStep(activeStep);
+  }, [activeStep])
+
+
   const handleStepClick = (id: string) => {
     setCurrentStep(id);
     if (onStepChange) onStepChange(id);
@@ -35,7 +40,7 @@ const CheckoutSidebar: React.FC<CheckoutSidebarProps> = ({
     <aside className="checkout-sidebar">
       <div className="sidebar-header">
         <h1 className="sidebar-title">Checkout</h1>
-        <p className="sidebar-subtitle">Complete your curation</p>
+        <p className="sidebar-subtitle">Complete Your Order</p>
       </div>
 
       <nav className="sidebar-nav">

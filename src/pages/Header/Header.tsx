@@ -13,6 +13,7 @@ interface HeaderProps {
   onSignInClick: () => void;
   onCartClick: () => void;
   onEnterpriseSignInClick: () => void;
+  height?: string;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -21,6 +22,7 @@ export const Header: React.FC<HeaderProps> = ({
   onSignInClick,
   onCartClick,
   onEnterpriseSignInClick,
+  height = '70px'
 }) => {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
@@ -30,8 +32,8 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="main-header">
-      <div className="header-container">
+    <header className="main-header" style={{height: height}}>
+      <div className="header-container" >
         {/* Logo Section */}
         <div
           className="header-logo"

@@ -5,7 +5,6 @@ import OrderSummary from "./OrderSummary/OrderSummary";
 import ShippingForm from "./Checkout/ShippingForm";
 import PaymentForm from "./Checkout/PaymentForm";
 import ReviewForm from "./Checkout/ReviewForm";
-import AuthHeader from "../assets/categories_header";
 import { useNavigate } from "react-router-dom";
 import { siteName } from "../utils/utils";
 import Header from "./Header/Header";
@@ -66,7 +65,7 @@ const ConfirmCheckout = () => {
               description: "Pay on door step",
             }}
             items={productsData}
-            onPlaceOrder={() => {}}
+            onPlaceOrder={() => { }}
           />
         );
       default:
@@ -94,8 +93,8 @@ const ConfirmCheckout = () => {
         onSignInClick={() => navigate("/login")}
         onEnterpriseSignInClick={() => navigate("/enterprise")}
         onCartClick={() => navigate("/cart")}
+        height="60px"
       />
-      <AuthHeader />
       <div className="checkout-layout-grid">
         <CheckoutSidebar
           activeStep={currentStep}
@@ -116,6 +115,7 @@ const ConfirmCheckout = () => {
             stepConfig?.btn == "Place Order Now"
               ? navigate("/order-status")
               : setCurrentStep(stepConfig.next);
+            setCurrentStep(stepConfig.next);
           }}
         />
       </div>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FiPlus, FiMapPin, FiPhone } from "react-icons/fi";
 import DashboardButton from "../../assets/ui/DashBoardButton/DashBoardButton"; // Reusing your Button
 import "./ShippingForm.css";
+import { FaMapMarkerAlt } from "react-icons/fa";
 
 interface Address {
   id: string;
@@ -160,73 +161,18 @@ const ShippingForm: React.FC<ShippingFormProps> = ({
     if (selected) onNext(selected);
   };
 
-  // return (
-  //   <div className="shipping-form-container">
-  //     <div className="shipping-header">
-  //       <div className="header-left">
-  //         <span className="step-count">Step 02 of 4</span>
-  //         <h2 className="shipping-title">Shipping Address</h2>
-  //       </div>
-  //       <button className="add-address-btn" onClick={onAddAddress}>
-  //         <FiPlus /> Add New Address
-  //       </button>
-  //     </div>
-
-  //     <div className="address-list-scroll">
-  //       <div className="address-grid">
-  //         {MOCK_ADDRESSES.map((addr) => (
-  //           <div
-  //             key={addr.id}
-  //             className={`address-card ${selectedId === addr.id ? "selected" : ""}`}
-  //             onClick={() => handleSelect(addr.id)}
-  //           >
-  //             <div className="card-top">
-  //               <span className="address-type">{addr.type}</span>
-  //               <div className="custom-radio">
-  //                 <div
-  //                   className={`radio-inner ${selectedId === addr.id ? "checked" : ""}`}
-  //                 />
-  //               </div>
-  //             </div>
-
-  //             <div className="card-body">
-  //               <p className="user-name">{addr.name}</p>
-  //               <p className="address-text">{addr.addressLine}</p>
-  //               <div className="phone-row">
-  //                 <FiPhone size={14} />
-  //                 <span>{addr.phone}</span>
-  //               </div>
-  //             </div>
-  //           </div>
-  //         ))}
-  //       </div>
-  //     </div>
-
-  //     <div className="shipping-actions">
-  //       <DashboardButton
-  //         name="Next"
-  //         variant="primary"
-  //         disabled={!selectedId}
-  //         onClick={handleNextSubmit}
-  //         width="200px"
-  //       />
-  //     </div>
-  //   </div>
-  // );
   return (
     <div className="shipping-form-container">
-      {/* FIXED HEADER */}
       <div className="shipping-header">
-        <div className="header-left">
-          <span className="step-count">Step 02 of 4</span>
-          <h2 className="shipping-title">Shipping Address</h2>
+        <div className="section-header">
+          <span className="step-tag">Step 02 of 4</span>
+          <h2 className="section-title">Shipping Address</h2>
         </div>
         <button className="add-address-btn" onClick={onAddAddress}>
           <FiPlus /> Add New Address
         </button>
       </div>
 
-      {/* SCROLLABLE MIDDLE SECTION */}
       <div className="address-list-scroll">
         <div className="address-grid">
           {MOCK_ADDRESSES.map((addr) => (
@@ -245,7 +191,7 @@ const ShippingForm: React.FC<ShippingFormProps> = ({
               </div>
               <div className="card-body">
                 <p className="user-name">{addr.name}</p>
-                <p className="address-text">{addr.addressLine}</p>
+                <p className="address-text"><FaMapMarkerAlt size={14}/>  {addr.addressLine}</p>
                 <div className="phone-row">
                   <FiPhone size={14} />
                   <span>{addr.phone}</span>
@@ -256,7 +202,6 @@ const ShippingForm: React.FC<ShippingFormProps> = ({
         </div>
       </div>
 
-      {/* FIXED FOOTER */}
       <div className="shipping-actions">
         <DashboardButton
           name="Next"
@@ -265,7 +210,7 @@ const ShippingForm: React.FC<ShippingFormProps> = ({
           onClick={handleNextSubmit}
           width="220px"
         />
-      </div>
+      </div> 
     </div>
   );
 };

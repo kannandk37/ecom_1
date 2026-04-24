@@ -23,26 +23,6 @@
   }
 }
 
-.section-header {
-  margin: 0px;
-  margin-bottom: 5px;
-}
-
-.step-tag {
-  font-size: 0.75rem;
-  font-weight: 800;
-  color: var(--color-brand-brown);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-}
-
-.section-title {
-  font-size: 2.2rem;
-  font-weight: 800;
-  color: var(--color-text-primary);
-  margin: 2px 0;
-}
-
 .payment-form-body {
   display: flex;
   flex-direction: column;
