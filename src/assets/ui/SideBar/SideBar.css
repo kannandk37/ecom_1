@@ -1,16 +1,15 @@
-.sidebar {
+.sidebar-sidebar {
   background-color: #e2e4df;
   display: flex;
   flex-direction: column;
   padding: 24px 16px;
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1) ease-in-out;
   border-right: 1px solid rgba(0, 0, 0, 0.05);
   overflow: hidden;
   align-items: flex-start;
 }
 
-/* The Toggle Button inside the Sidebar */
-.toggle {
+.sidebar-toggle {
   background-color: #8c6d3f;
   color: white;
   border: none;
@@ -26,11 +25,10 @@
   transition: all 0.4s ease;
 }
 
-.toggle:hover {
+.sidebar-toggle:hover {
   transform: scale(1.05);
 }
 
-/* Navigation List Wrapper */
 nav {
   display: flex;
   flex-direction: column;
@@ -38,7 +36,6 @@ nav {
   width: 100;
 }
 
-/* Individual Nav Button */
 nav button {
   display: flex;
   align-items: center;
@@ -48,30 +45,27 @@ nav button {
   border: none;
   border-radius: 12px;
   cursor: pointer;
-  color: #5c4d3b; /* Muted brown text */
+  color: #5c4d3b;
   font-size: 1rem;
   font-weight: 600;
   transition: all 0.3s ease;
-  white-space: nowrap; /* Prevents text wrapping during animation */
+  white-space: nowrap;
   gap: 16px;
   justify-content: center;
 }
 
-/* Icon Styling inside Button */
 nav button svg {
   font-size: 1.25rem;
-  min-width: 24px; /* Keeps icons centered when text is hidden */
+  min-width: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* HOVER STATE */
 nav button:hover {
   background-color: rgba(140, 109, 63, 0.08);
 }
 
-/* ACTIVE STATE (The logic from your location.pathname check) */
 nav button.active {
   background-color: rgba(140, 109, 63, 0.15);
   color: #8c6d3f;
@@ -79,27 +73,25 @@ nav button.active {
   box-shadow: inset 4px 0 0 #8c6d3f;
 }
 
-/* COLLAPSED STATE ADJUSTMENTS */
-/* In your DashboardLayout, the parent div gets the .collapsed class */
-.collapsed .sidebar {
+.sidebar-collapsed .sidebar-sidebar {
   width: 88px;
   padding: 24px 8px;
 }
 
-.collapsed .nav-item-wrapper {
+.sidebar-collapsed .sidebar-nav-item-wrapper {
   justify-content: center;
 }
 
-.collapsed nav button {
+.sidebar-collapsed nav button {
   justify-content: center;
   padding: 12px;
 }
 
-.collapsed .toggle {
+.sidebar-collapsed .sidebar-toggle {
   align-self: center;
 }
 
-.header-logo {
+.sidebar-header-logo {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -107,76 +99,66 @@ nav button.active {
   cursor: pointer;
   margin-bottom: 20px;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden; /* Crucial for collapse */
+  overflow: hidden;
 }
 
-.logo-icon {
-  min-width: 40px; /* Matches the image size */
+.sidebar-logo-image {
+  min-width: 40px;
   height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0; /* Prevents logo from squishing */
+  margin-bottom: 15px;
 }
 
-.logo-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-/* Text Wrapper Animation */
-.logo-text-wrapper {
+.sidebar-logo-text-wrapper {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 1;
   max-width: 200px;
   white-space: nowrap;
 }
 
-.logo-text-wrapper.hidden {
+.sidebar-logo-text-wrapper .hidden {
   opacity: 0;
   max-width: 0;
   margin-left: 0;
   pointer-events: none;
 }
 
-.logo-text {
+.sidebar-logo-text {
   font-family: var(--font-family);
   font-size: 1.1rem;
   font-weight: 800;
-  color: #8c6d3f; /* Your brand brown */
+  color: #8c6d3f;
+  margin-bottom: 15px;
 }
 
-.nav-item-wrapper {
+.sidebar-nav-item-wrapper {
   width: 100%;
   display: flex;
-  justify-content: flex-start; /* Keep icons aligned during the shrink */
+  justify-content: flex-start;
   transition: justify-content 0.4s;
 }
 
-.sidebar-nav {
+.sidebar-sidebar-nav {
   display: flex;
   flex-direction: column;
   gap: 12px;
   width: 100%;
 }
 
-/* Branding Wrapper: Logo and Text */
-.branding-wrapper {
+.sidebar-branding-wrapper {
   display: flex;
   align-items: center;
-  justify-content: center;
   margin-top: 10px;
   gap: 1px;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 1;
-  max-width: 300px; /* High enough to fit long names */
+  max-width: 300px;
   white-space: nowrap;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Collapse Logic for Branding */
-.branding-wrapper.collapsed-branding {
+.sidebar-branding-wrapper .sidebar-collapsed-branding {
   opacity: 0;
   max-width: 0;
   margin-left: -10px;
@@ -184,8 +166,7 @@ nav button.active {
   overflow: hidden;
 }
 
-/* Header Container: Holds Toggle + Logo + Name */
-.sidebar-header {
+.sidebar-sidebar-header {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -193,8 +174,7 @@ nav button.active {
   padding-bottom: 25px;
 }
 
-/* Toggle stays fixed size */
-.toggle-wrapper {
+.sidebar-toggle-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;

@@ -214,6 +214,7 @@ import DashboardButton from "../DashBoardButton/DashBoardButton";
 import { FiAlignJustify } from "react-icons/fi";
 import { LOGO, siteName } from "../../../utils/utils";
 import { useEffect, useState } from "react";
+import { FaUserCircle } from "react-icons/fa";
 
 export const Sidebar = ({ isCollapsed, onToggle }: any) => {
   const location = useLocation();
@@ -232,10 +233,11 @@ export const Sidebar = ({ isCollapsed, onToggle }: any) => {
   }, [isCollapsed]);
 
   return (
-    <aside className={`sidebar ${isCollapsed ? "collapsed" : "expanded"}`}>
-      <div className="sidebar-header">
-        {/* 1. TOGGLE BUTTON FIRST */}
-        <div className="toggle-wrapper">
+    <aside
+      className={`sidebar-sidebar ${isCollapsed ? "sidebar-collapsed" : ""}`}
+    >
+      <div className="sidebar-sidebar-header">
+        <div className="sidebar-toggle-wrapper">
           <DashboardButton
             name=""
             icon={<FiAlignJustify size={22} />}
@@ -247,21 +249,18 @@ export const Sidebar = ({ isCollapsed, onToggle }: any) => {
           />
         </div>
 
-        {/* 2. LOGO & NAME (Grouped to collapse together) */}
         <div
-          className={`branding-wrapper ${isCollapsed ? "collapsed-branding" : ""}`}
+          className={`sidebar-branding-wrapper ${isCollapsed ? "sidebar-collapsed-branding" : ""}`}
           onClick={() => navigate("/dashboard/orders")}
         >
-          <div className="logo-icon">
-            <img className="logo-image" src={LOGO} alt="logo" />
-          </div>
-          <span className="logo-text">{siteName}</span>
+          <img className="sidebar-logo-image" src={LOGO} alt="logo" />
+          <span className="sidebar-logo-text">{siteName}</span>
         </div>
       </div>
 
-      <nav className="sidebar-nav">
+      <nav className="sidebar-sidebar-nav">
         {NAV_OPTIONS.map((item) => (
-          <div key={item.id} className="nav-item-wrapper">
+          <div key={item.id} className="sidebar-nav-item-wrapper">
             <DashboardButton
               icon={item.icon}
               name={showLabel ? item.name : ""}
@@ -275,6 +274,24 @@ export const Sidebar = ({ isCollapsed, onToggle }: any) => {
           </div>
         ))}
       </nav>
+
+      <div className="sidebar-sidebar-header">
+        <div
+          className={`sidebar-branding-wrapper ${isCollapsed ? "sidebar-collapsed-branding" : ""}`}
+          onClick={() => navigate("/dashboard/orders")}
+          style={{ marginLeft: isCollapsed ? "8px" : "15px" }}
+        >
+          <span className="sidebar-logo-image">
+            {<FaUserCircle size={30} />}
+          </span>
+          <span
+            className="sidebar-logo-text"
+            style={{ marginLeft: "25px", marginBottom: "27px" }}
+          >
+            ADMIN
+          </span>
+        </div>
+      </div>
     </aside>
   );
 };

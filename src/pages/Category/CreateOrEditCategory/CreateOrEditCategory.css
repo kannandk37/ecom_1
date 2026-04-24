@@ -1,0 +1,308 @@
+.create-category-container {
+  font-family: var(--font-family);
+  /* padding: 30px 40px; */
+  width: 100%;
+  /* max-width: 1600px; */
+  margin: 0 auto;
+  box-sizing: border-box;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header */
+.create-category-top-bar {
+  margin-bottom: 30px;
+}
+
+.create-category-back-btn {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 10px;
+  transition: color 0.2s;
+  margin-bottom: 15px;
+}
+
+.create-category-back-btn:hover {
+  color: #1a1a1a;
+}
+
+.create-category-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+/* Grid Layout */
+.create-category-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 40px;
+  align-items: start;
+}
+
+/* Left Column - Image & Tip */
+.create-category-left-col {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.create-category-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 25px;
+}
+
+.create-category-label {
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  font-weight: 800;
+  color: #333;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Image Upload Box */
+.create-category-image-upload-box {
+  border: 2px dashed #ddd;
+  border-radius: 12px;
+  background-color: #fdfaf5;
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.create-category-image-upload-box:hover {
+  border-color: #8c6d3f;
+  background-color: #f8f7f4;
+}
+
+.create-category-image-upload-box.error-border {
+  border-color: #d93025;
+  background-color: #fdf2f2;
+}
+
+.create-category-upload-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  padding: 20px;
+}
+
+.create-category-upload-icon {
+  font-size: 2.5rem;
+  color: #bfa888;
+  margin-bottom: 10px;
+}
+
+.create-category-upload-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 5px 0;
+}
+
+.create-category-upload-subtext {
+  font-size: 0.75rem;
+  color: #888;
+  margin: 0;
+}
+
+/* Image Preview & Remove Button */
+.create-category-preview-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.create-category-preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.create-category-remove-image-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #d93025;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+}
+
+.create-category-remove-image-btn:hover {
+  background-color: #d93025;
+  color: #fff;
+  transform: scale(1.05);
+}
+
+/* Pro Tip */
+.create-category-pro-tip {
+  background-color: #f4f8f4;
+  border: 1px solid #e2eee2;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+}
+
+.create-category-tip-icon {
+  color: #27ae60;
+  font-size: 1.2rem;
+  margin-top: 2px;
+}
+
+.create-category-tip-content strong {
+  display: block;
+  font-size: 0.85rem;
+  color: #27ae60;
+  margin-bottom: 5px;
+}
+
+.create-category-tip-content p {
+  font-size: 0.8rem;
+  color: #555;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Right Column - Form Card */
+.create-category-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 30px;
+  border: 1px solid #f0f0ed;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.02);
+}
+
+.create-category-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.create-category-hint {
+  font-size: 0.75rem;
+  color: #aaa;
+  font-style: italic;
+}
+
+/* Inputs */
+.create-category-input,
+.create-category-textarea {
+  width: 100%;
+  padding: 14px 16px;
+  background-color: #f8f7f4;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: var(--font-family);
+  color: #1a1a1a;
+  outline: none;
+  transition: all 0.3s;
+  box-sizing: border-box;
+}
+
+.create-category-textarea {
+  resize: vertical;
+}
+
+.create-category-input:focus,
+.create-category-textarea:focus {
+  background-color: #fff;
+  border-color: #8c6d3f;
+  box-shadow: 0 4px 15px rgba(140, 109, 63, 0.05);
+}
+
+.create-category-input.error-input,
+.create-category-textarea.error-input {
+  border-color: #d93025;
+  background-color: #fff;
+}
+
+.create-category-error-text {
+  color: #d93025;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Footer */
+.create-category-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 15px;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+/* Responsiveness */
+@media (max-width: 900px) {
+  .create-category-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .create-category-image-upload-box {
+    height: 200px;
+  }
+}
+
+@media (max-width: 600px) {
+  .create-category-container {
+    padding: 20px;
+  }
+
+  .create-category-footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .create-category-footer > * {
+    width: 100%;
+  }
+}

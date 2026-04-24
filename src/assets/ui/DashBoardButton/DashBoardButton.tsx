@@ -34,14 +34,14 @@ export const DashboardButton: React.FC<ButtonProps> = ({
     "--btn-width": typeof width === "number" ? `${width}px` : width,
     "--btn-height": typeof height === "number" ? `${height}px` : height,
     "--btn-font-size": fontSize,
-    "--btn-justify-content": side,
+    // "--btn-justify-content": side,
   } as React.CSSProperties;
 
   return (
     <button
       type={type}
       className={showBg ? `dashboard-btn dashboard-btn--${variant}` : ""}
-      style={buttonStyle}
+      style={{ ...buttonStyle, justifyContent: side ? "flex-start" : "center" }}
       disabled={disabled}
       onClick={(e) => {
         if (type !== "submit") e.preventDefault();

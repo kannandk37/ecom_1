@@ -22,6 +22,14 @@ import Home from "../pages/Home/Home";
 import DRY_FRUITS from "../../data/DRY_FRUITS.png";
 import NUTS from "../../data/NUTS.png";
 import DATES from "../../data/DATES.png";
+import { FaIndianRupeeSign } from "react-icons/fa6";
+import { MdOutlineCategory } from "react-icons/md";
+import { TbBrandBitbucket } from "react-icons/tb";
+import DashBoardCategories from "../pages/DashBoard/Categories/DashBoardCategories";
+import DashBoardOrders from "../pages/DashBoard/Orders/DashBoardOrders";
+import Orders from "../pages/Orders/Orders";
+import CreateOrEditCategory from "../pages/Category/CreateOrEditCategory/CreateOrEditCategory";
+import CreateOrEditBrand from "../pages/Brand/CreateOrEditBrand/CreateOrEditBrand";
 export interface NavItem {
   id: string;
   name: string;
@@ -106,23 +114,38 @@ export const NAV_OPTIONS: NavItem[] = [
     name: "Orders",
     icon: <FiShoppingBag />,
     path: "/dashboard/orders",
-    component: <Order {...mockOrderData} />,
-    // children: [
-    //   {
-    //     id: "all-orders",
-    //     name: "All Orders",
-    //     icon: <FiBox />,
-    //     path: "/dashboard/orders",
-    //     component: <Orders />,
-    //   },
-    // ],
+    component: <DashBoardOrders />,
+    children: [
+      {
+        id: "all-orders",
+        name: "All Orders",
+        icon: <FiBox />,
+        path: "/dashboard/orders",
+        component: <Orders />,
+      },
+    ],
   },
   {
     id: "revenue",
     name: "Revenue",
-    icon: <FiDollarSign />,
+    icon: <FaIndianRupeeSign />,
     path: "/dashboard/revenue",
     component: <Home />,
+  },
+  {
+    id: "categories",
+    name: "Categories",
+    icon: <MdOutlineCategory />,
+    path: "/dashboard/categories",
+    // component: <DashBoardCategories />,
+    component: <CreateOrEditCategory />,
+  },
+  {
+    id: "brands",
+    name: "Brands",
+    icon: <TbBrandBitbucket />,
+    path: "/dashboard/brands",
+    component: <CreateOrEditBrand />,
   },
   {
     id: "products",

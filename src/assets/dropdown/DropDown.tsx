@@ -5,6 +5,7 @@ import { FiChevronDown } from "react-icons/fi";
 interface DropdownOption {
   id: string | number;
   value: string;
+  label?: string;
 }
 
 interface DropdownProps {
