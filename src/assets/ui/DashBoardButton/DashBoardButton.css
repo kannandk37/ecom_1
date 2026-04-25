@@ -54,6 +54,7 @@
 .dashboard-btn--secondary {
   background-color: #f3f1ec;
   color: #8c6d3f;
+  box-shadow: 0 12px 24px rgba(140, 109, 63, 0.3);
 }
 
 .dashboard-btn--secondary:hover:not(:disabled) {

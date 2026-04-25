@@ -74,6 +74,7 @@
 }
 
 .create-category-label {
+  font-family: var(--font-family);
   font-size: 0.9rem;
   margin-bottom: 10px;
   font-weight: 800;
@@ -224,39 +225,6 @@
   font-size: 0.75rem;
   color: #aaa;
   font-style: italic;
-}
-
-/* Inputs */
-.create-category-input,
-.create-category-textarea {
-  width: 100%;
-  padding: 14px 16px;
-  background-color: #f8f7f4;
-  border: 1px solid transparent;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  font-family: var(--font-family);
-  color: #1a1a1a;
-  outline: none;
-  transition: all 0.3s;
-  box-sizing: border-box;
-}
-
-.create-category-textarea {
-  resize: vertical;
-}
-
-.create-category-input:focus,
-.create-category-textarea:focus {
-  background-color: #fff;
-  border-color: #8c6d3f;
-  box-shadow: 0 4px 15px rgba(140, 109, 63, 0.05);
-}
-
-.create-category-input.error-input,
-.create-category-textarea.error-input {
-  border-color: #d93025;
-  background-color: #fff;
 }
 
 .create-category-error-text {

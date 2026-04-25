@@ -49,6 +49,29 @@
   transition: all 0.2s ease;
 }
 
+.db-field::-webkit-scrollbar {
+  width: 4px;
+}
+
+.db-field::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.db-field::-webkit-scrollbar-thumb {
+  background: var(--color-scroll-bar);
+  border-radius: 2px;
+  border: 1px solid #fdfaf5;
+}
+
+.db-field::-webkit-scrollbar-thumb:hover {
+  background: var(--color-scroll-bar-hover);
+}
+
+.db-field {
+  /* scrollbar-width: thin; */
+  scrollbar-color: var(--color-scroll-bar) transparent;
+}
+
 .db-field:focus {
   outline: none;
   background-color: #ffffff;

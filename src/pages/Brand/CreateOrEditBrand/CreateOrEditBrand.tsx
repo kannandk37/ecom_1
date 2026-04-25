@@ -2,30 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FiArrowLeft, FiUploadCloud, FiX } from "react-icons/fi";
-
-// Adjust these imports to match your project structure
 import DashBoardButton from "../../../assets/ui/DashBoardButton/DashBoardButton";
 import DashBoardInput from "../../../assets/ui/DashBoardInput/DashBoardInput";
 import Dropdown from "../../../assets/dropdown/DropDown";
 import "./CreateOrEditBrand.css";
 import { IoMdAddCircleOutline } from "react-icons/io";
-
-// The Category and Brand entity structures
-export class Category {
-  id?: string;
-  name?: string;
-  description?: string;
-  subCategory?: Category;
-  image?: string;
-}
-
-export class Brand {
-  id?: string;
-  name?: string;
-  description?: string;
-  category?: Category;
-  image?: string;
-}
+import { Category } from "../../../entity/category";
+import { Brand } from "../../../entity/brand/index";
 
 const CreateOrEditBrand: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -52,6 +35,9 @@ const CreateOrEditBrand: React.FC = () => {
   const [categoryOptions, setCategoryOptions] = useState<
     { id: string; label: string; value: string }[]
   >([]);
+  const [nameError, setNameError] = useState<string>(null);
+  const [descriptionError, setDescriptionError] = useState<string>(null);
+  const [imageFileError, setImageFileError] = useState<string>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -81,19 +67,19 @@ const CreateOrEditBrand: React.FC = () => {
     // 2. Fetch Brand if in Edit Mode
     if (isEditMode) {
       setIsLoading(true);
-      axios
-        .get(`/api/brands/${id}`)
-        .then((response) => {
-          const brand: Brand = response.data;
-          setName(brand.name || "");
-          setDescription(brand.description || "");
-          setImagePreview(brand.image || null);
-          if (brand.category?.id) {
-            setCategoryId(brand.category.id);
-          }
-        })
-        .catch((error) => console.error("Error fetching brand:", error))
-        .finally(() => setIsLoading(false));
+      // axios
+      //   .get(`/api/brands/${id}`)
+      //   .then((response.data) => {
+      //     const brand: Brand = response.data;
+      //     setName(brand.name || "");
+      //     setDescription(brand.description || "");
+      //     setImagePreview(brand.image || null);
+      //     if (brand.category?.id) {
+      //       setCategoryId(brand.category.id);
+      //     }
+      //   })
+      //   .catch((error) => console.error("Error fetching brand:", error))
+      //   .finally(() => setIsLoading(false));
     }
   }, [id, isEditMode]);
 
@@ -121,6 +107,20 @@ const CreateOrEditBrand: React.FC = () => {
     setImageFile(null);
     setImagePreview(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const isValid = () => {
+    if (!name.trim()) {
+      setNameError("Please Provide Category Name");
+    } else if (!description.trim()) {
+      setDescriptionError("Please Provide Category Description");
+    } else if (!imagePreview && !imageFile) {
+      setImageFileError("Please Provide Category Image");
+    } else {
+      return true;
+    }
+
+    return false;
   };
 
   // Validation & Submit

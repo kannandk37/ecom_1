@@ -14,6 +14,7 @@ interface DashboardInputProps {
   icon?: ReactNode;
   name?: string;
   style?: React.CSSProperties;
+  row?: number;
 }
 
 export const DashboardInput: React.FC<DashboardInputProps> = ({
@@ -29,6 +30,7 @@ export const DashboardInput: React.FC<DashboardInputProps> = ({
   icon,
   name,
   style,
+  row = 5,
 }) => {
   return (
     <div
@@ -39,16 +41,34 @@ export const DashboardInput: React.FC<DashboardInputProps> = ({
 
       <div className="db-input-wrapper">
         {icon && <span className="db-icon">{icon}</span>}
-        <input
-          name={name}
-          type={type}
-          placeholder={placeholder}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          required={required}
-          disabled={disabled}
-          className="db-field"
-        />
+        {type == "textarea" ? (
+          <>
+            <textarea
+              name={name}
+              placeholder="Enter a brief description"
+              value={value}
+              rows={row}
+              onChange={(e) => onChange(e.target.value)}
+              required={required}
+              disabled={disabled}
+              className="db-field"
+              style={{ resize: "none" }}
+            />
+          </>
+        ) : (
+          <>
+            <input
+              name={name}
+              type={type}
+              placeholder={placeholder}
+              value={value}
+              onChange={(e) => onChange(e.target.value)}
+              required={required}
+              disabled={disabled}
+              className="db-field"
+            />
+          </>
+        )}
       </div>
 
       {error && errorMessage && (

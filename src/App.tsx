@@ -222,16 +222,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route
-          path="/enterprise"
-          element={
-            <Enterprise
-              onForgotPassword={() => {
-                /** TODO: need to navigate to screen saying email sent*/
-              }}
-            />
-          }
-        />
+        <Route path="/enterprise.com" element={<Enterprise />} />
         <Route path="/receipt" element={<DemoReceiptScreen />} />
         <Route
           path="/cart-total-card"
@@ -306,7 +297,7 @@ function App() {
           onDownloadCopy={() => { }}
         />} /> */}
 
-          <Route path="/login" element={<AuthCard />} />
+        <Route path="/login" element={<AuthCard />} />
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/orders" element={<Orders />} />

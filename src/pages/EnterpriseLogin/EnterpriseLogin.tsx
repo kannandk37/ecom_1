@@ -11,6 +11,8 @@ import { LOGO } from "../../utils/utils";
 // import PerformanceBar from "@/src/assets/ui/PerformanceBar/PerformanceBar";
 // import LeaderboardBar from "@/src/assets/ui/LeaderboardBar/LeaderboardBar";
 import { useNavigate } from "react-router-dom";
+import { UserAccountService } from "../../service/user_account";
+import Loader from "../../assets/loader/Loader2";
 
 // const salesData = [
 //   { name: "California Almonds", count: 20, percentage: 82 },
@@ -83,16 +85,12 @@ import { useNavigate } from "react-router-dom";
 // ];
 
 interface EnterpriseLoginProps {
-  onLogin?: (email: string, pass: string, remember: boolean) => void;
-  onForgotPassword?: () => void;
   logoUrl?: string;
   width?: string | number;
   height?: string | number;
 }
 
 const Enterprise: React.FC<EnterpriseLoginProps> = ({
-  onLogin,
-  onForgotPassword,
   logoUrl = LOGO,
   width = "600px",
   height = "auto",
@@ -104,17 +102,26 @@ const Enterprise: React.FC<EnterpriseLoginProps> = ({
   const [isEmailError, setIsEmailError] = useState<boolean>(false);
   const [emailErrorMessage, setEmailErrorMessage] = useState<string>("");
   const [isPasswordError, setIsPasswordError] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [user, setUser] = useState<string>(""); // for now string have to be user
 
   // Convert numeric props to pixel strings
   const cardWidth = typeof width === "number" ? `${width}px` : width;
   const cardHeight = typeof height === "number" ? `${height}px` : height;
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (isValid()) {
-      onLogin?.(email, password, remember);
-      // setUser("not");
-      navigate("/dashboard/orders");
+      setIsLoading(true);
+      try {
+        let response = await new UserAccountService().loginIn(email, password);
+        console.log("response", response);
+        navigate("/dashboard/orders");
+        setIsLoading(false);
+      } catch (error) {
+        setUser("not");
+        console.log(error);
+        setIsLoading(false);
+      }
     }
   };
 
@@ -134,119 +141,125 @@ const Enterprise: React.FC<EnterpriseLoginProps> = ({
   };
 
   return (
-    <div className="el-page-wrapper">
-      {/* <StatisticCard
-        title="Total Revenue"
-        value="₹1,45,200"
-        icon={<FiTrendingUp />}
-        trendValue="+12%"
-        width="350px"
-      />
-      <PerformanceBar
-        title="Top Purchased Products"
-        data={salesData}
-        width="750px"
-        showMoreOptions={false}
-        maxBars={9}
-        // onMoreOptionsClick={() => console.log("Show reports menu...")}
-      />
-      <LeaderboardBar
-        title="Top Purchasing Customers"
-        data={purchasingData}
-        width="450px"
-        maxBars={10}
-        // onMoreOptionsClick={() => console.log("Show customers menu...")}
-        showMoreOptions={false}
-      /> */}
+    <>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <div className="el-page-wrapper">
+          {/* <StatisticCard
+          title="Total Revenue"
+          value="₹1,45,200"
+          icon={<FiTrendingUp />}
+          trendValue="+12%"
+          width="350px"
+        />
+        <PerformanceBar
+          title="Top Purchased Products"
+          data={salesData}
+          width="750px"
+          showMoreOptions={false}
+          maxBars={9}
+          // onMoreOptionsClick={() => console.log("Show reports menu...")}
+        />
+        <LeaderboardBar
+          title="Top Purchasing Customers"
+          data={purchasingData}
+          width="450px"
+          maxBars={10}
+          // onMoreOptionsClick={() => console.log("Show customers menu...")}
+          showMoreOptions={false}
+        /> */}
 
-      <div
-        className="el-card"
-        style={
-          {
-            "--card-width": cardWidth,
-            "--card-height": cardHeight,
-          } as React.CSSProperties
-        }
-      >
-        <div className="el-logo-wrapper">
-          <img src={logoUrl} alt="Portal Logo" className="el-logo" />
-        </div>
+          <div
+            className="el-card"
+            style={
+              {
+                "--card-width": cardWidth,
+                "--card-height": cardHeight,
+              } as React.CSSProperties
+            }
+          >
+            <div className="el-logo-wrapper">
+              <img src={logoUrl} alt="Portal Logo" className="el-logo" />
+            </div>
 
-        <div className="el-header">
-          <h1 className="el-title">Admin Portal</h1>
-          <p className="el-subtitle">Enterprise Management</p>
-        </div>
-        {user == "not" && (
-          <>
-            <span className="el-error">
-              Invalid username or password. Please try again
-            </span>{" "}
-            <br />
-            <br />
-          </>
-        )}
-        <div className="el-form">
-          <DashboardInput
-            label="Email Address"
-            type="email"
-            placeholder="admin@gmail.com"
-            value={email}
-            onChange={(val) => {
-              setEmail(val);
-              setIsEmailError(false);
-              setUser("");
-            }}
-            icon={<FiMail />}
-            error={isEmailError}
-            errorMessage={emailErrorMessage}
-            required
-          />
-
-          <DashboardInput
-            label="Password"
-            type="password"
-            placeholder="........"
-            value={password}
-            onChange={(val) => {
-              setPassword(val);
-              setIsPasswordError(false);
-              setUser("");
-            }}
-            icon={<FiLock />}
-            error={isPasswordError}
-            errorMessage="Please Enter Password"
-            required
-          />
-
-          <div className="el-footer-links">
-            <label className="el-checkbox-container">
-              <input
-                type="checkbox"
-                checked={remember}
-                onChange={(e) => setRemember(e.target.checked)}
-                className="el-checkmark"
-                hidden
+            <div className="el-header">
+              <h1 className="el-title">Admin Portal</h1>
+              <p className="el-subtitle">Enterprise Management</p>
+            </div>
+            {user == "not" && (
+              <>
+                <span className="el-error">
+                  Invalid username or password. Please try again
+                </span>{" "}
+                <br />
+                <br />
+              </>
+            )}
+            <div className="el-form">
+              <DashboardInput
+                label="Email Address"
+                type="email"
+                placeholder="admin@gmail.com"
+                value={email}
+                onChange={(val) => {
+                  setEmail(val);
+                  setIsEmailError(false);
+                  setUser("");
+                }}
+                icon={<FiMail />}
+                error={isEmailError}
+                errorMessage={emailErrorMessage}
+                required
               />
-              <span className="el-checkmark"></span>
-              Keep me logged in
-            </label>
-            <button
-              type="button"
-              className="el-forgot-btn"
-              onClick={onForgotPassword}
-            >
-              Forgot Password?
-            </button>
+
+              <DashboardInput
+                label="Password"
+                type="password"
+                placeholder="........"
+                value={password}
+                onChange={(val) => {
+                  setPassword(val);
+                  setIsPasswordError(false);
+                  setUser("");
+                }}
+                icon={<FiLock />}
+                error={isPasswordError}
+                errorMessage="Please Enter Password"
+                required
+              />
+
+              <div className="el-footer-links">
+                <label className="el-checkbox-container">
+                  <input
+                    type="checkbox"
+                    checked={remember}
+                    onChange={(e) => setRemember(e.target.checked)}
+                    className="el-checkmark"
+                    hidden
+                  />
+                  <span className="el-checkmark"></span>
+                  Keep me logged in
+                </label>
+                <button
+                  type="button"
+                  className="el-forgot-btn"
+                  onClick={() => {}}
+                >
+                  Forgot Password?
+                </button>
+              </div>
+              <DashboardButton
+                name="Login"
+                variant="primary"
+                onClick={() => handleSubmit()}
+                type="reset"
+              />
+            </div>
           </div>
-          <DashboardButton
-            name="Login"
-            variant="primary"
-            onClick={() => handleSubmit()}
-            type="reset"
-          />
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 

@@ -43,6 +43,7 @@
     "allowImportingTsExtensions": false,
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "strictNullChecks": false,
     "types": ["vite/client"]
   },
   "include": ["src", "global.d.ts"],
