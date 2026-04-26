@@ -36,7 +36,6 @@ const CreateOrEditCategory: React.FC = () => {
   useEffect(() => {
     (async () => {
       setIsLoading(false);
-
       try {
         let response = await new CategoryService().get();
         let options = response.map((category: Category) => {
@@ -57,7 +56,7 @@ const CreateOrEditCategory: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      if (isEditMode) {
+      if (isEditMode && id) {
         setIsLoading(true);
         try {
           let category = await new CategoryService().getById(id);
@@ -113,7 +112,6 @@ const CreateOrEditCategory: React.FC = () => {
     } else {
       return true;
     }
-
     return false;
   };
 
@@ -137,7 +135,7 @@ const CreateOrEditCategory: React.FC = () => {
           await new CategoryService().create(category);
         }
 
-        navigate("/dashboard/brands");
+        navigate("/dashboard/categories");
       } catch (error) {
         console.error("Failed to save category", error);
       } finally {
@@ -172,11 +170,10 @@ const CreateOrEditCategory: React.FC = () => {
         <Loader2 />
       ) : (
         <div className="create-category-container">
-          {/* Header */}
           <div className="create-category-top-bar">
             <button
               className="create-category-back-btn"
-              onClick={() => navigate(-1)}
+              onClick={() => navigate("/dashboard/categories")}
             >
               <FiArrowLeft /> Back to Categories
             </button>
@@ -185,13 +182,10 @@ const CreateOrEditCategory: React.FC = () => {
             </h1>
           </div>
 
-          {/* Main Grid Layout */}
           <div className="create-category-grid">
-            {/* LEFT COLUMN: Image & Tips */}
             <div className="create-category-left-col">
               <div className="create-category-field-group">
                 <label className="create-category-label">Category Image</label>
-
                 <div
                   className={`create-category-image-upload-box ${imageFileError ? "error-border" : ""}`}
                 >
@@ -252,7 +246,6 @@ const CreateOrEditCategory: React.FC = () => {
               </div>
             </div>
 
-            {/* RIGHT COLUMN: Form Details */}
             <div className="create-category-right-col">
               <div className="create-category-card">
                 <div className="create-category-field-group">
@@ -266,11 +259,12 @@ const CreateOrEditCategory: React.FC = () => {
                   </div>
                   <DashboardInput
                     type="text"
-                    placeholder="Enter category name"
+                    placeholder="Enter Category name"
                     value={name}
                     onChange={(value: string) => OnChangeName(value)}
                     error={nameError ? true : false}
                     errorMessage={nameError}
+                    required={true}
                   />
                 </div>
 
@@ -278,11 +272,12 @@ const CreateOrEditCategory: React.FC = () => {
                   <label className="create-category-label">DESCRIPTION</label>
                   <DashboardInput
                     type="textarea"
-                    placeholder="Enter category name"
+                    placeholder="Enter Description"
                     value={description}
                     onChange={(value: string) => OnChangeDescription(value)}
                     error={descriptionError ? true : false}
                     errorMessage={descriptionError}
+                    required={true}
                   />
                 </div>
 
@@ -303,13 +298,12 @@ const CreateOrEditCategory: React.FC = () => {
             </div>
           </div>
 
-          {/* Footer Actions */}
           <div className="create-category-footer">
             <DashBoardButton
               icon={<FiX size={25} />}
               name="Cancel"
               variant="secondary"
-              onClick={() => navigate(-1)}
+              onClick={() => navigate("/dashboard/categories")}
               width={"250px"}
             />
             <DashBoardButton

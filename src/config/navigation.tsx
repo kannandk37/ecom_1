@@ -30,6 +30,7 @@ import DashBoardOrders from "../pages/DashBoard/Orders/DashBoardOrders";
 import Orders from "../pages/Orders/Orders";
 import CreateOrEditCategory from "../pages/Category/CreateOrEditCategory/CreateOrEditCategory";
 import CreateOrEditBrand from "../pages/Brand/CreateOrEditBrand/CreateOrEditBrand";
+import CategoryList from "../pages/Category/CategoryList/CategoryList";
 export interface NavItem {
   id: string;
   name: string;
@@ -139,6 +140,7 @@ export const NAV_OPTIONS: NavItem[] = [
     path: "/dashboard/categories",
     // component: <DashBoardCategories />,
     component: <CreateOrEditCategory />,
+    // component: <CategoryList />,
   },
   {
     id: "brands",
