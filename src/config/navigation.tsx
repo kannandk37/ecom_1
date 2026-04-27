@@ -31,6 +31,8 @@ import Orders from "../pages/Orders/Orders";
 import CreateOrEditCategory from "../pages/Category/CreateOrEditCategory/CreateOrEditCategory";
 import CreateOrEditBrand from "../pages/Brand/CreateOrEditBrand/CreateOrEditBrand";
 import CategoryList from "../pages/Category/CategoryList/CategoryList";
+import CreateOrEditProduct from "../pages/DashBoard/Product/CreateOrEditProduct";
+import CreateOrEditVariant from "../pages/DashBoard/Variant/createOrEditVariant";
 export interface NavItem {
   id: string;
   name: string;
@@ -146,9 +148,9 @@ export const NAV_OPTIONS: NavItem[] = [
         name: "Add Categories",
         icon: <FiBox />,
         path: "/dashboard/categories/add",
-        component: <CreateOrEditCategory />
-      }
-    ]
+        component: <CreateOrEditCategory />,
+      },
+    ],
   },
   {
     id: "brands",
@@ -162,7 +164,14 @@ export const NAV_OPTIONS: NavItem[] = [
     name: "Products",
     icon: <FiBox />,
     path: "/dashboard/products",
-    component: <Products />,
+    component: <CreateOrEditProduct />,
+  },
+  {
+    id: "variants",
+    name: "Variants",
+    icon: <FiBox />,
+    path: "/dashboard/variants",
+    component: <CreateOrEditVariant />,
   },
 ];
 
