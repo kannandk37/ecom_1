@@ -1,0 +1,219 @@
+:root {
+  /* Text and Main Theme Colors from reference */
+  --primary-brown: #7c5d40; /* pagination active, edit icon on hover */
+  --text-header: #5c443c; /* Table headers desaturated brown */
+  --bg-table-header: #f5efeb;
+  --bg-card: #ffffff;
+  --bg-body: #f9f5f1; /* the overall container area's color is a bit different than standard off-white */
+  --badge-bg: #f2e7de;
+  --text-color: #333333;
+  --border-color: #eeeeee;
+  /* Use font family as provided --font-family */
+}
+
+/* --font-family is assumed to be defined globally as requested: var(--font-family) */
+
+/* Overall Container Styling */
+.table-wrapper {
+  font-family: var(
+    --font-family,
+    sans-serif
+  ); /* fallback to sans-serif if not defined */
+  min-height: 400px;
+  background-color: var(--bg-card);
+  border-radius: 12px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.03);
+  padding-bottom: 20px; /* space for pagination */
+  margin: 20px;
+  box-sizing: border-box;
+}
+
+/* Base Table Styling */
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Header Styling */
+.custom-table thead tr th {
+  color: var(--text-header);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 15px 20px;
+  text-align: left;
+  background-color: var(--bg-table-header);
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Alignment utilities */
+.align-left {
+  text-align: left;
+}
+.align-center {
+  text-align: center;
+}
+.align-right {
+  text-align: right;
+}
+
+/* Body Row Styling */
+.custom-table tbody tr {
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.15s ease;
+}
+
+.custom-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.custom-table tbody tr:hover {
+  background-color: var(--bg-body);
+}
+
+/* Optional alternate row background for extra readability */
+/* .even-row { background-color: var(--bg-body); } */
+
+/* Cell Styling */
+.custom-table tbody tr td {
+  font-size: 15px;
+  color: var(--text-color);
+  padding: 20px;
+}
+
+/* Icon Text Column Styling */
+.icon-text-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-main {
+  color: var(--primary-brown);
+}
+
+.text-wrapper {
+  font-weight: 600;
+  color: #1a1a1a; /* slightly darker than standard text */
+}
+
+/* Badge Styling */
+.badge {
+  display: inline-block;
+  padding: 6px 16px;
+  background-color: var(--badge-bg);
+  color: var(--text-header);
+  border-radius: 20px; /* pill shape */
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Action Cell & Button Styling */
+.action-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.action-btn .action-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--text-color);
+}
+
+/* Specific Edit Button Hover */
+.edit-btn:hover {
+  background-color: rgba(124, 93, 64, 0.1); /* light primary brown */
+}
+.edit-btn:hover .action-icon {
+  color: var(--primary-brown);
+}
+
+/* Specific Delete Button Hover */
+.delete-btn:hover {
+  background-color: rgba(220, 53, 69, 0.1); /* light red */
+}
+.delete-btn:hover .action-icon {
+  color: #dc3545; /* standard red */
+}
+
+/* --- Pagination Styles --- */
+.pagination-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  font-size: 14px;
+  color: var(--text-color);
+}
+
+.pagination-pages {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.page-btn {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  width: 38px;
+  height: 38px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.page-btn:hover {
+  border-color: var(--primary-brown);
+  color: var(--primary-brown);
+}
+
+.page-btn.active {
+  background-color: var(--primary-brown);
+  border-color: var(--primary-brown);
+  color: #ffffff;
+}
+
+.page-btn.nav-btn {
+  padding: 6px;
+}
+
+.page-btn.nav-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: var(--border-color);
+  color: var(--text-color);
+}
+
+.nav-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
