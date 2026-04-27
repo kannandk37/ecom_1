@@ -2,7 +2,7 @@ import axios from "axios";
 import { LocalStorage } from "../storage";
 
 const axiosinstance = axios.create({
-    baseURL: 'http://localhost:5000/api',
+    baseURL: 'https://ecom-api-orcin-beta.vercel.app/api',
 
     timeout: 9000,
     headers: {
