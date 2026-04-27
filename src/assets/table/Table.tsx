@@ -5,35 +5,7 @@ import {
   FiChevronLeft,
   FiChevronRight,
 } from "react-icons/fi";
-import { FaSeedling, FaCoffee, FaLeaf } from "react-icons/fa";
 import "./Table.css";
-
-// -- FONT FAMILY is assumed to be defined globally as requested: var(--font-family)
-
-// Simple placeholder icons based on the reference image
-const PlaceholderIcon = ({ name }: { name: "seed" | "coffee" | "leaf" }) => {
-  const size = "1.5rem"; // Match standard icon size
-  switch (name) {
-    case "seed":
-      return (
-        <FaSeedling
-          className="icon-main"
-          style={{ width: size, height: size }}
-        />
-      );
-    case "coffee":
-      return (
-        <FaCoffee className="icon-main" style={{ width: size, height: size }} />
-      );
-    case "leaf":
-      return (
-        <FaLeaf className="icon-main" style={{ width: size, height: size }} />
-      );
-    default:
-      return null;
-  }
-};
-
 interface BadgeProps {
   text: string;
 }
@@ -43,15 +15,15 @@ export const Badge: React.FC<BadgeProps> = ({ text }) => (
 );
 
 interface IconTextProps {
-  iconName?: "seed" | "coffee" | "leaf";
+  image?: any;
   text: string;
 }
 
-export const IconText: React.FC<IconTextProps> = ({ iconName, text }) => (
+export const IconText: React.FC<IconTextProps> = ({ image, text }) => (
   <div className="icon-text-wrapper">
-    {iconName && (
+    {image && (
       <div className="icon-wrapper">
-        <PlaceholderIcon name={iconName} />
+        <img src={image} className="icon-image-wrapper"/>
       </div>
     )}
     <span className="text-wrapper">{text}</span>

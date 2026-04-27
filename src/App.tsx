@@ -197,6 +197,7 @@ const mockCartData: CartItem[] = [
 ];
 
 function App() {
+
   const renderRoutes: any = (items: NavItem[]) => {
     return items.flatMap((item) => {
       const routes = [];
@@ -211,13 +212,14 @@ function App() {
       return routes;
     });
   };
+
   const cartTotalData: CartTotalCardProps = {
     subtotal: "$73.96",
     shipping: "Free",
     discountCode: "FESTIVE10", // Optional, passed as present
     discountAmount: "-$10.00", // Optional, passed as present
     finalTotal: "$63.96",
-    onCheckout: () => {},
+    onCheckout: () => { },
   };
   return (
     <BrowserRouter>
@@ -269,6 +271,45 @@ function App() {
           }
         />
 
+        <Route path="/login" element={<AuthCard />} />
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route
+            path="/order/:orderId"
+            element={<Order {...mockOrderData} />}
+          />
+          <Route
+            path="/categories/:categoryId/products"
+            element={<CategoryProducts />}
+          />
+          <Route
+            path="/products/:productId"
+            element={
+              <ProductDetails
+                productData={
+                  productsData[5]
+                }
+              />
+            }
+          />
+          <Route
+            path="/cart"
+            element={
+              <Cart
+                cartTotal={cartTotalData}
+                items={mockCartData}
+                productsData={productsTestData}
+              />
+            }
+          />
+          <Route path="/order" element={<Orders />} />
+          <Route path="/profile" element={<Profile />} />
+        </Route>
+        <Route path="/checkout" element={<ConfirmCheckout />} />
+        <Route element={<DashboardLayout />}>
+          {renderRoutes(NAV_OPTIONS)}
+        </Route>
         {/* <Route path="/receipt" element={<OrderReceipt
           orderNumber="123"
           date=''
@@ -296,57 +337,6 @@ function App() {
           }}
           onDownloadCopy={() => { }}
         />} /> */}
-
-        <Route path="/login" element={<AuthCard />} />
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/orders" element={<Orders />} />
-          <Route
-            path="/order/:orderId"
-            element={<Order {...mockOrderData} />}
-          />
-          <Route
-            path="/categories/:categoryId/products"
-            element={<CategoryProducts />}
-          />
-          <Route
-            path="/products/:productId"
-            element={
-              <ProductDetails
-                productData={
-                  //   {
-                  //   id: "sdf",
-                  //   name: "adfa",
-                  //   price: "12",
-                  //   rating: 2,
-                  //   reviews: 12,
-                  //   weight: "12",
-                  //   description: "sdfsd",
-                  //   features: [],
-                  //   specs: [{ label: "asd", value: "asd" }],
-                  //   images: ["asd", "fgdf"],
-                  // }
-                  productsData[5]
-                }
-              />
-            }
-          />
-          <Route
-            path="/cart"
-            element={
-              <Cart
-                cartTotal={cartTotalData}
-                items={mockCartData}
-                productsData={productsTestData}
-              />
-            }
-          />
-          <Route path="/order" element={<Orders />} />
-          <Route path="/profile" element={<Profile />} />
-        </Route>
-
-        <Route path="/checkout" element={<ConfirmCheckout />} />
-        <Route element={<DashboardLayout />}>{renderRoutes(NAV_OPTIONS)}</Route>
       </Routes>
     </BrowserRouter>
   );

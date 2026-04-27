@@ -96,6 +96,12 @@
   justify-content: center;
 }
 
+.icon-image-wrapper {
+  width: 35px;
+  height: 35px;
+  border-radius: 8px;
+}
+
 .icon-main {
   color: var(--primary-brown);
 }

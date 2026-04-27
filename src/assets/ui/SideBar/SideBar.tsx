@@ -266,7 +266,7 @@ export const Sidebar = ({ isCollapsed, onToggle }: any) => {
               name={showLabel ? item.name : ""}
               variant="primary"
               onClick={() => item.path && navigate(item.path)}
-              showBg={location.pathname === item.path}
+              showBg={location.pathname?.startsWith(item.path)}
               type="button"
               width="100%"
               side="flex-start"

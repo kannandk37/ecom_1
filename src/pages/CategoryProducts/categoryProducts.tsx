@@ -110,6 +110,18 @@ export const productsData: Product[] = [
     images: [],
     quantity: 2,
   },
+  //   {
+  //   id: "sdf",
+  //   name: "adfa",
+  //   price: "12",
+  //   rating: 2,
+  //   reviews: 12,
+  //   weight: "12",
+  //   description: "sdfsd",
+  //   features: [],
+  //   specs: [{ label: "asd", value: "asd" }],
+  //   images: ["asd", "fgdf"],
+  // }
 ];
 
 const sortOptions: { id: number; value: string }[] = [
@@ -124,7 +136,7 @@ let mockCategory = {
   image: DRY_FRUITS,
   title: "Dry Fruits",
 };
-const CategoryProducts = ({}) => {
+const CategoryProducts = ({ }) => {
   const { categoryId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();

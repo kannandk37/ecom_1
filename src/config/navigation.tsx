@@ -139,8 +139,16 @@ export const NAV_OPTIONS: NavItem[] = [
     icon: <MdOutlineCategory />,
     path: "/dashboard/categories",
     // component: <DashBoardCategories />,
-    component: <CreateOrEditCategory />,
-    // component: <CategoryList />,
+    component: <CategoryList />,
+    children: [
+      {
+        id: "add-categories",
+        name: "Add Categories",
+        icon: <FiBox />,
+        path: "/dashboard/categories/add",
+        component: <CreateOrEditCategory />
+      }
+    ]
   },
   {
     id: "brands",
