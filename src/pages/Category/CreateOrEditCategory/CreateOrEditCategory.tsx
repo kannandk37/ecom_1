@@ -24,7 +24,7 @@ const CreateOrEditCategory: React.FC = () => {
   }>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [nameError, setNameError] = useState<string>(null);
   const [descriptionError, setDescriptionError] = useState<string>(null);
   const [imageFileError, setImageFileError] = useState<string>(null);
@@ -35,7 +35,7 @@ const CreateOrEditCategory: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      setIsLoading(false);
+      setIsLoading(true);
       try {
         let response = await new CategoryService().get();
         let options = response.map((category: Category) => {
@@ -46,9 +46,9 @@ const CreateOrEditCategory: React.FC = () => {
           };
         });
         setParentOptions(id ? options.filter((el) => el.id != id) : options);
-        setIsLoading(false);
       } catch (error) {
         console.log(error);
+      } finally {
         setIsLoading(false);
       }
     })();
@@ -107,8 +107,8 @@ const CreateOrEditCategory: React.FC = () => {
       setNameError("Please Provide Category Name");
     } else if (!description.trim()) {
       setDescriptionError("Please Provide Category Description");
-    } else if (!imagePreview && !imageFile) {
-      setImageFileError("Please Provide Category Image");
+      // } else if (!imagePreview && !imageFile) {
+      //   setImageFileError("Please Provide Category Image");
     } else {
       return true;
     }
@@ -117,7 +117,7 @@ const CreateOrEditCategory: React.FC = () => {
 
   const handleSubmit = async () => {
     setIsLoading(true);
-    if (isValid) {
+    if (isValid()) {
       try {
         let category = new Category();
         category.name = name?.trim();
@@ -142,6 +142,7 @@ const CreateOrEditCategory: React.FC = () => {
         setIsLoading(false);
       }
     }
+    setIsLoading(false);
   };
 
   const OnChangeName = (name: string) => {

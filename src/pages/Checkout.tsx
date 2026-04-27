@@ -91,7 +91,7 @@ const ConfirmCheckout = () => {
         siteName={siteName}
         onSearch={() => console.log("search")}
         onSignInClick={() => navigate("/login")}
-        onEnterpriseSignInClick={() => navigate("/enterprise")}
+        onEnterpriseSignInClick={() => navigate("/enterprise.com")}
         onCartClick={() => navigate("/cart")}
         height="60px"
       />

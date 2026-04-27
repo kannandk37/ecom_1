@@ -51,7 +51,7 @@ export const DashboardInput: React.FC<DashboardInputProps> = ({
               onChange={(e) => onChange(e.target.value)}
               required={required}
               disabled={disabled}
-              className="db-field"
+              className={`db-field ${icon ? 'icon' : ''}`}
               style={{ resize: "none" }}
             />
           </>
@@ -65,7 +65,7 @@ export const DashboardInput: React.FC<DashboardInputProps> = ({
               onChange={(e) => onChange(e.target.value)}
               required={required}
               disabled={disabled}
-              className="db-field"
+              className={`db-field ${icon ? 'icon' : ''}`}
             />
           </>
         )}

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { FiArrowLeft, FiUploadCloud, FiX } from "react-icons/fi";
 import DashBoardButton from "../../../assets/ui/DashBoardButton/DashBoardButton";
 import DashBoardInput, {
@@ -12,6 +11,8 @@ import { IoMdAddCircleOutline } from "react-icons/io";
 import { Brand } from "../../../entity/brand/index";
 import { BrandService } from "../../../service/brand";
 import { Category } from "../../../entity/category";
+import { CategoryService } from "../../../service/category";
+import Loader2 from "../../../assets/loader/Loader2";
 
 const CreateOrEditBrand: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -26,7 +27,7 @@ const CreateOrEditBrand: React.FC = () => {
   }>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [categoryOptions, setCategoryOptions] = useState<
     { id: string; label: string; value: string }[]
   >([]);
@@ -39,17 +40,17 @@ const CreateOrEditBrand: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      setIsLoading(false);
+      setIsLoading(true);
       try {
-        let response = await new BrandService().get();
-        let options = response.map((brand: Brand) => {
+        let response = await new CategoryService().get();
+        let options = response.map((category: Category) => {
           return {
-            id: brand.id,
-            label: brand.name,
-            value: brand.name,
+            id: category.id,
+            label: category.name,
+            value: category.name,
           };
         });
-        setCategoryOptions(id ? options.filter((el) => el.id != id) : options);
+        setCategoryOptions(options);
         setIsLoading(false);
       } catch (error) {
         console.log(error);
@@ -108,16 +109,18 @@ const CreateOrEditBrand: React.FC = () => {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
+
   const isValid = () => {
     if (!name.trim()) {
       setNameError("Please Provide Brand Name");
-    } else if (!description.trim()) {
-      setDescriptionError("Please Provide Brand Description");
-    } else if (!imagePreview && !imageFile) {
-      setImageFileError("Please Provide Brand Image");
     } else if (!categoryId?.id) {
       setCategoryIdError("Please Select Category");
+    } else if (!description.trim()) {
+      setDescriptionError("Please Provide Brand Description");
+      // } else if (!imagePreview && !imageFile) {
+      //   setImageFileError("Please Provide Brand Image");
     } else {
+      console.log('geras', categoryId);
       return true;
     }
     return false;
@@ -149,6 +152,7 @@ const CreateOrEditBrand: React.FC = () => {
         setIsLoading(false);
       }
     }
+    setIsLoading(false);
   };
 
   const OnChangeName = (name: string) => {
@@ -172,69 +176,76 @@ const CreateOrEditBrand: React.FC = () => {
   };
 
   return (
-    <div className="create-brand-container">
-      <div className="create-brand-top-bar">
-        <button
-          className="create-brand-back-btn"
-          onClick={() => navigate("/dashboard/brands")}
-        >
-          <FiArrowLeft /> Back to Brands
-        </button>
-        <h1 className="create-brand-title">
-          {isEditMode ? "Edit Brand" : "Create New Brand"}
-        </h1>
-        <p className="create-brand-subtitle">
-          Expand the collection by adding a new curated partner.
-        </p>
-      </div>
-
-      <div className="create-brand-grid">
-        <div className="create-brand-left-col">
-          <div className="create-brand-form-card">
-            <div className="create-brand-row-split">
-              <div className="create-brand-field-group">
-                <label className="create-brand-label">Brand Name</label>
-                <DashBoardInput
-                  type="text"
-                  placeholder="Enter Brand name"
-                  value={name}
-                  onChange={(value: string) => OnChangeName(value)}
-                  error={nameError ? true : false}
-                  errorMessage={nameError}
-                  required={true}
-                />
-                {/* {errors.name && (
-                  <p className="create-brand-error-text">! {errors.name}</p>
-                )} */}
-              </div>
-
-              <div className="create-brand-field-group">
-                <label className="create-brand-label">Select Category</label>
-                <Dropdown
-                  options={categoryOptions}
-                  label={categoryId ? categoryId.label : "Choose a Category"}
-                  onSelect={(val: any) => setCategoryId(val)}
-                  //   placeholder="Choose a category"
-                  width="250px"
-                />
-                {/* {errors.category && (
-                  <p className="create-brand-error-text">! {errors.category}</p>
-                )} */}
-              </div>
+    <>
+      {isLoading ?
+        (
+          <Loader2 />
+        ) : (
+          <div className="create-brand-container">
+            <div className="create-brand-top-bar">
+              <button
+                className="create-brand-back-btn"
+                onClick={() => navigate("/dashboard/brands")}
+              >
+                <FiArrowLeft /> Back to Brands
+              </button>
+              <h1 className="create-brand-title">
+                {isEditMode ? "Edit Brand" : "Create New Brand"}
+              </h1>
+              <p className="create-brand-subtitle">
+                Expand the collection by adding a new curated partner.
+              </p>
             </div>
 
-            <div className="create-brand-field-group">
-              <label className="create-brand-label">Description</label>
-              <DashboardInput
-                type="textarea"
-                placeholder="Enter Description"
-                value={description}
-                required={true}
-                onChange={(value: string) => OnChangeDescription(value)}
-                error={descriptionError ? true : false}
-                errorMessage={descriptionError}
-              />
-              {/*<textarea
+            <div className="create-brand-grid">
+              <div className="create-brand-left-col">
+                <div className="create-brand-form-card">
+                  <div className="create-brand-row-split">
+                    <div className="create-brand-field-group">
+                      <label className="create-brand-label">Brand Name</label>
+                      <DashBoardInput
+                        type="text"
+                        placeholder="Enter Brand name"
+                        value={name}
+                        onChange={(value: string) => OnChangeName(value)}
+                        error={nameError ? true : false}
+                        errorMessage={nameError}
+                        required={true}
+                      />
+                      {/* {errors.name && (
+                  <p className="create-brand-error-text">! {errors.name}</p>
+                )} */}
+                    </div>
+
+                    <div className="create-brand-field-group">
+                      <label className="create-brand-label">Select Category</label>
+                      <Dropdown
+                        options={categoryOptions}
+                        label={categoryId ? categoryId.label : "Choose a Category"}
+                        onSelect={(val: any) => { setCategoryId(val); setCategoryIdError(null) }}
+                        //   placeholder="Choose a category"
+                        width="250px"
+                        error={categoryIdError ? true : false}
+                        errorMessage={categoryIdError}
+                      />
+                      {/* {errors.category && (
+                  <p className="create-brand-error-text">! {errors.category}</p>
+                )} */}
+                    </div>
+                  </div>
+
+                  <div className="create-brand-field-group">
+                    <label className="create-brand-label">Description</label>
+                    <DashboardInput
+                      type="textarea"
+                      placeholder="Enter Description"
+                      value={description}
+                      required={true}
+                      onChange={(value: string) => OnChangeDescription(value)}
+                      error={descriptionError ? true : false}
+                      errorMessage={descriptionError}
+                    />
+                    {/*<textarea
                 className={`create-brand-textarea ${errors.description ? "error-border" : ""}`}
                 placeholder="Enter a brief brand description"
                 value={description}
@@ -245,80 +256,80 @@ const CreateOrEditBrand: React.FC = () => {
                   ! {errors.description}
                 </p>
               )} */}
-            </div>
-          </div>
-
-          <div className="create-brand-actions">
-            <DashBoardButton
-              icon={<FiX size={25} />}
-              name="Cancel"
-              variant="secondary"
-              onClick={() => navigate("/dashboard/brands")}
-              width={"250px"}
-            />
-            <DashBoardButton
-              icon={<IoMdAddCircleOutline size={25} />}
-              name={isEditMode ? "Save Changes" : "Create Brand"}
-              variant="primary"
-              onClick={handleSubmit}
-              disabled={isLoading}
-              width={"250px"}
-            />
-          </div>
-        </div>
-
-        <div className="create-brand-right-col">
-          <div className="create-brand-field-group">
-            <label className="create-brand-label">Brand Image</label>
-
-            <div
-              className={`create-brand-image-upload-box ${imageFileError ? "error-border" : ""}`}
-            >
-              {imagePreview ? (
-                <div className="create-brand-preview-wrapper">
-                  <img
-                    src={imagePreview}
-                    alt="Brand Preview"
-                    className="create-brand-preview-img"
-                  />
-                  <button
-                    className="create-brand-remove-image-btn"
-                    onClick={removeImage}
-                  >
-                    <FiX />
-                  </button>
-                </div>
-              ) : (
-                <div
-                  className="create-brand-upload-prompt"
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <div className="create-brand-icon-wrapper">
-                    <FiUploadCloud className="create-brand-upload-icon" />
                   </div>
-                  <p className="create-brand-upload-text">
-                    Click to upload or drag and drop
-                  </p>
-                  <p className="create-brand-upload-subtext">
-                    (Max size 2MB, JPG, PNG)
-                  </p>
                 </div>
-              )}
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleImageChange}
-                accept="image/png, image/jpeg"
-                style={{ display: "none" }}
-              />
-            </div>
-            {imageFileError && (
-              <p className="create-brand-error-text">! {imageFileError}</p>
-            )}
-          </div>
 
-          {/* Aesthetic Preview Placeholder (Matches Screenshot) */}
-          {/* <div className="create-brand-aesthetic-preview">
+                <div className="create-brand-actions">
+                  <DashBoardButton
+                    icon={<FiX size={25} />}
+                    name="Cancel"
+                    variant="secondary"
+                    onClick={() => navigate("/dashboard/brands")}
+                    width={"250px"}
+                  />
+                  <DashBoardButton
+                    icon={<IoMdAddCircleOutline size={25} />}
+                    name={isEditMode ? "Save Changes" : "Create Brand"}
+                    variant="primary"
+                    onClick={handleSubmit}
+                    disabled={isLoading}
+                    width={"250px"}
+                  />
+                </div>
+              </div>
+
+              <div className="create-brand-right-col">
+                <div className="create-brand-field-group">
+                  <label className="create-brand-label">Brand Image</label>
+
+                  <div
+                    className={`create-brand-image-upload-box ${imageFileError ? "error-border" : ""}`}
+                  >
+                    {imagePreview ? (
+                      <div className="create-brand-preview-wrapper">
+                        <img
+                          src={imagePreview}
+                          alt="Brand Preview"
+                          className="create-brand-preview-img"
+                        />
+                        <button
+                          className="create-brand-remove-image-btn"
+                          onClick={removeImage}
+                        >
+                          <FiX />
+                        </button>
+                      </div>
+                    ) : (
+                      <div
+                        className="create-brand-upload-prompt"
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        <div className="create-brand-icon-wrapper">
+                          <FiUploadCloud className="create-brand-upload-icon" />
+                        </div>
+                        <p className="create-brand-upload-text">
+                          Click to upload or drag and drop
+                        </p>
+                        <p className="create-brand-upload-subtext">
+                          (Max size 2MB, JPG, PNG)
+                        </p>
+                      </div>
+                    )}
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleImageChange}
+                      accept="image/png, image/jpeg"
+                      style={{ display: "none" }}
+                    />
+                  </div>
+                  {imageFileError && (
+                    <p className="create-brand-error-text">! {imageFileError}</p>
+                  )}
+                </div>
+
+                {/* Aesthetic Preview Placeholder (Matches Screenshot) */}
+                {/* <div className="create-brand-aesthetic-preview">
             <label className="create-brand-label">AESTHETIC PREVIEW</label>
             <div className="create-brand-aesthetic-box">
               {imagePreview ? (
@@ -332,9 +343,11 @@ const CreateOrEditBrand: React.FC = () => {
               )}
             </div>
           </div> */}
-        </div>
-      </div>
-    </div>
+              </div>
+            </div>
+          </div>
+        )}
+    </>
   );
 };
 

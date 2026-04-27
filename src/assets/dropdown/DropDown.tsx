@@ -14,6 +14,8 @@ interface DropdownProps {
   width?: string;
   height?: string;
   onSelect?: (option: DropdownOption) => void;
+  error?: boolean;
+  errorMessage?: string;
 }
 
 export const Dropdown: React.FC<DropdownProps> = ({
@@ -22,6 +24,8 @@ export const Dropdown: React.FC<DropdownProps> = ({
   width = "200px",
   height = "45px",
   onSelect,
+  error,
+  errorMessage
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
@@ -49,9 +53,9 @@ export const Dropdown: React.FC<DropdownProps> = ({
   };
 
   return (
-    <div className="ds-dropdown-container" ref={dropdownRef} style={{ width }}>
+    <div className={`ds-dropdown-container`} ref={dropdownRef} style={{ width }}>
       <button
-        className={`ds-dropdown-header ${isOpen ? "ds-dropdown-header--active" : ""}`}
+        className={`ds-dropdown-header ${isOpen ? "ds-dropdown-header--active" : ""} ${error ? 'error': ''}`}
         onClick={toggleDropdown}
         style={{ height }}
         type="button"
@@ -78,6 +82,9 @@ export const Dropdown: React.FC<DropdownProps> = ({
             </li>
           ))}
         </ul>
+      )}
+      {error && errorMessage && (
+        <span className="ds-error-message">{errorMessage}</span>
       )}
     </div>
   );

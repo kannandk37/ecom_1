@@ -1,107 +1,116 @@
-/* THE FULL-SCREEN OVERLAY */
-.loader-overlay {
+/* FULL-SCREEN OVERLAY */
+.loader2-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  /* Little dark, but transparent enough to see the page behind it */
+  inset: 0;
+  width: 100%;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.4);
-  /* Adds a premium frosted glass effect */
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999; /* Ensures it sits on top of everything */
-  font-family: var(--font-family);
-  animation: fadeIn 0.3s ease-out;
+  z-index: 9999;
+  font-family: var(--font-family, sans-serif);
+  animation: loader2-fadeIn 0.3s ease-out;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+@keyframes loader2-fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
-.loader-content {
+/* CONTENT STACK */
+.loader2-content {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 20px;
 }
 
-/* THE ORBITAL ANIMATION */
-.loader-orbit-container {
+/* ORBIT CONTAINER */
+.loader2-orbit-container {
   position: relative;
   width: 80px;
   height: 80px;
+  flex-shrink: 0;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* A subtle dashed ring to guide the leaf */
-.loader-orbit-track {
+/* DASHED ORBIT RING */
+.loader2-orbit-track {
   position: absolute;
-  width: 100%;
-  height: 100%;
-  border: 2px dashed rgba(255, 255, 255, 0.2);
+  inset: 0;
+  border: 2px dashed rgba(0, 0, 0, 0.933);
   border-radius: 50%;
+  pointer-events: none;
 }
 
-/* The wrapper that spins around the center */
-.loader-leaf-wrapper {
+/* SPINNING WRAPPER */
+.loader2-leaf-wrapper {
   position: absolute;
-  width: 100%;
-  height: 100%;
-  animation: spin 2s linear infinite;
+  inset: 0;
+  border-radius: 50%;
+  animation: loader2-spin 2s linear infinite;
+  transform-origin: center center;
 }
 
-/* The leaf itself, pushed to the edge of the wrapper to form the circle */
-.loader-circling-leaf {
+/* ORBITING ICON */
+.loader2-circling-icon {
   position: absolute;
-  top: -10px; /* Pushes it to the top edge */
+  top: -10px;
   left: 50%;
-  transform: translateX(-50%) rotate(90deg); /* Angles the leaf to point along the circle */
-  font-size: 1.5rem;
-  color: #8c6d3f; /* Your brand gold/brown */
-  /* Drop shadow to make it pop against the dark background */
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  transform: translateX(-50%);
+  font-size: 1.4rem;
+  line-height: 1;
+  display: block;
 }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+/* CENTER ICON */
+.loader2-center-icon {
+  position: relative;
+  z-index: 1;
+  font-size: 1.6rem;
+  line-height: 1;
+  animation: loader2-pulseScale 2s ease-in-out infinite;
 }
 
-/* THE LOADING TEXT */
-.loader-text {
+@keyframes loader2-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes loader2-pulseScale {
+  0%, 100% { transform: scale(1);     opacity: 0.85; }
+  50%      { transform: scale(1.12);  opacity: 1; }
+}
+
+/* LOADING TEXT */
+.loader2-text {
   color: #ffffff;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
-  margin: 0;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  animation: pulseOpacity 1.5s ease-in-out infinite;
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 1px;
 }
 
-/* Makes the text gently fade in and out */
-@keyframes pulseOpacity {
-  0% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.5;
-  }
+/* ANIMATED DOTS */
+.loader2-dot {
+  opacity: 0;
+  animation: loader2-dotAppear 1.2s ease-in-out infinite;
+}
+
+.loader2-dot:nth-child(2) { animation-delay: 0.2s; }
+.loader2-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes loader2-dotAppear {
+  0%, 60%, 100% { opacity: 0; }
+  30%           { opacity: 1; }
 }
