@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { FiArrowLeft, FiUploadCloud, FiX } from "react-icons/fi";
+import { FiArrowLeft, FiPlus, FiUploadCloud, FiX } from "react-icons/fi";
 import { FaLightbulb } from "react-icons/fa";
 import DashBoardButton from "../../../assets/ui/DashBoardButton/DashBoardButton";
 import Dropdown from "../../../assets/dropdown/DropDown";
 import "./CreateOrEditCategory.css";
-import { IoMdAddCircleOutline } from "react-icons/io";
 import { Category } from "../../../entity/category";
 import { CategoryService } from "../../../service/category";
 import DashboardInput from "../../../assets/ui/DashBoardInput/DashBoardInput";
@@ -308,7 +307,7 @@ const CreateOrEditCategory: React.FC = () => {
               width={"250px"}
             />
             <DashBoardButton
-              icon={<IoMdAddCircleOutline size={25} />}
+              icon={<FiPlus size={25} />}
               name={isEditMode ? "Save Changes" : "Create Category"}
               variant="primary"
               onClick={handleSubmit}

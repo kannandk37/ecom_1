@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { FiArrowLeft, FiUploadCloud, FiX } from "react-icons/fi";
+import { FiArrowLeft, FiPlus, FiUploadCloud, FiX } from "react-icons/fi";
 import DashBoardButton from "../../../assets/ui/DashBoardButton/DashBoardButton";
 import DashBoardInput, {
   DashboardInput,
@@ -268,7 +268,7 @@ const CreateOrEditBrand: React.FC = () => {
                     width={"250px"}
                   />
                   <DashBoardButton
-                    icon={<IoMdAddCircleOutline size={25} />}
+                    icon={<FiPlus size={25} />}
                     name={isEditMode ? "Save Changes" : "Create Brand"}
                     variant="primary"
                     onClick={handleSubmit}

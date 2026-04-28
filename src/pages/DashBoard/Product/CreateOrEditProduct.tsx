@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { FiArrowLeft, FiUploadCloud, FiX, FiInfo } from "react-icons/fi";
+import { FiArrowLeft, FiUploadCloud, FiX,  FiPlus } from "react-icons/fi";
 import DashBoardButton from "../../../assets/ui/DashBoardButton/DashBoardButton";
 import DashBoardInput from "../../../assets/ui/DashBoardInput/DashBoardInput";
 import Dropdown from "../../../assets/dropdown/DropDown";
@@ -14,7 +13,13 @@ import {
   Product,
 } from "../../../entity/product";
 import Loader2 from "../../../assets/loader/Loader2";
-import { FaIndianRupeeSign } from "react-icons/fa6";
+import { FaExclamation, FaIndianRupeeSign } from "react-icons/fa6";
+import { CategoryService } from "../../../service/category";
+import { Category } from "../../../entity/category";
+import { BrandService } from "../../../service/brand";
+import { Brand } from "../../../entity/brand";
+import { FaExclamationTriangle } from "react-icons/fa";
+import { ProductService } from "../../../service/product";
 
 const CreateOrEditProduct: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -22,7 +27,6 @@ const CreateOrEditProduct: React.FC = () => {
   const isEditMode = Boolean(id);
 
   // Form States - Core
-  const [name, setName] = useState<string>("");
   const [categoryId, setCategoryId] = useState<{
     id: string;
     label: string;
@@ -33,30 +37,47 @@ const CreateOrEditProduct: React.FC = () => {
     label: string;
     value: string;
   }>(null);
+  const [categoryIdError, setCategoryIdError] = useState<string>(null);
+  const [brandIdError, setBrandIdError] = useState<string>(null)
+  const [name, setName] = useState<string>("");
   const [shortDescription, setShortDescription] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
+
+
+  const [titleError, setTitleError] = useState<string>("");
+  const [nameError, setNameError] = useState<string>(null);
+  const [shortDescriptionError, setShortDescriptionError] = useState<string>(null);
+  const [descriptionError, setDescriptionError] = useState<string>(null);
+
 
   // Form States - Pricing & Logistics
-  const [price, setPrice] = useState("");
-  const [origin, setOrigin] = useState("");
-  const [weight, setWeight] = useState("");
+  const [price, setPrice] = useState<number>(0);
+  const [origin, setOrigin] = useState<string>("");
+  const [weight, setWeight] = useState<number>(0);
+  const [priceError, setPriceError] = useState<string>(null);
+  const [originError, setOriginError] = useState<string>(null);
+  const [weightError, setWeightError] = useState<string>(null);
   const [unit, setUnit] = useState<{
     id: string;
     label: string;
     value: string;
   }>();
-  const [shelfLife, setShelfLife] = useState("");
+  const [unitError, setUnitError] = useState<string>(null);
+  const [shelfLife, setShelfLife] = useState<string>("");
+  const [shelfLifeError, setShelfLifeError] = useState<string>(null);
   const [shelfLifeDuration, setShelfLifeDuration] = useState<{
     id: string;
     label: string;
     value: string;
   }>(null);
+  const [shelfLifeDurationError, setShelfLifeDurationError] = useState<string>(null);
   const [storage, setStorage] = useState<{
     id: string;
     label: string;
     value: string;
   }>(null);
-
+  const [storageError, setStorageError] = useState<string>(null)
   // Image States (Max 6)
   const [existingImages, setExistingImages] = useState<string[]>([]);
   const [newImageFiles, setNewImageFiles] = useState<File[]>([]);
@@ -91,85 +112,110 @@ const CreateOrEditProduct: React.FC = () => {
     { id: "3", label: "Cool & Dry Place", value: Storage.COOL_DRY_PLACE },
   ];
   const [features, setFeatures] = useState<string[]>([]);
+  const [feature1Error, setFeature1Error] = useState<string>(null);
+  const [feature2Error, setFeature2Error] = useState<string>(null);
+  const [feature3Error, setFeature3Error] = useState<string>(null);
+  // const nameRef = useRef(null);
+  const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
-    // Fetch Categories & Brands
-    const fetchDependencies = async () => {
-      try {
-        const [catRes, brandRes] = await Promise.all([
-          axios
-            .get("/api/categories")
-            .catch(() => ({ data: [{ id: "cat1", name: "Nuts" }] })), // Fallbacks for testing
-          axios
-            .get("/api/brands")
-            .catch(() => ({ data: [{ id: "br1", name: "Nature Farms" }] })),
-        ]);
-
-        setCategoryOptions(
-          catRes.data.map((c: any) => ({ label: c.name, value: c.id })),
-        );
-        setBrandOptions(
-          brandRes.data.map((b: any) => ({ label: b.name, value: b.id })),
-        );
-      } catch (err) {
-        console.error("Failed to fetch dependencies", err);
-      }
-    };
-
-    fetchDependencies();
-
-    if (isEditMode) {
+    (async () => {
       setIsLoading(true);
-      axios
-        .get(`/api/products/${id}`)
-        .then((res) => {
-          const product: Product = res.data;
-          setName(product.name || "");
-          setCategoryId({
-            id: product.category?.id,
-            label: product.category?.name,
-            value: product.category?.name,
-          });
-          setBrandId({
-            id: product.brand?.id,
-            label: product.brand?.name,
-            value: product.brand?.name,
-          });
-          setShortDescription(product.shortDescription || "");
-          setDescription(product.description || "");
-          setPrice(product.price?.toString() || "");
-          setWeight(product.weight || "");
-          if (product.unit)
-            setUnit({ id: "", label: product.unit, value: product.unit });
-          setExistingImages(product.images || []);
+      try {
+        let response = await new CategoryService().get();
+        let options = response.map((category: Category) => {
+          return {
+            id: category.id,
+            label: category.name,
+            value: category.name,
+          };
+        });
+        setCategoryOptions(id ? options.filter((el) => el.id != id) : options);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+  }, []);
 
-          // Parse Specs
-          if (product.specs) {
-            product.specs.forEach((spec) => {
-              if (spec.label === Label.ORIGIN) setOrigin(spec.value as string);
-              if (spec.label === Label.STORAGE)
-                setStorage({
-                  id: spec.value,
-                  label: spec.value,
-                  value: spec.value,
-                });
-              if (spec.label === Label.SHELF_LIFE) {
-                // Assuming format like "6 month" or handling string split
-                const parts = (spec.value as string).split(" ");
-                setShelfLife(parts[0] || "");
-                if (parts[1])
-                  setShelfLifeDuration({
-                    id: parts[1],
-                    label: parts[1],
-                    value: parts[1],
-                  });
-              }
+  useEffect(() => {
+    (async () => {
+      setIsLoading(true);
+      try {
+        let response = await new BrandService().get();
+        let options = response.map((brand: Brand) => {
+          return {
+            id: brand.id,
+            label: brand.name,
+            value: brand.name,
+          };
+        });
+        setBrandOptions(id ? options.filter((el) => el.id != id) : options);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      if (isEditMode && id) {
+        setIsLoading(true);
+        try {
+          let productWithId = await new ProductService().getById(id);
+          if (productWithId) {
+            setTitle(productWithId.title)
+            setName(productWithId.name);
+            setCategoryId({
+              id: productWithId.category?.id,
+              label: productWithId.category?.name,
+              value: productWithId.category?.name,
             });
+            setBrandId({
+              id: productWithId.brand?.id,
+              label: productWithId.brand?.name,
+              value: productWithId.brand?.name,
+            });
+            setShortDescription(productWithId.shortDescription);
+            setDescription(productWithId.description);
+            setPrice(productWithId.price || 0);
+            setWeight(productWithId.weight as any || 0);
+            setUnit({ id: productWithId.unit, label: productWithId.unit, value: productWithId.unit });
+            setExistingImages(productWithId.images || []);
+            setFeatures(productWithId.features);
+            if (productWithId.specs) {
+              productWithId.specs.forEach((spec) => {
+                if (spec.label === Label.ORIGIN) setOrigin(spec.value as string);
+                if (spec.label === Label.STORAGE)
+                  setStorage({
+                    id: spec.value,
+                    label: spec.value,
+                    value: spec.value,
+                  });
+                if (spec.label === Label.SHELF_LIFE) {
+                  // Assuming format like "6 month" or handling string split
+                  const parts = (spec.value as string).split(" ");
+                  setShelfLife(parts[0] || "");
+                  if (parts[1])
+                    setShelfLifeDuration({
+                      id: parts[1],
+                      label: parts[1],
+                      value: parts[1],
+                    });
+                }
+              });
+            }
           }
-        })
-        .catch((err) => console.error(err))
-        .finally(() => setIsLoading(false));
-    }
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setIsLoading(false)
+        }
+      }
+    })()
   }, [id, isEditMode]);
 
   // Image Handling
@@ -209,71 +255,254 @@ const CreateOrEditProduct: React.FC = () => {
     setNewImagePreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const isValid = () => {
+    if (!title) {
+      setTitleError('Please Provide Title')
+    } else if (!name) {
+      setNameError("Please Provide Name");
+      // if (nameRef.current) {
+      //   nameRef.current.scrollIntoView({
+      //     behavior: 'smooth',
+      //     block: 'center'
+      //   });
+      //   nameRef.current.focus(); // Good for accessibility
+      // }
+    } else if (!categoryId) {
+      setCategoryIdError("Please Select Category");
+    } else if (!brandId) {
+      setBrandIdError("Please Select Brand");
+    } else if (!shortDescription) {
+      setShortDescriptionError("Please Provide Short Description");
+    } else if (!description) {
+      setDescriptionError("Please Provide Description");
+    } else if (!price || price == 0) {
+      setPriceError("Please Provide Price");
+    } else if (!origin) {
+      setOriginError("Please Provide Origin");
+    } else if (!weight || weight == 0) {
+      setWeightError("Please Provide Weight");
+    } else if (!unit) {
+      setUnitError("Please Select Unit");
+    } else if (!shelfLife) {
+      setShelfLifeError("Please Provide Shelf Life");
+    } else if (!shelfLifeDuration) {
+      setShelfLifeDurationError("Please Select Duration")
+    } else if (!storage?.id) {
+      setStorageError("Please Select Storage");
+      } else if (!features[1]) {
+        setFeature1Error("Please Provide Feature");
+      } else if (!features[2]) {
+        setFeature2Error("Please Provide Feature");
+      } else if (!features[3]) {
+        setFeature3Error("Please Provide Feature");
+    } else {
+      return true;
+    }
+    return false;
+  }
+
+  useEffect(() => {
+    if (nameError || categoryIdError || brandIdError || shortDescriptionError || descriptionError || priceError || originError || weightError || shelfLifeError || shelfLifeDurationError || storageError || feature1Error || feature2Error || feature3Error) {
+      setError(true);
+    } else {
+      setError(false);
+    }
+  }, [nameError, categoryIdError, brandIdError, shortDescriptionError, descriptionError, priceError, originError, weightError, shelfLifeError, shelfLifeDurationError, storageError, feature1Error, feature2Error, feature3Error])
   // Submit
   const handleSubmit = async () => {
-    const newErrors: any = {};
-    if (!name) newErrors.name = "Required";
-    if (!categoryId) newErrors.category = "Required";
-    if (!brandId) newErrors.brand = "Required";
-    if (!shortDescription) newErrors.shortDescription = "Required";
-    if (!description) newErrors.description = "Required";
-    if (!price) newErrors.price = "Required";
-    if (!weight) newErrors.weight = "Required";
-    if (!origin) newErrors.origin = "Required";
-    if (!shelfLife) newErrors.shelfLife = "Required";
-    if (!storage) newErrors.storage = "Required";
-    if (existingImages.length === 0 && newImageFiles.length === 0)
-      newErrors.images = "At least one image is required";
+    if (isValid()) {
+      setIsLoading(true);
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      // Scroll to top to show errors if needed
-      return;
-    }
+      try {
+        //   const formData = new FormData();
+        //   formData.append('name', name);
+        //   formData.append('categoryId', categoryId);
+        //   formData.append('brandId', brandId);
+        //   formData.append('shortDescription', shortDescription);
+        //   formData.append('description', description);
+        //   formData.append('price', price);
+        //   formData.append('weight', weight);
+        //   formData.append('unit', unit);
 
-    setIsLoading(true);
+        //   // Spec mapping based on entity
+        //   const specs = [
+        //     { label: Label.ORIGIN, value: origin },
+        //     { label: Label.SHELF_LIFE, value: `${shelfLife} ${shelfLifeDuration}` },
+        //     { label: Label.STORAGE, value: storage }
+        //   ];
+        //   formData.append('specs', JSON.stringify(specs));
 
-    try {
-      //   const formData = new FormData();
-      //   formData.append('name', name);
-      //   formData.append('categoryId', categoryId);
-      //   formData.append('brandId', brandId);
-      //   formData.append('shortDescription', shortDescription);
-      //   formData.append('description', description);
-      //   formData.append('price', price);
-      //   formData.append('weight', weight);
-      //   formData.append('unit', unit);
+        //   // Append existing images that weren't deleted
+        //   formData.append('existingImages', JSON.stringify(existingImages));
 
-      //   // Spec mapping based on entity
-      //   const specs = [
-      //     { label: Label.ORIGIN, value: origin },
-      //     { label: Label.SHELF_LIFE, value: `${shelfLife} ${shelfLifeDuration}` },
-      //     { label: Label.STORAGE, value: storage }
-      //   ];
-      //   formData.append('specs', JSON.stringify(specs));
+        //   // Append new files
+        //   newImageFiles.forEach(file => {
+        //     formData.append('images', file);
+        //   });
 
-      //   // Append existing images that weren't deleted
-      //   formData.append('existingImages', JSON.stringify(existingImages));
+        //   if (isEditMode) {
+        //     await axios.put(`/api/products/${id}`, formData);
+        //   } else {
+        //     await axios.post('/api/products', formData);
+        //   }
+        let category = new Category();
+        category.id = categoryId.id;
 
-      //   // Append new files
-      //   newImageFiles.forEach(file => {
-      //     formData.append('images', file);
-      //   });
+        let brand = new Brand();
+        brand.id = brandId.id;
 
-      //   if (isEditMode) {
-      //     await axios.put(`/api/products/${id}`, formData);
-      //   } else {
-      //     await axios.post('/api/products', formData);
-      //   }
+        let product = new Product();
+        product.name = name;
+        product.category = category;
+        product.brand = brand;
+        product.shortDescription = shortDescription;
+        product.description = description;
+        product.price = price;
+        product.features = features;
+        product.weight = weight.toString();
+        product.unit = unit.label as Unit;
+        // product.images - 
+        product.specs = [{ label: Label.ORIGIN, value: origin }, { label: Label.STORAGE, value: storage.label as Storage }, { label: Label.SHELF_LIFE, value: `${shelfLife} ${shelfLifeDuration.label as Duration}` }]
+        console.log('product', product)
+        navigate("/dashboard/products");
+      } catch (err) {
+        console.error(err);
+        setErrors((prev) => ({ ...prev, submit: "Failed to save product." }));
+      } finally {
+        setIsLoading(false);
+      }
 
-      navigate("/dashboard/products");
-    } catch (err) {
-      console.error(err);
-      setErrors((prev) => ({ ...prev, submit: "Failed to save product." }));
-    } finally {
-      setIsLoading(false);
     }
   };
+
+  const OnChangeTitle = (title: string) => {
+    if (title?.length > 60) {
+      setTitleError("Only 60 characters allowed");
+    } else {
+      // add any regexs
+      setTitle(title);
+      setTitleError(null);
+    }
+  };
+
+  const OnChangeName = (name: string) => {
+    if (name?.length > 60) {
+      setNameError("Only 60 characters allowed");
+    } else {
+      // add any regexs
+      setName(name);
+      setNameError(null);
+    }
+  };
+
+  const OnChangeShortDescription = (shortDescription: string) => {
+    if (shortDescription?.length > 60) {
+      setShortDescriptionError("Only 60 characters allowed");
+    } else {
+      // add any regexs
+      setShortDescription(shortDescription);
+      setShortDescriptionError(null);
+    }
+  };
+
+  const OnChangeDescription = (description: string) => {
+    if (description?.length > 60) {
+      setDescriptionError("Only 60 characters allowed");
+    } else {
+      // add any regexs
+      setDescription(description);
+      setDescriptionError(null);
+    }
+  };
+
+  const onChangePrice = (price: number) => {
+    if (price < 0) {
+      setPriceError("Plese Provide price");
+    } else {
+      // add any regexs
+      setPrice(price);
+      setPriceError(null);
+    }
+  };
+
+  const onChangeOrigin = (origin: string) => {
+    if (origin?.length > 30) {
+      setOriginError("Only 30 characters allowed");
+    } else {
+      // add any regexs
+      setOrigin(origin);
+      setOriginError(null);
+    }
+  };
+
+  const onChangeWeight = (weight: number) => {
+    if (weight < 0) {
+      setWeightError("Please Provide Weight");
+    } else {
+      // add any regexs
+      setWeight(weight);
+      setWeightError(null);
+    }
+  };
+
+  const onChangeShelfLife = (shelfLife: string) => {
+    if (shelfLife?.length > 30) {
+      setShelfLifeError("Only 30 characters allowed");
+    } else {
+      // add any regexs
+      setShelfLife(shelfLife);
+      setShelfLifeError(null);
+    }
+  };
+
+  const onChangeFeaturesByIndex = (feature: string, index: number) => {
+    if (feature?.length > 30) {
+      let error = "Only 30 characters allowed";
+      if (index == 0) {
+        setFeature1Error(error)
+      } else if (index == 1) {
+        setFeature2Error(error)
+      } else if (index == 2) {
+        setFeature3Error(error)
+      }
+    } else {
+      // add any regexs
+      const nextValues = [...features];
+      nextValues[index] = feature;
+      setFeatures(nextValues);
+
+      if (index == 0) {
+        setFeature1Error(null)
+      } else if (index == 1) {
+        setFeature2Error(null)
+      } else if (index == 2) {
+        setFeature3Error(null)
+      }
+    }
+  };
+
+  const onSelectCategoryId = (val: any) => {
+    setCategoryId(val);
+    setCategoryIdError(null);
+  }
+
+  const onSelectBrandId = (val: any) => {
+    setBrandId(val);
+    setBrandIdError(null);
+  }
+
+  const onSelectUnit = (val: any) => {
+    setUnit(val);
+    setUnitError(null);
+  }
+  const onSelectShelfLifeDuration = (val: any) => {
+    setShelfLifeDuration(val);
+    setShelfLifeDurationError(null);
+  }
+  const onSelectStorage = (val: any) => {
+    setStorage(val);
+    setStorageError(null)
+  }
 
   return (
     <>
@@ -317,22 +546,35 @@ const CreateOrEditProduct: React.FC = () => {
             <div className="create-product-card">
               <div className="create-product-card-header">
                 <span className="create-product-section-number">1</span>
-                <h2>Core Details</h2>
+                <h2>Product Details</h2>
               </div>
 
               <div className="create-product-card-body">
                 <div className="create-product-field-group">
                   <label>
-                    Product Name <span className="req">*</span>
+                    Title <span className="req">*</span>
+                  </label>
+                  <DashBoardInput
+                    placeholder="e.g. Premium Medjool Dates"
+                    value={title}
+                    onChange={(e: any) => OnChangeTitle(e)}
+                    error={titleError ? true : false}
+                    errorMessage={titleError}
+                  // ref={titleRef}
+                  />
+                </div>
+                <div className="create-product-field-group">
+                  <label>
+                    Name <span className="req">*</span>
                   </label>
                   <DashBoardInput
                     placeholder="e.g. Premium Medjool Dates"
                     value={name}
-                    onChange={(e: any) => setName(e.target.value)}
+                    onChange={(e: any) => OnChangeName(e)}
+                    error={nameError ? true : false}
+                    errorMessage={nameError}
+                  // ref={nameRef}
                   />
-                  {errors.name && (
-                    <span className="create-product-error">{errors.name}</span>
-                  )}
                 </div>
 
                 <div className="create-product-row-split">
@@ -343,14 +585,11 @@ const CreateOrEditProduct: React.FC = () => {
                     <Dropdown
                       width="250px"
                       options={categoryOptions}
-                      onSelect={(val: any) => setCategoryId(val)}
+                      onSelect={(val: any) => onSelectCategoryId(val)}
                       label={categoryId ? categoryId.label : "Select category"}
+                      error={categoryIdError ? true : false}
+                      errorMessage={categoryIdError}
                     />
-                    {errors.category && (
-                      <span className="create-product-error">
-                        {errors.category}
-                      </span>
-                    )}
                   </div>
                   <div className="create-product-field-group">
                     <label>
@@ -359,14 +598,11 @@ const CreateOrEditProduct: React.FC = () => {
                     <Dropdown
                       width="250px"
                       options={brandOptions}
-                      onSelect={(val: any) => setBrandId(val)}
+                      onSelect={(val: any) => onSelectBrandId(val)}
                       label={brandId ? brandId.label : "Select brand"}
+                      error={brandIdError ? true : false}
+                      errorMessage={brandIdError}
                     />
-                    {errors.brand && (
-                      <span className="create-product-error">
-                        {errors.brand}
-                      </span>
-                    )}
                   </div>
                 </div>
 
@@ -377,31 +613,26 @@ const CreateOrEditProduct: React.FC = () => {
                   <DashBoardInput
                     placeholder="e.g. Pure Himalayan Wildflower Honey"
                     value={shortDescription}
-                    onChange={(e: any) => setShortDescription(e.target.value)}
+                    onChange={(e: any) => OnChangeShortDescription(e)}
+                    error={shortDescriptionError ? true : false}
+                    errorMessage={shortDescriptionError}
                   />
-                  {errors.shortDescription && (
-                    <span className="create-product-error">
-                      {errors.shortDescription}
-                    </span>
-                  )}
                 </div>
 
                 <div className="create-product-field-group">
                   <label>
                     Full Description <span className="req">*</span>
                   </label>
-                  <textarea
-                    className={`create-product-textarea ${errors.description ? "error-border" : ""}`}
+                  <DashBoardInput
+                    type='textarea'
+                    // className={`create-product-textarea ${errors.description ? "error-border" : ""}`}
                     placeholder="Describe the origin, benefits, and unique qualities of the product..."
                     value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    rows={5}
+                    onChange={(e) => OnChangeDescription(e)}
+                    // rows={5}
+                    error={descriptionError ? true : false}
+                    errorMessage={descriptionError}
                   />
-                  {errors.description && (
-                    <span className="create-product-error">
-                      {errors.description}
-                    </span>
-                  )}
                 </div>
               </div>
             </div>
@@ -497,16 +728,13 @@ const CreateOrEditProduct: React.FC = () => {
                       <DashBoardInput
                         icon={<FaIndianRupeeSign />}
                         placeholder="0.00"
-                        value={price}
-                        onChange={(e: any) => setPrice(e.target.value)}
+                        value={price?.toString()}
+                        onChange={(e) => onChangePrice(Number(e))}
                         type="number"
+                        error={priceError ? true : false}
+                        errorMessage={priceError}
                       />
                     </div>
-                    {errors.price && (
-                      <span className="create-product-error">
-                        {errors.price}
-                      </span>
-                    )}
                   </div>
 
                   <div className="create-product-field-group">
@@ -516,13 +744,10 @@ const CreateOrEditProduct: React.FC = () => {
                     <DashBoardInput
                       placeholder="e.g. Kashmir, India"
                       value={origin}
-                      onChange={(e: any) => setOrigin(e.target.value)}
+                      onChange={(e: any) => onChangeOrigin(e)}
+                      error={originError ? true : false}
+                      errorMessage={originError}
                     />
-                    {errors.origin && (
-                      <span className="create-product-error">
-                        {errors.origin}
-                      </span>
-                    )}
                   </div>
                 </div>
 
@@ -535,17 +760,21 @@ const CreateOrEditProduct: React.FC = () => {
                       <div className="combined-left">
                         <DashBoardInput
                           placeholder="Value"
-                          value={weight}
-                          onChange={(e: any) => setWeight(e.target.value)}
+                          value={weight?.toString()}
+                          onChange={(e) => onChangeWeight(Number(e))}
                           type="number"
+                          error={weightError ? true : false}
+                          errorMessage={weightError}
                         />
                       </div>
                       <div className="combined-right">
                         <Dropdown
                           options={unitOptions}
-                          onSelect={(val: any) => setUnit(val)}
+                          onSelect={(val: any) => onSelectUnit(val)}
                           label={unit?.label ? unit.label : "Select Unit"}
                           width="250px"
+                          error={unitError ? true : false}
+                          errorMessage={unitError}
                         />
                       </div>
                     </div>
@@ -565,28 +794,27 @@ const CreateOrEditProduct: React.FC = () => {
                         <DashBoardInput
                           placeholder="Duration"
                           value={shelfLife}
-                          onChange={(e: any) => setShelfLife(e.target.value)}
+                          onChange={(e) => onChangeShelfLife(e)}
                           type="number"
+                          error={shelfLifeError ? true : false}
+                          errorMessage={shelfLifeError}
                         />
                       </div>
                       <div className="combined-right">
                         <Dropdown
                           width="250px"
                           options={durationOptions}
-                          onSelect={(val: any) => setShelfLifeDuration(val)}
+                          onSelect={(val: any) => onSelectShelfLifeDuration(val)}
                           label={
                             shelfLifeDuration?.label
                               ? shelfLifeDuration.label
                               : "Select Duration"
                           }
+                          error={shelfLifeDurationError ? true : false}
+                          errorMessage={shelfLifeDurationError}
                         />
                       </div>
                     </div>
-                    {errors.shelfLife && (
-                      <span className="create-product-error">
-                        {errors.shelfLife}
-                      </span>
-                    )}
                   </div>
                 </div>
 
@@ -599,18 +827,15 @@ const CreateOrEditProduct: React.FC = () => {
                     <Dropdown
                       width="250px"
                       options={storageOptions}
-                      onSelect={(val: any) => setStorage(val)}
+                      onSelect={(val: any) => onSelectStorage(val)}
                       label={
                         storage?.label
                           ? storage.label
                           : "Select storage condition"
                       }
+                      error={storageError ? true : false}
+                      errorMessage={storageError}
                     />
-                    {errors.storage && (
-                      <span className="create-product-error">
-                        {errors.storage}
-                      </span>
-                    )}
                   </div>
                   <div className="create-product-field-group">
                     <label>
@@ -619,21 +844,14 @@ const CreateOrEditProduct: React.FC = () => {
                     <div className="create-product-price-input">
                       <DashBoardInput
                         placeholder="about product"
-                        value={features[1] || ""}
+                        value={features[0]}
                         onChange={(e: any) =>
-                          setFeatures([
-                            (features[1] = e),
-                            features[2],
-                            features[3],
-                          ])
+                          onChangeFeaturesByIndex(e, 0)
                         }
+                        error={feature1Error ? true : false}
+                        errorMessage={feature1Error}
                       />
                     </div>
-                    {errors.price && (
-                      <span className="create-product-error">
-                        {errors.price}
-                      </span>
-                    )}
                   </div>
                   <div className="create-product-field-group">
                     <label>
@@ -642,21 +860,14 @@ const CreateOrEditProduct: React.FC = () => {
                     <div className="create-product-price-input">
                       <DashBoardInput
                         placeholder="about product"
-                        value={features[2] || ""}
+                        value={features[1]}
                         onChange={(e: any) =>
-                          setFeatures([
-                            features[1],
-                            (features[2] = e),
-                            features[3],
-                          ])
+                          onChangeFeaturesByIndex(e, 1)
                         }
+                        error={feature2Error ? true : false}
+                        errorMessage={feature2Error}
                       />
                     </div>
-                    {errors.price && (
-                      <span className="create-product-error">
-                        {errors.price}
-                      </span>
-                    )}
                   </div>
                   <div className="create-product-field-group">
                     <label>
@@ -665,46 +876,42 @@ const CreateOrEditProduct: React.FC = () => {
                     <div className="create-product-price-input">
                       <DashBoardInput
                         placeholder="about product"
-                        value={features[3] || ""}
+                        value={features[2]}
                         onChange={(e: any) =>
-                          setFeatures([
-                            features[1],
-                            features[2],
-                            (features[3] = e),
-                          ])
+                          onChangeFeaturesByIndex(e, 2)
                         }
+                        error={feature3Error ? true : false}
+                        errorMessage={feature3Error}
                       />
                     </div>
-                    {errors.price && (
-                      <span className="create-product-error">
-                        {errors.price}
-                      </span>
-                    )}
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
-          {/* Bottom Footer Action Bar */}
-          <div className="create-product-footer-bar">
-            <div className="create-product-draft-info">
-              <FiInfo className="info-icon" />
+          {error &&
+            <div className="create-product-error-overall">
+              <div className="create-product-error-overall-info">
+                <FaExclamationTriangle />
+              </div>
               <div>
-                <strong>Draft Saved</strong>
-                <p>
-                  Your progress is automatically saved. Complete all required
-                  fields to publish.
-                </p>
+                <strong>Please Fill All Required Field</strong>
               </div>
             </div>
+          }
+          {/* Bottom Footer Action Bar */}
+          <div className="create-product-footer-bar">
             <div className="create-product-bottom-actions">
               <DashBoardButton
+                icon={<FiX size={25} />}
+                width={'280px'}
                 name="Cancel"
                 variant="secondary"
                 onClick={() => navigate("/dashboard/products")}
               />
               <DashBoardButton
+                icon={<FiPlus size={25} />}
+                width={'280px'}
                 name={isEditMode ? "Save Changes" : "Create Product"}
                 variant="primary"
                 onClick={handleSubmit}

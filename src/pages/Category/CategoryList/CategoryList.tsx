@@ -7,7 +7,7 @@ import Table, {
 } from "../../../assets/table/Table";
 import IMAGE from "../../../../data/DRY_FRUITS.png";
 import { useState, useEffect } from "react";
-import { FiSearch } from "react-icons/fi";
+import { FiPlus, FiSearch } from "react-icons/fi";
 import "./CategoryList.css";
 import DashBoardInput from "../../../assets/ui/DashBoardInput/DashBoardInput";
 import DashBoardButton from "../../../assets/ui/DashBoardButton/DashBoardButton";
@@ -148,6 +148,7 @@ const CategoriesPage = () => {
             </div>
             <div className="action-btn-wrapper">
               <DashBoardButton
+                icon={<FiPlus size={25} />}
                 name="Add Category"
                 variant="primary"
                 onClick={() => navigate("/dashboard/categories/add")}
