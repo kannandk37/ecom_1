@@ -205,32 +205,29 @@ const CreateOrEditProduct: React.FC = () => {
             setExistingImages(productWithId.images || []);
             setFeatures(productWithId.features);
             if (productWithId.specs) {
-              // productWithId.specs.forEach((spec) => {
-              //   if (spec.label === Label.ORIGIN) setOrigin(spec.value as string);
-              //   if (spec.label === Label.STORAGE)
-              //     setStorage({
-              //       id: spec.value,
-              //       label: spec.value,
-              //       value: spec.value,
-              //     });
-              //   if (spec.label === Label.SHELF_LIFE) {
-              //     // Assuming format like "6 month" or handling string split
-              //     const parts = (spec.value as string).split(" ");
-              //     setShelfLife(parts[0] || "");
-              //     if (parts[1])
-              //       setShelfLifeDuration({
-              //         id: parts[1],
-              //         label: parts[1],
-              //         value: parts[1],
-              //       });
-              //   }
-              // });
+              productWithId.specs.forEach((spec) => {
+                if (spec.label === Label.ORIGIN) setOrigin(spec.value as string);
+                if (spec.label === Label.STORAGE)
+                  setStorage({
+                    id: spec.value,
+                    label: spec.value,
+                    value: spec.value,
+                  });
+                if (spec.label === Label.SHELF_LIFE) {
+                  setShelfLife(spec.value?.quantity?.toString())
+                  setShelfLifeDuration({
+                    id: spec.value?.unit,
+                    label: spec.value?.unit,
+                    value: spec.value?.unit,
+                  });
+                }
+              });
             }
           }
         } catch (error) {
           console.log(error);
         } finally {
-          setIsLoading(false)
+          setIsLoading(false);
         }
       }
     })()
