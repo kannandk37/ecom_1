@@ -1,5 +1,5 @@
 
-import { Product, Unit } from "../../../entity/product";
+import { Duration, Label, Product, SpecValue, Unit, Storage } from "../../../entity/product";
 import { brandResponseDatumToBrandEntity } from "../../brand/transformer";
 import { categoryResponseDatumToCategoryEntity } from "../../category/transformer";
 import { variantsResponseDataToVariantsEntities } from "../../variant/transformer";
@@ -68,7 +68,7 @@ export function productResponseDatumToProductEntity(raw: any): Product {
     }
 
     if (raw.specs) {
-        product.specs = raw.specs;
+        product.specs = transformSpecs(raw.specs);
     }
 
     if (raw.slug) {
@@ -87,4 +87,74 @@ export function productsResponseDataToProductsEntities(raws: any[]): Product[] {
         return [];
     }
     return raws.map((raw) => productResponseDatumToProductEntity(raw));
+}
+
+
+function rawSpecToSpecValue(raw: any): SpecValue | null {
+    if (!raw || !raw.label || raw.value === undefined) return null;
+
+    switch (raw.label) {
+
+        case Label.ORIGIN: {
+            if (typeof raw.value !== 'string' || !raw.value.trim()) return null;
+            const spec: Extract<SpecValue, { label: Label.ORIGIN }> = {
+                label: Label.ORIGIN,
+                value: raw.value.trim()
+            };
+            return spec;
+        }
+
+        case Label.STORAGE: {
+            if (!Object.values(Storage).includes(raw.value)) return null;
+            const spec: Extract<SpecValue, { label: Label.STORAGE }> = {
+                label: Label.STORAGE,
+                value: raw.value as Storage
+            };
+            return spec;
+        }
+
+        case Label.SHELF_LIFE: {
+            if (typeof raw.value === 'object' && raw.value !== null) {
+                const qty  = Number(raw.value.quantity);
+                const unit = raw.value.unit as Duration;
+                if (!qty || qty < 1 || !Object.values(Duration).includes(unit)) return null;
+                const spec: Extract<SpecValue, { label: Label.SHELF_LIFE }> = {
+                    label: Label.SHELF_LIFE,
+                    value: { quantity: qty, unit }
+                };
+                return spec;
+            }
+            if (typeof raw.value === 'string') {
+                const [qtyStr, unit] = raw.value.trim().split(' ');
+                const qty = Number(qtyStr);
+                if (!qty || qty < 1 || !Object.values(Duration).includes(unit as Duration)) return null;
+                const spec: Extract<SpecValue, { label: Label.SHELF_LIFE }> = {
+                    label: Label.SHELF_LIFE,
+                    value: { quantity: qty, unit: unit as Duration }
+                };
+                return spec;
+            }
+            return null;
+        }
+
+        default:
+            return null;
+    }
+}
+
+export function transformSpecs(rawSpecs: any[]): SpecValue[] {
+    if (!Array.isArray(rawSpecs) || rawSpecs.length === 0) return [];
+
+    const seen = new Set<string>();
+    const results: SpecValue[] = [];
+
+    for (const raw of rawSpecs) {
+        const spec = rawSpecToSpecValue(raw);
+        if (!spec) continue;
+        if (seen.has(spec.label)) continue;
+        seen.add(spec.label);
+        results.push(spec);
+    }
+
+    return results;
 }

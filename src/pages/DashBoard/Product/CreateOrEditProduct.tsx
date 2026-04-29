@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { FiArrowLeft, FiUploadCloud, FiX,  FiPlus } from "react-icons/fi";
+import { FiArrowLeft, FiUploadCloud, FiX, FiPlus } from "react-icons/fi";
 import DashBoardButton from "../../../assets/ui/DashBoardButton/DashBoardButton";
 import DashBoardInput from "../../../assets/ui/DashBoardInput/DashBoardInput";
 import Dropdown from "../../../assets/dropdown/DropDown";
@@ -100,11 +100,15 @@ const CreateOrEditProduct: React.FC = () => {
     { id: "1", label: "Gram (g)", value: Unit.G },
     { id: "2", label: "Kilogram (kg)", value: Unit.KG },
   ];
-  const durationOptions = [
-    { id: "1", label: "Days", value: Duration.DAY },
-    { id: "2", label: "Weeks", value: Duration.WEEK },
-    { id: "3", label: "Months", value: Duration.MONTH },
-    { id: "4", label: "Years", value: Duration.YEAR },
+  const durationOptionsData = [
+    { id: "1", label: "Day", value: Duration.DAY },
+    { id: "2", label: "Days", value: Duration.DAYS },
+    { id: "3", label: "Week", value: Duration.WEEK },
+    { id: "4", label: "Weeks", value: Duration.WEEKS },
+    { id: "5", label: "Month", value: Duration.MONTH },
+    { id: "6", label: "Months", value: Duration.MONTHS },
+    { id: "7", label: "Year", value: Duration.YEAR },
+    { id: "8", label: "Years", value: Duration.YEARS },
   ];
   const storageOptions = [
     { id: "1", label: "Cool Place", value: Storage.COOL_PLACE },
@@ -117,6 +121,20 @@ const CreateOrEditProduct: React.FC = () => {
   const [feature3Error, setFeature3Error] = useState<string>(null);
   // const nameRef = useRef(null);
   const [error, setError] = useState<boolean>(false);
+
+  const [durationOptions, setDurationOptions] = useState<any[]>(durationOptionsData);
+  useEffect(() => {
+    if (Number(shelfLife) > 1) {
+      setDurationOptions([
+        { id: "2", label: "Days", value: Duration.DAYS },
+        { id: "4", label: "Weeks", value: Duration.WEEKS },
+        { id: "6", label: "Months", value: Duration.MONTHS },
+        { id: "8", label: "Years", value: Duration.YEARS },
+      ])
+    } else {
+      setDurationOptions(durationOptionsData)
+    }
+  }, [shelfLife]);
 
   useEffect(() => {
     (async () => {
@@ -187,26 +205,26 @@ const CreateOrEditProduct: React.FC = () => {
             setExistingImages(productWithId.images || []);
             setFeatures(productWithId.features);
             if (productWithId.specs) {
-              productWithId.specs.forEach((spec) => {
-                if (spec.label === Label.ORIGIN) setOrigin(spec.value as string);
-                if (spec.label === Label.STORAGE)
-                  setStorage({
-                    id: spec.value,
-                    label: spec.value,
-                    value: spec.value,
-                  });
-                if (spec.label === Label.SHELF_LIFE) {
-                  // Assuming format like "6 month" or handling string split
-                  const parts = (spec.value as string).split(" ");
-                  setShelfLife(parts[0] || "");
-                  if (parts[1])
-                    setShelfLifeDuration({
-                      id: parts[1],
-                      label: parts[1],
-                      value: parts[1],
-                    });
-                }
-              });
+              // productWithId.specs.forEach((spec) => {
+              //   if (spec.label === Label.ORIGIN) setOrigin(spec.value as string);
+              //   if (spec.label === Label.STORAGE)
+              //     setStorage({
+              //       id: spec.value,
+              //       label: spec.value,
+              //       value: spec.value,
+              //     });
+              //   if (spec.label === Label.SHELF_LIFE) {
+              //     // Assuming format like "6 month" or handling string split
+              //     const parts = (spec.value as string).split(" ");
+              //     setShelfLife(parts[0] || "");
+              //     if (parts[1])
+              //       setShelfLifeDuration({
+              //         id: parts[1],
+              //         label: parts[1],
+              //         value: parts[1],
+              //       });
+              //   }
+              // });
             }
           }
         } catch (error) {
@@ -289,12 +307,12 @@ const CreateOrEditProduct: React.FC = () => {
       setShelfLifeDurationError("Please Select Duration")
     } else if (!storage?.id) {
       setStorageError("Please Select Storage");
-      } else if (!features[1]) {
-        setFeature1Error("Please Provide Feature");
-      } else if (!features[2]) {
-        setFeature2Error("Please Provide Feature");
-      } else if (!features[3]) {
-        setFeature3Error("Please Provide Feature");
+    } else if (!features[0]) {
+      setFeature1Error("Please Provide Feature");
+    } else if (!features[1]) {
+      setFeature2Error("Please Provide Feature");
+    } else if (!features[2]) {
+      setFeature3Error("Please Provide Feature");
     } else {
       return true;
     }
@@ -314,23 +332,6 @@ const CreateOrEditProduct: React.FC = () => {
       setIsLoading(true);
 
       try {
-        //   const formData = new FormData();
-        //   formData.append('name', name);
-        //   formData.append('categoryId', categoryId);
-        //   formData.append('brandId', brandId);
-        //   formData.append('shortDescription', shortDescription);
-        //   formData.append('description', description);
-        //   formData.append('price', price);
-        //   formData.append('weight', weight);
-        //   formData.append('unit', unit);
-
-        //   // Spec mapping based on entity
-        //   const specs = [
-        //     { label: Label.ORIGIN, value: origin },
-        //     { label: Label.SHELF_LIFE, value: `${shelfLife} ${shelfLifeDuration}` },
-        //     { label: Label.STORAGE, value: storage }
-        //   ];
-        //   formData.append('specs', JSON.stringify(specs));
 
         //   // Append existing images that weren't deleted
         //   formData.append('existingImages', JSON.stringify(existingImages));
@@ -340,11 +341,7 @@ const CreateOrEditProduct: React.FC = () => {
         //     formData.append('images', file);
         //   });
 
-        //   if (isEditMode) {
-        //     await axios.put(`/api/products/${id}`, formData);
-        //   } else {
-        //     await axios.post('/api/products', formData);
-        //   }
+
         let category = new Category();
         category.id = categoryId.id;
 
@@ -352,6 +349,7 @@ const CreateOrEditProduct: React.FC = () => {
         brand.id = brandId.id;
 
         let product = new Product();
+        product.title = title;
         product.name = name;
         product.category = category;
         product.brand = brand;
@@ -360,10 +358,16 @@ const CreateOrEditProduct: React.FC = () => {
         product.price = price;
         product.features = features;
         product.weight = weight.toString();
-        product.unit = unit.label as Unit;
+        product.unit = unit.value as Unit;
         // product.images - 
-        product.specs = [{ label: Label.ORIGIN, value: origin }, { label: Label.STORAGE, value: storage.label as Storage }, { label: Label.SHELF_LIFE, value: `${shelfLife} ${shelfLifeDuration.label as Duration}` }]
-        console.log('product', product)
+        product.specs = [{ label: Label.ORIGIN, value: origin }, { label: Label.STORAGE, value: storage.value as Storage }, { label: Label.SHELF_LIFE, value: { quantity: Number(shelfLife), unit: shelfLifeDuration.value as Duration } }]
+        console.log('product', product);
+
+        if (isEditMode) {
+          await new ProductService().updateById(id, product);
+        } else {
+          await new ProductService().create(product);
+        }
         navigate("/dashboard/products");
       } catch (err) {
         console.error(err);
