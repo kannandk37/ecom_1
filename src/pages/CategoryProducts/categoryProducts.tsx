@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Banner from "../../../data/Banner dry fruits.png";
 import HomeBanner from "../../assets/banner/Banner";
-import ProductCard, { type Product } from "../../assets/card2/ProductCard";
+import ProductCard from "../../assets/card2/ProductCard";
 import NUTS from "../../../data/NUTS.png";
 import DRY_FRUITS from "../../../data/DRY_FRUITS.png";
 import "./categoryProducts.css";
 import Dropdown from "../../assets/dropdown/DropDown";
+import { ProductService } from "../../service/product";
+import { Product } from "../../entity/product";
 
 export const productsData: Product[] = [
   {
@@ -136,13 +138,22 @@ let mockCategory = {
   image: DRY_FRUITS,
   title: "Dry Fruits",
 };
-const CategoryProducts = ({ }) => {
+const CategoryProducts = ({}) => {
   const { categoryId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const [category, setCategory] = useState<any>(mockCategory);
 
   const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      if (categoryId) {
+        let products = await new ProductService().getByCategoryId(categoryId);
+        setProducts(products);
+      }
+    })();
+  }, [categoryId]);
 
   const fetchProductsOfCategory = async (id: string) => {
     console.log(id);

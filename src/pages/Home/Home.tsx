@@ -4,20 +4,14 @@ import { useNavigate } from "react-router-dom";
 import HomeBanner from "../../assets/banner/Banner";
 import Banner from "../../../data/Home_Banner.png";
 import "./Home.css";
-import { CardGrid } from "../../assets/card1/Card";
+import { CardGrid, CardItem } from "../../assets/card1/Card";
 import DRY_FRUITS from "../../../data/DRY_FRUITS.png";
 import NUTS from "../../../data/NUTS.png";
 import DATES from "../../../data/DATES.png";
 import FRESH_JUICE from "../../../data/FRESH_JUICE.png";
 import Loader from "../../assets/loader/Loader";
-import CartItems, { CartItem } from "../../assets/cart/CartItems";
-import OrderItems from "../../assets/orderitemscard/OrderItemsCard";
-
-interface CardItem {
-  id: Number;
-  image: string;
-  title: string;
-}
+import { CategoryService } from "../../service/category";
+import { Category } from "../../entity/category";
 
 export const productsTestData: {
   image: ReactNode;
@@ -44,37 +38,37 @@ export const productsTestData: {
 
 const myCards: CardItem[] = [
   {
-    id: 1,
+    id: " 1",
     image: DRY_FRUITS,
     title: "Dry Fruits",
   },
   {
-    id: 2,
+    id: " 2",
     image: NUTS,
     title: "Nuts",
   },
   {
-    id: 3,
+    id: " 3",
     image: DATES,
     title: "Dates",
   },
   {
-    id: 4,
+    id: " 4",
     image: FRESH_JUICE,
     title: "Fresh Juices",
   },
   {
-    id: 5,
+    id: " 5",
     image: NUTS,
     title: "Chocolates",
   },
   // {
-  // id:6,
+  // id:'6',
   //   image: DATES,
   //   title: "Walnuts",
   // },
   // {
-  // id: 7,
+  // id:' 7',
   //   image: DRY_FRUITS,
   //   title: "Walnuts",
   // },
@@ -112,6 +106,22 @@ const Home = () => {
   const [products, setProducts] = useState<any>([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(true);
+  const [cardData, setCardData] = useState<CardItem[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      let categories = await new CategoryService().get();
+      setCardData(
+        categories?.map((category: Category) => {
+          return {
+            id: category.id,
+            image: DRY_FRUITS,
+            title: category.name,
+          } as CardItem;
+        }),
+      );
+    })();
+  }, []);
 
   useEffect(() => {
     fetchProducts();
@@ -243,7 +253,7 @@ const Home = () => {
                 <h2 className="categories-title">Categories</h2>
                 <div className="categories-cards-container">
                   <CardGrid
-                    cards={myCards}
+                    cards={cardData}
                     cardsPerColumn={1}
                     //  height="320px"
                     onCardClick={handleCardClick}

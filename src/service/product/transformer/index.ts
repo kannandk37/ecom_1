@@ -115,7 +115,7 @@ function rawSpecToSpecValue(raw: any): SpecValue | null {
 
         case Label.SHELF_LIFE: {
             if (typeof raw.value === 'object' && raw.value !== null) {
-                const qty  = Number(raw.value.quantity);
+                const qty = Number(raw.value.quantity);
                 const unit = raw.value.unit as Duration;
                 if (!qty || qty < 1 || !Object.values(Duration).includes(unit)) return null;
                 const spec: Extract<SpecValue, { label: Label.SHELF_LIFE }> = {

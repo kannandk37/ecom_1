@@ -22,7 +22,7 @@ import { FaExclamationTriangle } from "react-icons/fa";
 import { ProductService } from "../../../service/product";
 
 const CreateOrEditProduct: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id = "69dc938b030b9a34f5362800" } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isEditMode = Boolean(id);
 
@@ -97,77 +97,90 @@ const CreateOrEditProduct: React.FC = () => {
 
   // Dropdown Options
   const unitOptions = [
-    { id: "1", label: "Gram (g)", value: Unit.G },
-    { id: "2", label: "Kilogram (kg)", value: Unit.KG },
+    { id: Unit.G, label: Unit.G, value: Unit.G },
+    { id: Unit.KG, label: Unit.KG, value: Unit.KG },
   ];
   const durationOptionsData = [
-    { id: "1", label: "Day", value: Duration.DAY },
-    { id: "2", label: "Days", value: Duration.DAYS },
-    { id: "3", label: "Week", value: Duration.WEEK },
-    { id: "4", label: "Weeks", value: Duration.WEEKS },
-    { id: "5", label: "Month", value: Duration.MONTH },
-    { id: "6", label: "Months", value: Duration.MONTHS },
-    { id: "7", label: "Year", value: Duration.YEAR },
-    { id: "8", label: "Years", value: Duration.YEARS },
+    { id: Duration.DAY, label: Duration.DAY, value: Duration.DAY },
+    { id: Duration.DAYS, label: Duration.DAYS, value: Duration.DAYS },
+    { id: Duration.WEEK, label: Duration.WEEK, value: Duration.WEEK },
+    { id: Duration.WEEKS, label: Duration.WEEKS, value: Duration.WEEKS },
+    { id: Duration.MONTH, label: Duration.MONTH, value: Duration.MONTH },
+    { id: Duration.MONTHS, label: Duration.MONTHS, value: Duration.MONTHS },
+    { id: Duration.YEAR, label: Duration.YEAR, value: Duration.YEAR },
+    { id: Duration.YEARS, label: Duration.YEARS, value: Duration.YEARS },
   ];
   const storageOptions = [
-    { id: "1", label: "Cool Place", value: Storage.COOL_PLACE },
-    { id: "2", label: "Dry Place", value: Storage.DRY_PLACE },
-    { id: "3", label: "Cool & Dry Place", value: Storage.COOL_DRY_PLACE },
+    {
+      id: Storage.COOL_PLACE,
+      label: Storage.COOL_PLACE,
+      value: Storage.COOL_PLACE,
+    },
+    {
+      id: Storage.DRY_PLACE,
+      label: Storage.DRY_PLACE,
+      value: Storage.DRY_PLACE,
+    },
+    {
+      id: Storage.COOL_DRY_PLACE,
+      label: Storage.COOL_DRY_PLACE,
+      value: Storage.COOL_DRY_PLACE,
+    },
   ];
   const [features, setFeatures] = useState<string[]>([]);
   const [feature1Error, setFeature1Error] = useState<string>(null);
   const [feature2Error, setFeature2Error] = useState<string>(null);
   const [feature3Error, setFeature3Error] = useState<string>(null);
-  // const nameRef = useRef(null);
   const [error, setError] = useState<boolean>(false);
 
   const [durationOptions, setDurationOptions] =
     useState<any[]>(durationOptionsData);
+
   useEffect(() => {
     if (Number(shelfLife) > 1) {
+      if (shelfLifeDuration?.id) {
+        let value =
+          shelfLifeDuration.value == Duration.DAY
+            ? Duration.DAYS
+            : shelfLifeDuration.value == Duration.WEEK
+              ? Duration.WEEKS
+              : shelfLifeDuration.value == Duration.MONTH
+                ? Duration.MONTHS
+                : Duration.YEARS;
+        setShelfLifeDuration({
+          id: value,
+          label: value,
+          value: value,
+        });
+      }
       setDurationOptions([
-        { id: "2", label: "Days", value: Duration.DAYS },
-        { id: "4", label: "Weeks", value: Duration.WEEKS },
-        { id: "6", label: "Months", value: Duration.MONTHS },
-        { id: "8", label: "Years", value: Duration.YEARS },
+        { id: Duration.DAYS, label: Duration.DAYS, value: Duration.DAYS },
+        { id: Duration.WEEKS, label: Duration.WEEKS, value: Duration.WEEKS },
+        { id: Duration.MONTHS, label: Duration.MONTHS, value: Duration.MONTHS },
+        { id: Duration.YEARS, label: Duration.YEARS, value: Duration.YEARS },
       ]);
     } else {
       if (Number(shelfLife) == 1) {
         if (shelfLifeDuration?.id) {
-          let try1 = {
-            id:
-              shelfLifeDuration.label?.slice(0, -1) == "Day"
-                ? "1"
-                : shelfLifeDuration.label?.slice(0, -1) == "Week"
-                  ? "3"
-                  : shelfLifeDuration.label?.slice(0, -1) == "Month"
-                    ? "5"
-                    : "7",
-
-            label: shelfLifeDuration.label?.slice(0, -1),
-            value: shelfLifeDuration.value?.slice(0, -1),
-          };
-          console.log("qwe123", try1, shelfLifeDuration);
+          let value =
+            shelfLifeDuration.value == Duration.DAYS
+              ? Duration.DAY
+              : shelfLifeDuration.value == Duration.WEEKS
+                ? Duration.WEEK
+                : shelfLifeDuration.value == Duration.MONTHS
+                  ? Duration.MONTH
+                  : Duration.YEAR;
           setShelfLifeDuration({
-            id:
-              shelfLifeDuration.label?.slice(0, -1) == "Day"
-                ? "1"
-                : shelfLifeDuration.label?.slice(0, -1) == "Week"
-                  ? "3"
-                  : shelfLifeDuration.label?.slice(0, -1) == "Month"
-                    ? "5"
-                    : "7",
-
-            label: shelfLifeDuration.label?.slice(0, -1),
-            value: shelfLifeDuration.value?.slice(0, -1),
+            id: value,
+            label: value,
+            value: value,
           });
         }
         setDurationOptions([
-          { id: "1", label: "Day", value: Duration.DAY },
-          { id: "3", label: "Week", value: Duration.WEEK },
-          { id: "5", label: "Month", value: Duration.MONTH },
-          { id: "7", label: "Year", value: Duration.YEAR },
+          { id: Duration.DAY, label: Duration.DAY, value: Duration.DAY },
+          { id: Duration.WEEK, label: Duration.WEEK, value: Duration.WEEK },
+          { id: Duration.MONTH, label: Duration.MONTH, value: Duration.MONTH },
+          { id: Duration.YEAR, label: Duration.YEAR, value: Duration.YEAR },
         ]);
       } else {
         setDurationOptions(durationOptionsData);

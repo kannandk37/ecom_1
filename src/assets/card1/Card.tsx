@@ -1,7 +1,8 @@
 import React from "react";
 import "./Card.css";
 
-interface CardItem {
+export interface CardItem {
+  id: string;
   image: string;
   title: string;
 }

@@ -7,6 +7,7 @@ import {
   FiX,
   FiBox,
   FiImage,
+  FiPlus,
 } from "react-icons/fi";
 
 import DashBoardButton from "../../../assets/ui/DashBoardButton/DashBoardButton";
@@ -14,34 +15,48 @@ import DashBoardInput from "../../../assets/ui/DashBoardInput/DashBoardInput";
 import Dropdown from "../../../assets/dropdown/DropDown";
 import "./CreateOrEditVariant.css";
 import { Variant, VariantGrade, VariantType } from "../../../entity/variant";
+import { ProductService } from "../../../service/product";
+import { Product } from "../../../entity/product";
+import { FaExclamationTriangle } from "react-icons/fa";
+import { FaIndianRupeeSign } from "react-icons/fa6";
+import { VariantService } from "../../../service/variant";
+import Loader2 from "../../../assets/loader/Loader2";
 
 const CreateOrEditVariant: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id = "69f3c4cd84c187aa7de7c0b2" } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isEditMode = Boolean(id);
 
   // Core Form States
-  const [name, setName] = useState("");
+  const [name, setName] = useState<string>("");
   const [productId, setProductId] = useState<{
     id: string;
     label: string;
     value: string;
   }>(null);
   const [type, setType] = useState<{
-    id: string;
-    label: string;
-    value: string;
+    id: VariantType;
+    label: VariantType;
+    value: VariantType;
   }>(null);
   const [grade, setGrade] = useState<{
-    id: string;
-    label: string;
-    value: string;
+    id: VariantGrade;
+    label: VariantGrade;
+    value: VariantGrade;
   }>(null);
 
   // Inventory & Pricing States
-  const [price, setPrice] = useState("");
-  const [sku, setSku] = useState("");
-  const [stockQuantity, setStockQuantity] = useState("");
+  const [price, setPrice] = useState<number>(0);
+  const [nameError, setNameError] = useState<string>(null);
+  const [productIdError, setProductIdError] = useState<string>(null);
+  const [typeError, setTypeError] = useState<string>(null);
+  const [gradeError, setGradeError] = useState<string>(null);
+  const [priceError, setPriceError] = useState<string>(null);
+  const [newImagePreviewsError, setNewImagePreviewsError] =
+    useState<string>(null);
+
+  // const [sku, setSku] = useState("");
+  // const [stockQuantity, setStockQuantity] = useState("");
 
   // Image States (Max 6)
   const [existingImages, setExistingImages] = useState<string[]>([]);
@@ -49,8 +64,8 @@ const CreateOrEditVariant: React.FC = () => {
   const [newImagePreviews, setNewImagePreviews] = useState<string[]>([]);
 
   // UI States
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>(null);
   const [productOptions, setProductOptions] = useState<
     { id: string; label: string; value: string }[]
   >([]);
@@ -59,66 +74,95 @@ const CreateOrEditVariant: React.FC = () => {
 
   // Dropdown Configurations
   const typeOptions = [
-    { id: "1", label: "Full", value: VariantType.FULL },
-    { id: "2", label: "Broke", value: VariantType.BROKE },
-    { id: "3", label: "Spare", value: VariantType.SPARE },
+    { id: VariantType.FULL, label: VariantType.FULL, value: VariantType.FULL },
+    {
+      id: VariantType.BROKE,
+      label: VariantType.BROKE,
+      value: VariantType.BROKE,
+    },
+    {
+      id: VariantType.SPARE,
+      label: VariantType.SPARE,
+      value: VariantType.SPARE,
+    },
   ];
 
   const gradeOptions = [
-    { id: "1", label: "Grade 1", value: VariantGrade.GRADE1 },
-    { id: "2", label: "Grade 2", value: VariantGrade.GRADE2 },
+    {
+      id: VariantGrade.GRADE1,
+      label: VariantGrade.GRADE1,
+      value: VariantGrade.GRADE1,
+    },
+    {
+      id: VariantGrade.GRADE2,
+      label: VariantGrade.GRADE2,
+      value: VariantGrade.GRADE2,
+    },
   ];
 
   // Fetch Data on Load
   useEffect(() => {
-    // Fetch Products for the Dropdown
-    axios
-      .get("/api/products")
-      .then((res) => {
-        setProductOptions(
-          res.data.map((p: any) => ({ label: p.name || p.title, value: p.id })),
-        );
-      })
-      .catch((err) => {
-        console.error("Error fetching products:", err);
-        // Fallback for UI testing
-        setProductOptions([
-          { id: "", label: "Premium Medjool Dates", value: "prod_1" },
-          { id: "", label: "Organic Cashews", value: "prod_2" },
-        ]);
-      });
-
-    // Fetch Variant if in Edit Mode
-    if (isEditMode) {
+    (async () => {
       setIsLoading(true);
-      axios
-        .get(`/api/variants/${id}`)
-        .then((res) => {
-          const variant: Variant = res.data;
-          setName(variant.name || "");
-          setProductId({
-            id: variant.product?.id,
-            label: variant.product?.name,
-            value: variant.product?.name,
+      try {
+        let products = await new ProductService().get();
+        if (products?.length > 0) {
+          let productsOptionsData = products.map((product: Product) => {
+            return {
+              id: product.id,
+              label: product.name,
+              value: product.name,
+            };
           });
-          setType({
-            id: variant.type,
-            label: variant.type,
-            value: variant.type,
-          });
-          setGrade({
-            id: variant.grade,
-            label: variant.grade,
-            value: variant.grade,
-          });
-          setPrice(variant.price?.toString() || "");
-          setSku(variant.sku || "");
-          setStockQuantity(variant.stockQuantity?.toString() || "");
-          setExistingImages(variant.images || []);
-        })
-        .catch((err) => console.error(err))
-        .finally(() => setIsLoading(false));
-    }
+          setProductOptions(productsOptionsData);
+        } else {
+          setProductOptions(null);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+  }, [id, isEditMode]);
+
+  useEffect(() => {
+    (async () => {
+      if (id && isEditMode) {
+        setIsLoading(true);
+        try {
+          if (isEditMode) {
+            let variantWithId = await new VariantService().getById(id);
+            if (variantWithId) {
+              setName(variantWithId.name);
+              setProductId({
+                id: variantWithId.product?.id,
+                label: variantWithId.product?.name,
+                value: variantWithId.product?.name,
+              });
+              setType({
+                id: variantWithId.type,
+                label: variantWithId.type,
+                value: variantWithId.type,
+              });
+              setGrade({
+                id: variantWithId.grade,
+                label: variantWithId.grade,
+                value: variantWithId.grade,
+              });
+              setPrice(variantWithId.price || 0);
+              // setSku(variantWithId.sku || "");
+              // setStockQuantity(variantWithId.stockQuantity?.toString() || "");
+              // setExistingImages(variantWithId.images || []);
+            }
+          }
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    })();
   }, [id, isEditMode]);
 
   // Image Handling Logic
@@ -128,18 +172,17 @@ const CreateOrEditVariant: React.FC = () => {
       const currentTotal = existingImages.length + newImageFiles.length;
 
       if (currentTotal + files.length > 6) {
-        setErrors((prev) => ({ ...prev, images: "Maximum 6 images allowed." }));
+        setNewImagePreviewsError("Maximum 6 images allowed.");
         return;
       }
 
       const validFiles = files.filter((f) => f.size <= 5 * 1024 * 1024); // 5MB limit
       if (validFiles.length < files.length) {
-        setErrors((prev) => ({
-          ...prev,
-          images: "Some files exceeded the 5MB limit and were removed.",
-        }));
+        setNewImagePreviewsError(
+          "Some files exceeded the 5MB limit and were removed.",
+        );
       } else {
-        setErrors((prev) => ({ ...prev, images: "" }));
+        setNewImagePreviewsError(null);
       }
 
       const newPreviews = validFiles.map((file) => URL.createObjectURL(file));
@@ -157,164 +200,226 @@ const CreateOrEditVariant: React.FC = () => {
     setNewImagePreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const isValid = () => {
+    console.log(newImagePreviewsError, "newImagePreviewsError");
+    if (!name) {
+      setNameError("Please Provide Name");
+    } else if (!productId) {
+      setProductIdError("Please Select Product");
+    } else if (!type) {
+      setTypeError("Please Select Type");
+    } else if (!grade) {
+      setGradeError("Please Select Grade");
+    } else if (price <= 0) {
+      setPriceError("Please Provide Price");
+    } else if (
+      newImagePreviewsError == null ||
+      newImagePreviewsError?.length < 1
+    ) {
+      setNewImagePreviewsError("Please Provide At Least One Image");
+    } else {
+      return true;
+    }
+    return false;
+  };
+
   // Submit Handler
   const handleSubmit = async () => {
-    const newErrors: any = {};
-    if (!name.trim()) newErrors.name = "Required";
-    if (!productId) newErrors.productId = "Required";
-    if (!type) newErrors.type = "Required";
-    if (!grade) newErrors.grade = "Required";
-    if (!price) newErrors.price = "Required";
-    if (!sku.trim()) newErrors.sku = "Required";
-    if (!stockQuantity) newErrors.stockQuantity = "Required";
-    if (existingImages.length === 0 && newImageFiles.length === 0)
-      newErrors.images = "At least one image is required";
+    // if (!sku.trim()) newErrors.sku = "Required";
+    // if (!stockQuantity) newErrors.stockQuantity = "Required";
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
+    if (isValid()) {
+      setIsLoading(true);
+      try {
+        let variant = new Variant();
+        variant.name = name;
+        let product = new Product();
+        product.id = productId.id;
+        variant.product = product;
+        variant.type = type.value;
+        variant.grade = grade.value;
+        variant.price = price;
+        // variant.images = newImageFiles;
+
+        if (isEditMode) {
+          await new VariantService().updateById(id, variant);
+        } else {
+          await new VariantService().create(variant);
+        }
+
+        navigate("/dashboard/products"); // Redirect to products
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
     }
+  };
 
-    setIsLoading(true);
+  useEffect(() => {
+    if (
+      nameError ||
+      productIdError ||
+      typeError ||
+      gradeError ||
+      priceError ||
+      newImagePreviewsError
+    ) {
+      setError("Please Provide All Required Fields");
+    } else {
+      setError(null);
+    }
+  }, [
+    nameError,
+    productIdError,
+    typeError,
+    gradeError,
+    priceError,
+    newImagePreviewsError,
+  ]);
 
-    try {
-      //   const formData = new FormData();
-      //   formData.append("name", name);
-      //   formData.append("productId", productId);
-      //   formData.append("type", type);
-      //   formData.append("grade", grade);
-      //   formData.append("price", price);
-      //   formData.append("sku", sku);
-      //   formData.append("stockQuantity", stockQuantity);
+  const OnChangeName = (name: string) => {
+    if (name?.length > 60) {
+      setNameError("Only 60 characters allowed");
+    } else {
+      // add any regexs
+      setName(name);
+      setNameError(null);
+    }
+  };
 
-      //   formData.append("existingImages", JSON.stringify(existingImages));
+  const onSelectProductId = (val: any) => {
+    setProductId(val);
+    setProductIdError(null);
+  };
 
-      //   newImageFiles.forEach((file) => {
-      //     formData.append("images", file);
-      //   });
+  const onSelectType = (val: any) => {
+    setType(val);
+    setTypeError(null);
+  };
 
-      //   if (isEditMode) {
-      //     await axios.put(`/api/variants/${id}`, formData);
-      //   } else {
-      //     await axios.post("/api/variants", formData);
-      //   }
+  const onSelectGrade = (val: any) => {
+    setGrade(val);
+    setGradeError(null);
+  };
 
-      navigate("/dashboard/products"); // Redirect to products
-    } catch (err) {
-      console.error(err);
-      setErrors((prev) => ({ ...prev, submit: "Failed to save variant." }));
-    } finally {
-      setIsLoading(false);
+  const onChangePrice = (price: number) => {
+    if (price < 0) {
+      setPriceError("Plese Provide price");
+    } else {
+      // add any regexs
+      setPrice(price);
+      setPriceError(null);
     }
   };
 
   return (
-    <div className="create-variant-container">
-      {/* Header */}
-      <div className="create-variant-header-wrapper">
-        <div className="create-variant-title-area">
-          <button
-            className="create-variant-back-btn"
-            onClick={() => navigate("/dashboard/products")}
-          >
-            <FiArrowLeft /> Back to Products
-          </button>
-          <h1 className="create-variant-title">
-            {isEditMode ? "Edit Variant" : "Add Variant"}
-          </h1>
-          <p className="create-variant-subtitle">
-            Define new SKU specifications for the organic catalog.
-          </p>
-        </div>
-      </div>
-
-      <div className="create-variant-sections-wrapper">
-        {/* Section 1: Core Details */}
-        <div className="create-variant-card">
-          <div className="create-variant-card-header">
-            <FiBox className="create-variant-header-icon" />
-            <h2>Variant Specifications</h2>
+    <>
+      {isLoading ? (
+        <Loader2 />
+      ) : (
+        <div className="create-variant-container">
+          <div className="create-variant-header-wrapper">
+            <div className="create-variant-title-area">
+              <button
+                className="create-variant-back-btn"
+                onClick={() => navigate("/dashboard/products")}
+              >
+                <FiArrowLeft /> Back to Products
+              </button>
+              <h1 className="create-variant-title">
+                {isEditMode ? "Edit Variant" : "Add Variant"}
+              </h1>
+              <p className="create-variant-subtitle">
+                Define new SKU specifications for the organic catalog.
+              </p>
+            </div>
           </div>
 
-          <div className="create-variant-card-body">
-            <div className="create-variant-field-group">
-              <label>
-                Variant Name <span className="req">*</span>
-              </label>
-              <DashBoardInput
-                placeholder="e.g. 500g Glass Jar"
-                value={name}
-                onChange={(e: any) => setName(e.target.value)}
-              />
-              {errors.name && (
-                <span className="create-variant-error">{errors.name}</span>
-              )}
-            </div>
-
-            <div className="create-variant-field-group">
-              <label>
-                Select Product <span className="req">*</span>
-              </label>
-              <Dropdown
-                width="250px"
-                options={productOptions}
-                onSelect={(val: any) => setProductId(val)}
-                label={productId?.label ? productId.label : "Select Product"}
-              />
-              {errors.productId && (
-                <span className="create-variant-error">{errors.productId}</span>
-              )}
-            </div>
-
-            <div className="create-variant-row-split">
-              <div className="create-variant-field-group">
-                <label>
-                  Type <span className="req">*</span>
-                </label>
-                <Dropdown
-                  width="250px"
-                  options={typeOptions}
-                  onSelect={(val: any) => setType(val)}
-                  label={type?.label ? type?.label : "Select Type"}
-                />
-                {errors.type && (
-                  <span className="create-variant-error">{errors.type}</span>
-                )}
+          <div className="create-variant-sections-wrapper">
+            <div className="create-variant-card">
+              <div className="create-variant-card-header">
+                <FiBox className="create-variant-header-icon" />
+                <h2>Variant Specifications</h2>
               </div>
-              <div className="create-variant-field-group">
-                <label>
-                  Grade <span className="req">*</span>
-                </label>
-                <Dropdown
-                  width="250px"
-                  options={gradeOptions}
-                  onSelect={(val: any) => setGrade(val)}
-                  label={grade?.label ? grade.label : "Select Grade"}
-                />
-                {errors.grade && (
-                  <span className="create-variant-error">{errors.grade}</span>
-                )}
-              </div>
-            </div>
 
-            <div className="create-variant-row-split">
-              <div className="create-variant-field-group">
-                <label>
-                  Price (₹) <span className="req">*</span>
-                </label>
-                <DashBoardInput
-                  placeholder="0.00"
-                  value={price}
-                  onChange={(e: any) => setPrice(e.target.value)}
-                  type="number"
-                />
-                {errors.price && (
-                  <span className="create-variant-error">{errors.price}</span>
-                )}
-              </div>
-            </div>
+              <div className="create-variant-card-body">
+                <div className="create-variant-field-group">
+                  <label>
+                    Variant Name <span className="req">*</span>
+                  </label>
+                  <DashBoardInput
+                    placeholder="e.g. 500g Glass Jar"
+                    value={name}
+                    onChange={(e: any) => OnChangeName(e)}
+                    error={nameError ? true : false}
+                    errorMessage={nameError}
+                  />
+                </div>
 
-            <div className="create-variant-row-split">
+                <div className="create-variant-field-group">
+                  <label>
+                    Select Product <span className="req">*</span>
+                  </label>
+                  <Dropdown
+                    width="250px"
+                    options={productOptions}
+                    onSelect={(val: any) => onSelectProductId(val)}
+                    label={
+                      productId?.label ? productId.label : "Select Product"
+                    }
+                    error={productIdError ? true : false}
+                    errorMessage={productIdError}
+                  />
+                </div>
+
+                <div className="create-variant-row-split">
+                  <div className="create-variant-field-group">
+                    <label>
+                      Type <span className="req">*</span>
+                    </label>
+                    <Dropdown
+                      width="250px"
+                      options={typeOptions}
+                      onSelect={(val: any) => onSelectType(val)}
+                      label={type?.label ? type?.label : "Select Type"}
+                      error={typeError ? true : false}
+                      errorMessage={typeError}
+                    />
+                  </div>
+                  <div className="create-variant-field-group">
+                    <label>
+                      Grade <span className="req">*</span>
+                    </label>
+                    <Dropdown
+                      width="250px"
+                      options={gradeOptions}
+                      onSelect={(val: any) => onSelectGrade(val)}
+                      label={grade?.label ? grade.label : "Select Grade"}
+                      error={gradeError ? true : false}
+                      errorMessage={gradeError}
+                    />
+                  </div>
+                </div>
+
+                <div className="create-variant-row-split">
+                  <div className="create-variant-field-group">
+                    <label>
+                      Price (₹) <span className="req">*</span>
+                    </label>
+                    <DashBoardInput
+                      icon={<FaIndianRupeeSign />}
+                      placeholder="0.00"
+                      value={price?.toString()}
+                      onChange={(e: any) => onChangePrice(e)}
+                      type="number"
+                      error={priceError ? true : false}
+                      errorMessage={priceError}
+                    />
+                  </div>
+                </div>
+
+                {/* <div className="create-variant-row-split">
               <div className="create-variant-field-group">
                 <label>
                   SKU <span className="req">*</span>
@@ -344,115 +449,132 @@ const CreateOrEditVariant: React.FC = () => {
                   </span>
                 )}
               </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Section 2: Variant Images */}
-        <div className="create-variant-card">
-          <div className="create-variant-card-header">
-            <FiImage className="create-variant-header-icon" />
-            <div className="create-variant-header-text">
-              <h2>Variant Images</h2>
-              <span className="create-variant-meta-text">MAX 6 FILES</span>
-            </div>
-          </div>
-
-          <div className="create-variant-card-body">
-            {/* Upload Area */}
-            {existingImages.length + newImageFiles.length < 6 && (
-              <div
-                className={`create-variant-upload-area ${errors.images ? "error-border" : ""}`}
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <div className="create-variant-upload-icon-wrapper">
-                  <FiUploadCloud className="create-variant-upload-icon" />
-                </div>
-                <span className="create-variant-upload-title">
-                  Click to upload or drag and drop
-                </span>
-                <span className="create-variant-upload-subtitle">
-                  PNG, JPG or WebP up to 5MB
-                </span>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleImageChange}
-                  accept="image/*"
-                  multiple
-                  style={{ display: "none" }}
-                />
+            </div> */}
               </div>
-            )}
-            {errors.images && (
-              <span
-                className="create-variant-error"
-                style={{ marginTop: "10px" }}
-              >
-                {errors.images}
-              </span>
-            )}
+            </div>
 
-            {/* Image Previews Gallery */}
-            <div className="create-variant-media-gallery">
-              {existingImages.map((url, idx) => (
-                <div
-                  key={`existing-${idx}`}
-                  className="create-variant-preview-box"
-                >
-                  <img src={url} alt={`Existing ${idx}`} />
-                  <button
-                    className="create-variant-remove-img"
-                    onClick={() => removeExistingImage(idx)}
+            {/* Section 2: Variant Images */}
+            <div className="create-variant-card">
+              <div className="create-variant-card-header">
+                <FiImage className="create-variant-header-icon" />
+                <div className="create-variant-header-text">
+                  <h2>Variant Images</h2>
+                  <span className="create-variant-meta-text">MAX 6 FILES</span>
+                </div>
+              </div>
+
+              <div className="create-variant-card-body">
+                {/* Upload Area */}
+                {existingImages.length + newImageFiles.length < 6 && (
+                  <div
+                    className={`create-variant-upload-area ${newImagePreviewsError ? "error-border" : ""}`}
+                    onClick={() => fileInputRef.current?.click()}
                   >
-                    <FiX />
-                  </button>
-                </div>
-              ))}
+                    <div className="create-variant-upload-icon-wrapper">
+                      <FiUploadCloud className="create-variant-upload-icon" />
+                    </div>
+                    <span className="create-variant-upload-title">
+                      Click to upload or drag and drop
+                    </span>
+                    <span className="create-variant-upload-subtitle">
+                      PNG, JPG or WebP up to 5MB
+                    </span>
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleImageChange}
+                      accept="image/*"
+                      multiple
+                      style={{ display: "none" }}
+                    />
+                  </div>
+                )}
+                {newImagePreviewsError && (
+                  <span className="create-variant-error">
+                    {newImagePreviewsError}
+                  </span>
+                )}
 
-              {newImagePreviews.map((url, idx) => (
-                <div key={`new-${idx}`} className="create-variant-preview-box">
-                  <img src={url} alt={`Preview ${idx}`} />
-                  <button
-                    className="create-variant-remove-img"
-                    onClick={() => removeNewImage(idx)}
-                  >
-                    <FiX />
-                  </button>
-                </div>
-              ))}
+                {/* Image Previews Gallery */}
+                <div className="create-variant-media-gallery">
+                  {existingImages.map((url, idx) => (
+                    <div
+                      key={`existing-${idx}`}
+                      className="create-variant-preview-box"
+                    >
+                      <img src={url} alt={`Existing ${idx}`} />
+                      <button
+                        className="create-variant-remove-img"
+                        onClick={() => removeExistingImage(idx)}
+                      >
+                        <FiX />
+                      </button>
+                    </div>
+                  ))}
 
-              {/* Empty state placeholders to mimic the UI reference */}
-              {Array.from({
-                length: Math.max(
-                  0,
-                  4 - (existingImages.length + newImageFiles.length),
-                ),
-              }).map((_, idx) => (
-                <div key={`empty-${idx}`} className="create-variant-empty-box">
-                  <FiImage />
+                  {newImagePreviews.map((url, idx) => (
+                    <div
+                      key={`new-${idx}`}
+                      className="create-variant-preview-box"
+                    >
+                      <img src={url} alt={`Preview ${idx}`} />
+                      <button
+                        className="create-variant-remove-img"
+                        onClick={() => removeNewImage(idx)}
+                      >
+                        <FiX />
+                      </button>
+                    </div>
+                  ))}
+
+                  {/* Empty state placeholders to mimic the UI reference */}
+                  {Array.from({
+                    length: Math.max(
+                      0,
+                      4 - (existingImages.length + newImageFiles.length),
+                    ),
+                  }).map((_, idx) => (
+                    <div
+                      key={`empty-${idx}`}
+                      className="create-variant-empty-box"
+                    >
+                      <FiImage />
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
           </div>
+          {error && (
+            <div className="create-variant-error-overall">
+              <div className="create-variant-error-overall-info">
+                <FaExclamationTriangle />
+              </div>
+              <div>
+                <strong>Please Fill All Required Field</strong>
+              </div>
+            </div>
+          )}
+          <div className="create-variant-footer">
+            <DashBoardButton
+              icon={<FiX size={25} />}
+              width={"280px"}
+              name="Cancel"
+              variant="secondary"
+              onClick={() => navigate("/dashboard/products")}
+            />
+            <DashBoardButton
+              icon={<FiPlus size={25} />}
+              width={"280px"}
+              name={isEditMode ? "Save Changes" : "Create Variant"}
+              variant="primary"
+              onClick={handleSubmit}
+              disabled={isLoading}
+            />
+          </div>
         </div>
-      </div>
-
-      {/* Footer Actions */}
-      <div className="create-variant-footer">
-        <DashBoardButton
-          name="Cancel"
-          variant="secondary"
-          onClick={() => navigate("/dashboard/products")}
-        />
-        <DashBoardButton
-          name={isEditMode ? "Save Changes" : "Create Variant"}
-          variant="primary"
-          onClick={handleSubmit}
-          disabled={isLoading}
-        />
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 

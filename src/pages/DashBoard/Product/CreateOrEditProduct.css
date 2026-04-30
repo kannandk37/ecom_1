@@ -1,8 +1,8 @@
 .create-product-container {
   font-family: var(--font-family, sans-serif);
-  padding: 30px 40px;
+  /* padding: 30px 40px; */
   width: 100%;
-  max-width: 1000px;
+  /* max-width: 1000px; */
   margin: 0 auto;
   box-sizing: border-box;
   animation: fadeIn 0.4s ease;

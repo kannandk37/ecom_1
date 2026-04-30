@@ -1,8 +1,8 @@
 .create-variant-container {
   font-family: var(--font-family, sans-serif);
-  padding: 30px 40px;
+  /* padding: 30px 40px; */
   width: 100%;
-  max-width: 900px;
+  /* max-width: 900px; */
   margin: 0 auto;
   box-sizing: border-box;
   animation: fadeIn 0.4s ease;
@@ -139,7 +139,6 @@
   color: #d93025;
   font-size: 0.75rem;
   font-weight: 700;
-  margin-top: 4px;
 }
 
 /* Image Upload Area */
@@ -253,6 +252,20 @@
   justify-content: center;
   color: #ddd;
   font-size: 2rem;
+}
+
+.create-variant-error-overall {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: end;
+  color: #d93025;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.create-variant-error-overall-info {
+  margin-top: 4px;
 }
 
 /* Footer Actions */
