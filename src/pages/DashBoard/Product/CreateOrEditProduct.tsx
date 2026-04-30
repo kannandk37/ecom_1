@@ -38,18 +38,17 @@ const CreateOrEditProduct: React.FC = () => {
     value: string;
   }>(null);
   const [categoryIdError, setCategoryIdError] = useState<string>(null);
-  const [brandIdError, setBrandIdError] = useState<string>(null)
+  const [brandIdError, setBrandIdError] = useState<string>(null);
   const [name, setName] = useState<string>("");
   const [shortDescription, setShortDescription] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [title, setTitle] = useState<string>("");
 
-
   const [titleError, setTitleError] = useState<string>("");
   const [nameError, setNameError] = useState<string>(null);
-  const [shortDescriptionError, setShortDescriptionError] = useState<string>(null);
+  const [shortDescriptionError, setShortDescriptionError] =
+    useState<string>(null);
   const [descriptionError, setDescriptionError] = useState<string>(null);
-
 
   // Form States - Pricing & Logistics
   const [price, setPrice] = useState<number>(0);
@@ -71,13 +70,14 @@ const CreateOrEditProduct: React.FC = () => {
     label: string;
     value: string;
   }>(null);
-  const [shelfLifeDurationError, setShelfLifeDurationError] = useState<string>(null);
+  const [shelfLifeDurationError, setShelfLifeDurationError] =
+    useState<string>(null);
   const [storage, setStorage] = useState<{
     id: string;
     label: string;
     value: string;
   }>(null);
-  const [storageError, setStorageError] = useState<string>(null)
+  const [storageError, setStorageError] = useState<string>(null);
   // Image States (Max 6)
   const [existingImages, setExistingImages] = useState<string[]>([]);
   const [newImageFiles, setNewImageFiles] = useState<File[]>([]);
@@ -122,7 +122,8 @@ const CreateOrEditProduct: React.FC = () => {
   // const nameRef = useRef(null);
   const [error, setError] = useState<boolean>(false);
 
-  const [durationOptions, setDurationOptions] = useState<any[]>(durationOptionsData);
+  const [durationOptions, setDurationOptions] =
+    useState<any[]>(durationOptionsData);
   useEffect(() => {
     if (Number(shelfLife) > 1) {
       setDurationOptions([
@@ -130,9 +131,47 @@ const CreateOrEditProduct: React.FC = () => {
         { id: "4", label: "Weeks", value: Duration.WEEKS },
         { id: "6", label: "Months", value: Duration.MONTHS },
         { id: "8", label: "Years", value: Duration.YEARS },
-      ])
+      ]);
     } else {
-      setDurationOptions(durationOptionsData)
+      if (Number(shelfLife) == 1) {
+        if (shelfLifeDuration?.id) {
+          let try1 = {
+            id:
+              shelfLifeDuration.label?.slice(0, -1) == "Day"
+                ? "1"
+                : shelfLifeDuration.label?.slice(0, -1) == "Week"
+                  ? "3"
+                  : shelfLifeDuration.label?.slice(0, -1) == "Month"
+                    ? "5"
+                    : "7",
+
+            label: shelfLifeDuration.label?.slice(0, -1),
+            value: shelfLifeDuration.value?.slice(0, -1),
+          };
+          console.log("qwe123", try1, shelfLifeDuration);
+          setShelfLifeDuration({
+            id:
+              shelfLifeDuration.label?.slice(0, -1) == "Day"
+                ? "1"
+                : shelfLifeDuration.label?.slice(0, -1) == "Week"
+                  ? "3"
+                  : shelfLifeDuration.label?.slice(0, -1) == "Month"
+                    ? "5"
+                    : "7",
+
+            label: shelfLifeDuration.label?.slice(0, -1),
+            value: shelfLifeDuration.value?.slice(0, -1),
+          });
+        }
+        setDurationOptions([
+          { id: "1", label: "Day", value: Duration.DAY },
+          { id: "3", label: "Week", value: Duration.WEEK },
+          { id: "5", label: "Month", value: Duration.MONTH },
+          { id: "7", label: "Year", value: Duration.YEAR },
+        ]);
+      } else {
+        setDurationOptions(durationOptionsData);
+      }
     }
   }, [shelfLife]);
 
@@ -185,7 +224,7 @@ const CreateOrEditProduct: React.FC = () => {
         try {
           let productWithId = await new ProductService().getById(id);
           if (productWithId) {
-            setTitle(productWithId.title)
+            setTitle(productWithId.title);
             setName(productWithId.name);
             setCategoryId({
               id: productWithId.category?.id,
@@ -200,13 +239,18 @@ const CreateOrEditProduct: React.FC = () => {
             setShortDescription(productWithId.shortDescription);
             setDescription(productWithId.description);
             setPrice(productWithId.price || 0);
-            setWeight(productWithId.weight as any || 0);
-            setUnit({ id: productWithId.unit, label: productWithId.unit, value: productWithId.unit });
+            setWeight((productWithId.weight as any) || 0);
+            setUnit({
+              id: productWithId.unit,
+              label: productWithId.unit,
+              value: productWithId.unit,
+            });
             setExistingImages(productWithId.images || []);
             setFeatures(productWithId.features);
             if (productWithId.specs) {
               productWithId.specs.forEach((spec) => {
-                if (spec.label === Label.ORIGIN) setOrigin(spec.value as string);
+                if (spec.label === Label.ORIGIN)
+                  setOrigin(spec.value as string);
                 if (spec.label === Label.STORAGE)
                   setStorage({
                     id: spec.value,
@@ -214,7 +258,7 @@ const CreateOrEditProduct: React.FC = () => {
                     value: spec.value,
                   });
                 if (spec.label === Label.SHELF_LIFE) {
-                  setShelfLife(spec.value?.quantity?.toString())
+                  setShelfLife(spec.value?.quantity?.toString());
                   setShelfLifeDuration({
                     id: spec.value?.unit,
                     label: spec.value?.unit,
@@ -230,7 +274,7 @@ const CreateOrEditProduct: React.FC = () => {
           setIsLoading(false);
         }
       }
-    })()
+    })();
   }, [id, isEditMode]);
 
   // Image Handling
@@ -272,7 +316,7 @@ const CreateOrEditProduct: React.FC = () => {
 
   const isValid = () => {
     if (!title) {
-      setTitleError('Please Provide Title')
+      setTitleError("Please Provide Title");
     } else if (!name) {
       setNameError("Please Provide Name");
       // if (nameRef.current) {
@@ -301,7 +345,7 @@ const CreateOrEditProduct: React.FC = () => {
     } else if (!shelfLife) {
       setShelfLifeError("Please Provide Shelf Life");
     } else if (!shelfLifeDuration) {
-      setShelfLifeDurationError("Please Select Duration")
+      setShelfLifeDurationError("Please Select Duration");
     } else if (!storage?.id) {
       setStorageError("Please Select Storage");
     } else if (!features[0]) {
@@ -314,22 +358,51 @@ const CreateOrEditProduct: React.FC = () => {
       return true;
     }
     return false;
-  }
+  };
 
   useEffect(() => {
-    if (nameError || categoryIdError || brandIdError || shortDescriptionError || descriptionError || priceError || originError || weightError || shelfLifeError || shelfLifeDurationError || storageError || feature1Error || feature2Error || feature3Error) {
+    if (
+      nameError ||
+      categoryIdError ||
+      brandIdError ||
+      shortDescriptionError ||
+      descriptionError ||
+      priceError ||
+      originError ||
+      weightError ||
+      shelfLifeError ||
+      shelfLifeDurationError ||
+      storageError ||
+      feature1Error ||
+      feature2Error ||
+      feature3Error
+    ) {
       setError(true);
     } else {
       setError(false);
     }
-  }, [nameError, categoryIdError, brandIdError, shortDescriptionError, descriptionError, priceError, originError, weightError, shelfLifeError, shelfLifeDurationError, storageError, feature1Error, feature2Error, feature3Error])
+  }, [
+    nameError,
+    categoryIdError,
+    brandIdError,
+    shortDescriptionError,
+    descriptionError,
+    priceError,
+    originError,
+    weightError,
+    shelfLifeError,
+    shelfLifeDurationError,
+    storageError,
+    feature1Error,
+    feature2Error,
+    feature3Error,
+  ]);
   // Submit
   const handleSubmit = async () => {
     if (isValid()) {
       setIsLoading(true);
 
       try {
-
         //   // Append existing images that weren't deleted
         //   formData.append('existingImages', JSON.stringify(existingImages));
 
@@ -337,7 +410,6 @@ const CreateOrEditProduct: React.FC = () => {
         //   newImageFiles.forEach(file => {
         //     formData.append('images', file);
         //   });
-
 
         let category = new Category();
         category.id = categoryId.id;
@@ -356,9 +428,19 @@ const CreateOrEditProduct: React.FC = () => {
         product.features = features;
         product.weight = weight.toString();
         product.unit = unit.value as Unit;
-        // product.images - 
-        product.specs = [{ label: Label.ORIGIN, value: origin }, { label: Label.STORAGE, value: storage.value as Storage }, { label: Label.SHELF_LIFE, value: { quantity: Number(shelfLife), unit: shelfLifeDuration.value as Duration } }]
-        console.log('product', product);
+        // product.images -
+        product.specs = [
+          { label: Label.ORIGIN, value: origin },
+          { label: Label.STORAGE, value: storage.value as Storage },
+          {
+            label: Label.SHELF_LIFE,
+            value: {
+              quantity: Number(shelfLife),
+              unit: shelfLifeDuration.value as Duration,
+            },
+          },
+        ];
+        console.log("product", product);
 
         if (isEditMode) {
           await new ProductService().updateById(id, product);
@@ -372,7 +454,6 @@ const CreateOrEditProduct: React.FC = () => {
       } finally {
         setIsLoading(false);
       }
-
     }
   };
 
@@ -460,11 +541,11 @@ const CreateOrEditProduct: React.FC = () => {
     if (feature?.length > 30) {
       let error = "Only 30 characters allowed";
       if (index == 0) {
-        setFeature1Error(error)
+        setFeature1Error(error);
       } else if (index == 1) {
-        setFeature2Error(error)
+        setFeature2Error(error);
       } else if (index == 2) {
-        setFeature3Error(error)
+        setFeature3Error(error);
       }
     } else {
       // add any regexs
@@ -473,11 +554,11 @@ const CreateOrEditProduct: React.FC = () => {
       setFeatures(nextValues);
 
       if (index == 0) {
-        setFeature1Error(null)
+        setFeature1Error(null);
       } else if (index == 1) {
-        setFeature2Error(null)
+        setFeature2Error(null);
       } else if (index == 2) {
-        setFeature3Error(null)
+        setFeature3Error(null);
       }
     }
   };
@@ -485,25 +566,25 @@ const CreateOrEditProduct: React.FC = () => {
   const onSelectCategoryId = (val: any) => {
     setCategoryId(val);
     setCategoryIdError(null);
-  }
+  };
 
   const onSelectBrandId = (val: any) => {
     setBrandId(val);
     setBrandIdError(null);
-  }
+  };
 
   const onSelectUnit = (val: any) => {
     setUnit(val);
     setUnitError(null);
-  }
+  };
   const onSelectShelfLifeDuration = (val: any) => {
     setShelfLifeDuration(val);
     setShelfLifeDurationError(null);
-  }
+  };
   const onSelectStorage = (val: any) => {
     setStorage(val);
-    setStorageError(null)
-  }
+    setStorageError(null);
+  };
 
   return (
     <>
@@ -561,7 +642,7 @@ const CreateOrEditProduct: React.FC = () => {
                     onChange={(e: any) => OnChangeTitle(e)}
                     error={titleError ? true : false}
                     errorMessage={titleError}
-                  // ref={titleRef}
+                    // ref={titleRef}
                   />
                 </div>
                 <div className="create-product-field-group">
@@ -574,7 +655,7 @@ const CreateOrEditProduct: React.FC = () => {
                     onChange={(e: any) => OnChangeName(e)}
                     error={nameError ? true : false}
                     errorMessage={nameError}
-                  // ref={nameRef}
+                    // ref={nameRef}
                   />
                 </div>
 
@@ -625,7 +706,7 @@ const CreateOrEditProduct: React.FC = () => {
                     Full Description <span className="req">*</span>
                   </label>
                   <DashBoardInput
-                    type='textarea'
+                    type="textarea"
                     // className={`create-product-textarea ${errors.description ? "error-border" : ""}`}
                     placeholder="Describe the origin, benefits, and unique qualities of the product..."
                     value={description}
@@ -805,7 +886,9 @@ const CreateOrEditProduct: React.FC = () => {
                         <Dropdown
                           width="250px"
                           options={durationOptions}
-                          onSelect={(val: any) => onSelectShelfLifeDuration(val)}
+                          onSelect={(val: any) =>
+                            onSelectShelfLifeDuration(val)
+                          }
                           label={
                             shelfLifeDuration?.label
                               ? shelfLifeDuration.label
@@ -846,9 +929,7 @@ const CreateOrEditProduct: React.FC = () => {
                       <DashBoardInput
                         placeholder="about product"
                         value={features[0]}
-                        onChange={(e: any) =>
-                          onChangeFeaturesByIndex(e, 0)
-                        }
+                        onChange={(e: any) => onChangeFeaturesByIndex(e, 0)}
                         error={feature1Error ? true : false}
                         errorMessage={feature1Error}
                       />
@@ -862,9 +943,7 @@ const CreateOrEditProduct: React.FC = () => {
                       <DashBoardInput
                         placeholder="about product"
                         value={features[1]}
-                        onChange={(e: any) =>
-                          onChangeFeaturesByIndex(e, 1)
-                        }
+                        onChange={(e: any) => onChangeFeaturesByIndex(e, 1)}
                         error={feature2Error ? true : false}
                         errorMessage={feature2Error}
                       />
@@ -878,9 +957,7 @@ const CreateOrEditProduct: React.FC = () => {
                       <DashBoardInput
                         placeholder="about product"
                         value={features[2]}
-                        onChange={(e: any) =>
-                          onChangeFeaturesByIndex(e, 2)
-                        }
+                        onChange={(e: any) => onChangeFeaturesByIndex(e, 2)}
                         error={feature3Error ? true : false}
                         errorMessage={feature3Error}
                       />
@@ -890,7 +967,7 @@ const CreateOrEditProduct: React.FC = () => {
               </div>
             </div>
           </div>
-          {error &&
+          {error && (
             <div className="create-product-error-overall">
               <div className="create-product-error-overall-info">
                 <FaExclamationTriangle />
@@ -899,20 +976,20 @@ const CreateOrEditProduct: React.FC = () => {
                 <strong>Please Fill All Required Field</strong>
               </div>
             </div>
-          }
+          )}
           {/* Bottom Footer Action Bar */}
           <div className="create-product-footer-bar">
             <div className="create-product-bottom-actions">
               <DashBoardButton
                 icon={<FiX size={25} />}
-                width={'280px'}
+                width={"280px"}
                 name="Cancel"
                 variant="secondary"
                 onClick={() => navigate("/dashboard/products")}
               />
               <DashBoardButton
                 icon={<FiPlus size={25} />}
-                width={'280px'}
+                width={"280px"}
                 name={isEditMode ? "Save Changes" : "Create Product"}
                 variant="primary"
                 onClick={handleSubmit}
