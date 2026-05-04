@@ -62,6 +62,8 @@
   list-style: none;
   z-index: 100;
   animation: dsDropdownFadeIn 0.2s ease-out;
+  max-height: 410px;
+  overflow-y: auto;
 }
 
 @keyframes dsDropdownFadeIn {

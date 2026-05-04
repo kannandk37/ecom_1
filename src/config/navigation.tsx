@@ -22,7 +22,7 @@ import Home from "../pages/Home/Home";
 import DRY_FRUITS from "../../data/DRY_FRUITS.png";
 import NUTS from "../../data/NUTS.png";
 import DATES from "../../data/DATES.png";
-import { FaIndianRupeeSign, FaUser } from "react-icons/fa6";
+import { FaIndianRupeeSign, FaRegUser, FaUser } from "react-icons/fa6";
 import { MdOutlineCategory } from "react-icons/md";
 import { TbBrandBitbucket } from "react-icons/tb";
 import DashBoardCategories from "../pages/DashBoard/Categories/DashBoardCategories";
@@ -35,7 +35,9 @@ import CreateOrEditProduct from "../pages/DashBoard/Product/CreateOrEditProduct"
 import CreateOrEditVariant from "../pages/DashBoard/Variant/createOrEditVariant";
 import CreateOrEditUser from "../pages/User/CreateOrEditUser";
 import UsersList from "../pages/DashBoard/User/Users";
-import CreateOrEditWareHouse from "../pages/WareHouse/CreateOrEdiyWareHouse";
+import CreateOrEditWareHouse from "../pages/WareHouse/CreateOrEditWareHouse";
+import { LuWarehouse } from "react-icons/lu";
+import { CiBoxes } from "react-icons/ci";
 export interface NavItem {
   id: string;
   name: string;
@@ -172,21 +174,21 @@ export const NAV_OPTIONS: NavItem[] = [
   {
     id: "variants",
     name: "Variants",
-    icon: <FiBox />,
+    icon: <CiBoxes />,
     path: "/dashboard/variants",
     component: <CreateOrEditVariant />,
   },
   {
     id: "users",
     name: "Users",
-    icon: <FaUser />,
+    icon: <FaRegUser />,
     path: "/dashboard/users",
     component: <UsersList />,
     children: [
       {
         id: "add-users",
         name: "Add Users",
-        icon: <FaUser />,
+        icon: <FaRegUser />,
         path: "/dashboard/users/add",
         component: <CreateOrEditUser />,
       },
@@ -195,7 +197,7 @@ export const NAV_OPTIONS: NavItem[] = [
   {
     id: "warehouses",
     name: "WareHouses",
-    icon: <FiBox />,
+    icon: <LuWarehouse />,
     path: "/dashboard/warehouses",
     component: <CreateOrEditWareHouse />,
   },

@@ -1,0 +1,443 @@
+.create-warehouse-container {
+  font-family: var(--font-family, sans-serif);
+  /* padding: 30px 40px; */
+  width: 100%;
+  /* max-width: 900px; */
+  margin: 0 auto;
+  box-sizing: border-box;
+  animation: fadeIn 0.4s ease;
+  background-color: #f9f5f1;
+  min-height: 100vh;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header Area */
+.create-warehouse-header-wrapper {
+  margin-bottom: 30px;
+}
+
+.create-warehouse-back-btn {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 15px;
+  transition: color 0.2s;
+}
+
+.create-warehouse-back-btn:hover {
+  color: #1a1a1a;
+}
+
+.create-warehouse-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #000000;
+  margin: 0 0 5px 0;
+}
+
+.create-warehouse-subtitle {
+  color: #666;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* Sections Wrapper */
+.create-warehouse-sections-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+/* Cards */
+.create-warehouse-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 35px 40px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.create-warehouse-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  /* border-bottom: 1px solid #f0f0ed; */
+  padding-bottom: 15px;
+}
+
+.create-warehouse-header-icon {
+  color: #8c6d3f;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.create-warehouse-card-header h2 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Form Layout */
+.create-warehouse-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* 2-col: capacity row (narrow + wide) */
+.create-warehouse-row-split {
+  display: grid;
+  grid-template-columns: 0.5fr 1fr;
+  gap: 30px;
+}
+
+/* 3-col equal: warehouse manager / type / status dropdowns */
+.create-warehouse-row-split-dropdowns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  align-items: start;
+  width: 100%;
+}
+
+/* 3-col equal: city / state / pincode */
+.create-warehouse-row-three {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  align-items: start;
+  width: 100%;
+}
+
+.create-warehouse-row-split-bin {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  width: 100%;
+  align-items: start;
+}
+
+/* Bin section — horizontal row of 4 */
+.create-warehouse-card-body-bin {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.create-warehouse-field-group-bin {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1 1 140px;
+  min-width: 120px;
+}
+
+.create-warehouse-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+/* Wrapper for the mobile + capacity row */
+.create-warehouse-row-address {
+  width: 100%;
+}
+
+/* 3-col equal grid: mobile | total capacity | capacity unit */
+.create-warehouse-row-split-address {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  align-items: start;
+  width: 100%;
+}
+
+/* Tablet: ≤ 1024px — collapse to 2 columns */
+@media (max-width: 1024px) {
+  .create-warehouse-row-split-address {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* capacity unit goes full row on its own */
+  .create-warehouse-row-split-address > :last-child {
+    grid-column: 1 / -1;
+    max-width: 50%;
+  }
+}
+
+/* Mobile: ≤ 768px — single column */
+@media (max-width: 768px) {
+  .create-warehouse-row-split-address {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .create-warehouse-row-split-address > :last-child {
+    grid-column: unset;
+    max-width: 100%;
+  }
+}
+
+/* Mobile field constrained to half width on large screens */
+/* .create-warehouse-field-group--half {
+  max-width: 50%;
+} */
+
+.create-warehouse-field-group label,
+.create-warehouse-field-group-bin label {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #333;
+}
+
+.req {
+  color: #d93025;
+}
+
+.create-warehouse-error {
+  color: #d93025;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+/* Image Upload Area */
+.create-warehouse-upload-area {
+  border: 2px dashed #ddd;
+  border-radius: 12px;
+  padding: 40px;
+  background-color: #fdfaf5;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.create-warehouse-upload-area:hover {
+  border-color: #8c6d3f;
+  background-color: #f8f7f4;
+}
+
+.create-warehouse-upload-area.error-border {
+  border-color: #d93025;
+  background-color: #fdf2f2;
+}
+
+.create-warehouse-upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.create-warehouse-upload-icon-wrapper {
+  background-color: #f5edde;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.create-warehouse-upload-icon {
+  font-size: 1.5rem;
+  color: #8c6d3f;
+}
+
+.create-warehouse-upload-title {
+  font-weight: 800;
+  color: #1a1a1a;
+  font-size: 1rem;
+  margin-bottom: 5px;
+}
+
+.create-warehouse-upload-subtitle {
+  color: #888;
+  font-size: 0.8rem;
+}
+
+/* Image Preview */
+.create-warehouse-preview-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  height: 200px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.create-warehouse-preview-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.create-warehouse-remove-img {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #d93025;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.create-warehouse-remove-img:hover {
+  background-color: #d93025;
+  color: #fff;
+  transform: scale(1.1);
+}
+
+/* Footer Actions */
+.create-warehouse-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 15px;
+  padding-top: 20px;
+}
+
+/* ─── Responsiveness ───────────────────────────────────────────────────────── */
+
+/* Tablet: ≤ 1024px */
+@media (max-width: 1024px) {
+  .create-warehouse-card {
+    padding: 28px 28px;
+  }
+
+  .create-warehouse-row-split-dropdowns {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .create-warehouse-row-three {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* pincode goes full-width on its own row at tablet */
+  .create-warehouse-row-three > :last-child {
+    grid-column: 1 / -1;
+    max-width: 50%;
+  }
+
+  .create-warehouse-row-split {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .create-warehouse-title {
+    font-size: 1.8rem;
+  }
+}
+
+/* Mobile: ≤ 768px */
+@media (max-width: 768px) {
+  .create-warehouse-card {
+    padding: 20px 18px;
+    border-radius: 10px;
+  }
+
+  .create-warehouse-title {
+    font-size: 1.5rem;
+  }
+
+  .create-warehouse-subtitle {
+    font-size: 0.88rem;
+  }
+
+  /* All multi-col grids collapse to single column */
+  .create-warehouse-row-split,
+  .create-warehouse-row-split-dropdowns,
+  .create-warehouse-row-three {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  /* undo pincode full-width override from tablet */
+  .create-warehouse-row-three > :last-child {
+    grid-column: unset;
+    max-width: 100%;
+  }
+
+  /* Mobile field no longer constrained */
+  /* .create-warehouse-field-group--half {
+    max-width: 100%;
+  } */
+
+  /* Bin fields wrap nicely into 2 columns */
+  .create-warehouse-card-body-bin {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .create-warehouse-field-group-bin {
+    flex: unset;
+    min-width: unset;
+  }
+
+  .create-warehouse-footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .create-warehouse-upload-area {
+    padding: 28px 20px;
+  }
+}
+
+/* Small mobile: ≤ 480px */
+@media (max-width: 480px) {
+  .create-warehouse-card {
+    padding: 16px 14px;
+  }
+
+  .create-warehouse-title {
+    font-size: 1.3rem;
+  }
+
+  /* Bin fields go single column on very small screens */
+  .create-warehouse-card-body-bin {
+    grid-template-columns: 1fr;
+  }
+
+  .create-warehouse-card-header h2 {
+    font-size: 0.95rem;
+  }
+}

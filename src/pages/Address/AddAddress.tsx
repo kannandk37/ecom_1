@@ -27,13 +27,13 @@ interface AddAddressInterface {
 }
 
 const sortOptions: { id: number; value: string }[] = [
-  { id: 1, value: "Karaikal" },
-  { id: 2, value: "Mahe" },
-  { id: 3, value: "Puducherry" },
-  { id: 4, value: "Yanam" },
+    { id: 1, value: "Karaikal" },
+    { id: 2, value: "Mahe" },
+    { id: 3, value: "Puducherry" },
+    { id: 4, value: "Yanam" },
 ];
 
-const AddAddress = ({onClickBack, onSubmit}: AddAddressInterface) => {
+const AddAddress = ({ onClickBack, onSubmit }: AddAddressInterface) => {
     const [addressType, setAddressType] = useState<AddressType>(AddressType.HOME);
     const [address, setAddress] = useState<Address>({});
     const navigate = useNavigate();
@@ -104,23 +104,23 @@ const AddAddress = ({onClickBack, onSubmit}: AddAddressInterface) => {
                             />
                         </div>
                         <div className="add-address-input-row">
-                            <Dropdown label="State" options={sortOptions} onSelect={(el) => {address.state = el.value; setAddress(address)}} />
                             <label className="add-address-input-label">State</label>
-                            <select className="add-address-custom-select error-border">
+                            <Dropdown label="State" options={sortOptions} onSelect={(el) => { address.state = el.value; setAddress(address) }} />
+                            {/* <select className="add-address-custom-select error-border">
                                 <option onSelect={(el) => console.log(el)}>Select State</option>
                             </select>
-                            <span className="add-address-error-text">This field is required</span>
+                            <span className="add-address-error-text">This field is required</span> */}
                         </div>
                     </div>
 
                     {/* Mobile Number */}
                     <div className="add-address-input-row">
-                            <DashBoardInput
-                                label='Mobile Number'
-                                value={address.mobile || ''}
-                                onChange={() => { }}
-                                placeholder='Mobile Number'
-                            />
+                        <DashBoardInput
+                            label='Mobile Number'
+                            value={address.mobile || ''}
+                            onChange={() => { }}
+                            placeholder='Mobile Number'
+                        />
                     </div>
 
                     {/* Action Button */}
