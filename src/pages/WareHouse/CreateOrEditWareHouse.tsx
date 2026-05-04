@@ -15,63 +15,14 @@ import DashBoardInput from "../../assets/ui/DashBoardInput/DashBoardInput";
 import Dropdown from "../../assets/dropdown/DropDown";
 import "./CreateOrEditWareHouse.css";
 import { ProfileService } from "../../service/profile";
-
-export enum WarehouseType {
-  OWN = "own",
-  RENTED = "rented",
-}
-
-export enum WarehouseStatus {
-  ACTIVE = "active",
-  INACTIVE = "inactive",
-  MAINTENANCE = "maintenance",
-}
-
-export enum CapacityUnit {
-  UNITS = "units",
-  CUBIC_METERS = "cubic_meters",
-  PALLETS = "pallets",
-}
-
-// Indian states list for the state dropdown
-export const INDIAN_STATES = [
-  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
-  "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka",
-  "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram",
-  "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu",
-  "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
-  "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu",
-  "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry",
-];
-
-export class Warehouse {
-  id?: string;
-  code?: string;
-  name?: string;
-  type?: WarehouseType;
-  status?: WarehouseStatus;
-  address?: string; // Simplified for the form
-  addressLine1?: string;
-  addressLine2?: string;
-  city?: string;
-  state?: string;
-  pincode?: string;
-  mobile?: string;
-  totalCapacity?: number;
-  capacityUnit?: CapacityUnit;
-  image?: string; // Added to support the requested image upload
-}
-
-export class WarehouseBin {
-  id?: string;
-  warehouse?: Warehouse;
-  binCode?: string;
-  aisle?: string;
-  rack?: string;
-  level?: string;
-  maxUnits?: number;
-  isActive?: boolean;
-}
+import { Address } from "../../entity/address";
+import {
+  CapacityUnit,
+  WarehouseStatus,
+  WarehouseType,
+} from "../../entity/warehouse";
+import { INDIAN_STATES } from "../../utils/utils";
+import { Profile } from "../../entity/profile";
 
 const CreateOrEditWareHouse: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -79,30 +30,69 @@ const CreateOrEditWareHouse: React.FC = () => {
   const isEditMode = Boolean(id);
 
   // General States
-  const [name, setName] = useState("");
-  const [userId, setUserId] = useState<{ id: string, label: string; value: string }>({ id: '1', label: 'tester', value: 'tester' }); // The user select field mentioned
-  const [code, setCode] = useState("");
-  const [type, setType] = useState<{ id: WarehouseType, label: WarehouseType; value: WarehouseType }>(null);
-  const [status, setStatus] = useState<{ id: WarehouseStatus, label: WarehouseStatus; value: WarehouseStatus }>(null);
-  const [address, setAddress] = useState(""); // kept for backward compat
+  const [name, setName] = useState<string>("");
+  const [userId, setUserId] = useState<{
+    id: string;
+    label: string;
+    value: string;
+  }>({ id: "1", label: "tester", value: "tester" }); // The user select field mentioned
+  // const [code, setCode] = useState("");
+  const [type, setType] = useState<{
+    id: WarehouseType;
+    label: WarehouseType;
+    value: WarehouseType;
+  }>(null);
+  const [status, setStatus] = useState<{
+    id: WarehouseStatus;
+    label: WarehouseStatus;
+    value: WarehouseStatus;
+  }>(null);
+  const [address, setAddress] = useState<Address>(); // kept for backward compat
 
   // Expanded Address States
-  const [addressLine1, setAddressLine1] = useState("");
-  const [addressLine2, setAddressLine2] = useState("");
-  const [city, setCity] = useState("");
-  const [state, setState] = useState<{ id: string; label: string; value: string }>(null);
-  const [pincode, setPincode] = useState("");
-  const [mobile, setMobile] = useState("");
+  const [addressLine1, setAddressLine1] = useState<string>("");
+  const [addressLine2, setAddressLine2] = useState<string>("");
+
+  const [nameError, setNameError] = useState<string>(null);
+  const [userIdError, setUserIdError] = useState<string>(null);
+  const [typeError, setTypeError] = useState<string>(null);
+  const [statusError, setStatusError] = useState<string>(null);
+  const [addressLine1Error, setAddressLine1Error] = useState<string>("");
+  const [addressLine2Error, setAddressLine2Error] = useState<string>("");
+  const [cityError, setCityError] = useState<string>(null);
+  const [stateError, setStateError] = useState<string>(null);
+  const [pincodeError, setPincodeError] = useState<string>(null);
+  const [mobileError, setMobileError] = useState<string>(null);
+  const [totalCapacityError, setTotalCapacityError] = useState<string>(null);
+  const [capacityUnitError, setCapacityUnitError] = useState<string>(null);
+  const [imagePreviewError, setImagePreviewError] = useState<string>(null);
+  const [aisleError, setAisleError] = useState<string>(null);
+  const [rackError, setRackError] = useState<string>(null);
+  const [levelError, setLevelError] = useState<string>(null);
+  const [maxUnitsError, setMaxUnitsError] = useState<string>(null);
+
+  const [city, setCity] = useState<string>("");
+  const [state, setState] = useState<{
+    id: string;
+    label: string;
+    value: string;
+  }>(null);
+  const [pincode, setPincode] = useState<string>("");
+  const [mobile, setMobile] = useState<string>("");
 
   // Capacity States
   const [totalCapacity, setTotalCapacity] = useState("");
-  const [capacityUnit, setCapacityUnit] = useState<{ id: CapacityUnit, label: CapacityUnit; value: CapacityUnit }>(null);
+  const [capacityUnit, setCapacityUnit] = useState<{
+    id: CapacityUnit;
+    label: CapacityUnit;
+    value: CapacityUnit;
+  }>(null);
 
   // Initial Bin / Layout States
-  const [aisle, setAisle] = useState("");
-  const [rack, setRack] = useState("");
-  const [level, setLevel] = useState("");
-  const [maxUnits, setMaxUnits] = useState("");
+  const [aisle, setAisle] = useState<string>("");
+  const [rack, setRack] = useState<string>("");
+  const [level, setLevel] = useState<string>("");
+  const [maxUnits, setMaxUnits] = useState<string>("");
 
   // Image States
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -114,26 +104,42 @@ const CreateOrEditWareHouse: React.FC = () => {
 
   // Dropdown Options
   const [userOptions, setUserOptions] = useState<
-    { id: string, label: string; value: string }[]
+    { id: string; label: string; value: string }[]
   >([]);
 
   const typeOptions = [
-    { id: '', label: "Owned", value: WarehouseType.OWN },
-    { id: '', label: "Rented", value: WarehouseType.RENTED },
+    {
+      id: WarehouseType.OWN,
+      label: WarehouseType.OWN,
+      value: WarehouseType.OWN,
+    },
+    {
+      id: WarehouseType.RENTED,
+      label: WarehouseType.RENTED,
+      value: WarehouseType.RENTED,
+    },
   ];
   const statusOptions = [
-    { id: '', label: "Active", value: WarehouseStatus.ACTIVE },
-    { id: '', label: "Inactive", value: WarehouseStatus.INACTIVE },
-    { id: '', label: "Under Maintenance", value: WarehouseStatus.MAINTENANCE },
+    {
+      id: WarehouseStatus.ACTIVE,
+      label: WarehouseStatus.ACTIVE,
+      value: WarehouseStatus.ACTIVE,
+    },
+    {
+      id: WarehouseStatus.INACTIVE,
+      label: WarehouseStatus.INACTIVE,
+      value: WarehouseStatus.INACTIVE,
+    },
+    {
+      id: WarehouseStatus.MAINTENANCE,
+      label: WarehouseStatus.MAINTENANCE,
+      value: WarehouseStatus.MAINTENANCE,
+    },
   ];
-  const unitOptions = [
-    { id: '', label: "Units", value: CapacityUnit.UNITS },
-    { id: '', label: "Cubic Meters", value: CapacityUnit.CUBIC_METERS },
-    { id: '', label: "Pallets", value: CapacityUnit.PALLETS },
-  ];
+  const unitOptions = [{ id: "", label: "Units", value: CapacityUnit.UNITS }];
 
   // State dropdown options derived from INDIAN_STATES
-  const stateOptions = INDIAN_STATES.map((s) => ({
+  const stateOptions = INDIAN_STATES.map((s: string) => ({
     id: s,
     label: s,
     value: s,
@@ -141,68 +147,64 @@ const CreateOrEditWareHouse: React.FC = () => {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-
+  useEffect(() => {
+    (async () => {
+      setIsLoading(true);
+      try {
+        let profiles = await new ProfileService().get();
+        setUserOptions(
+          profiles.map((profile: Profile) => ({
+            id: profile.id,
+            label: profile.name,
+            value: profile.name,
+          })),
+        );
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     // Fetch users for the manager/user select dropdown
 
-    (async () => {
-      let profiles = await new ProfileService().get();
-      console.log('profiles', profiles);
-      profiles.map((u: any) => ({
-        id: u.id,
-        label: u.name,
-        value: u.id,
-      }))
-    })()
-    // axios
-    //   .get("/api/users")
-    //   .then((res) =>
-    //     setUserOptions(
-    //       res.data.map((u: any) => ({
-    //         label: u.name || `User ${u.id}`,
-    //         value: u.id,
-    //       })),
-    //     ),
-    //   )
-    //   .catch(() =>
-    //     setUserOptions([
-    //       { id: '', label: "Admin User", value: "usr_1" },
-    //       { id: '', label: "Manager User", value: "usr_2" },
-    //     ]),
-    //   );
-
     if (isEditMode) {
       setIsLoading(true);
-      axios
-        .get(`/api/warehouses/${id}`)
-        .then((res) => {
-          const wh: Warehouse = res.data;
-          setName(wh.name || "");
-          setCode(wh.code || "");
-          // setType(wh.type || "");
-          // setStatus(wh.status || "");
-          setAddress(wh.address || "");
-          setAddressLine1(wh.addressLine1 || "");
-          setAddressLine2(wh.addressLine2 || "");
-          setCity(wh.city || "");
-          setState(wh.state ? { id: wh.state, label: wh.state, value: wh.state } : null);
-          setPincode(wh.pincode || "");
-          setMobile(wh.mobile || "");
-          setTotalCapacity(wh.totalCapacity?.toString() || "");
-          // setCapacityUnit(wh.capacityUnit || "");
-          setImagePreview(wh.image || null);
+      // axios
+      //   .get(`/api/warehouses/${id}`)
+      //   .then((res) => {
+      // const wh: Warehouse = res.data;
+      // setName(wh.name || "");
+      // setCode(wh.code || "");
+      // setType(wh.type || "");
+      // setStatus(wh.status || "");
+      // setAddress(wh.address || "");
+      // setAddressLine1(wh.addressLine1 || "");
+      // setAddressLine2(wh.addressLine2 || "");
+      // setCity(wh.city || "");
+      // setState(
+      //   wh.state
+      //     ? { id: wh.state, label: wh.state, value: wh.state }
+      //     : null,
+      // );
+      // setPincode(wh.pincode || "");
+      // setMobile(wh.mobile || "");
+      // setTotalCapacity(wh.totalCapacity?.toString() || "");
+      // setCapacityUnit(wh.capacityUnit || "");
+      // setImagePreview(wh.image || null);
 
-          // Assuming the API returns the initial bin setup for edit
-          if (res.data.initialBin) {
-            setAisle(res.data.initialBin.aisle || "");
-            setRack(res.data.initialBin.rack || "");
-            setLevel(res.data.initialBin.level || "");
-            setMaxUnits(res.data.initialBin.maxUnits?.toString() || "");
-          }
-        })
-        .catch((err) => console.error(err))
-        .finally(() => setIsLoading(false));
+      // Assuming the API returns the initial bin setup for edit
+      //   if (res.data.initialBin) {
+      //     setAisle(res.data.initialBin.aisle || "");
+      //     setRack(res.data.initialBin.rack || "");
+      //     setLevel(res.data.initialBin.level || "");
+      //     setMaxUnits(res.data.initialBin.maxUnits?.toString() || "");
+      //   }
+      // })
+      // .catch((err) => console.error(err))
+      // .finally(() => setIsLoading(false));
     }
   }, [id, isEditMode]);
 
@@ -211,15 +213,12 @@ const CreateOrEditWareHouse: React.FC = () => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       if (file.size > 2 * 1024 * 1024) {
-        // setErrors((prev) => ({
-        //   ...prev,
-        //   image: "File size must be less than 2MB",
-        // }));
+        setImagePreviewError("File size must be less than 2MB");
         return;
       }
       setImageFile(file);
       setImagePreview(URL.createObjectURL(file));
-      // setErrors((prev) => ({ ...prev, image: "" }));
+      setImagePreviewError(null);
     }
   };
 
@@ -230,21 +229,25 @@ const CreateOrEditWareHouse: React.FC = () => {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
+  // const isValid = () => {}
+
   // Submission
   const handleSubmit = async () => {
     const newErrors: any = {};
     if (!name.trim()) newErrors.name = "Required";
     if (!userId) newErrors.userId = "Required";
-    if (!code.trim()) newErrors.code = "Required";
+    // if (!code.trim()) newErrors.code = "Required";
     if (!type) newErrors.type = "Required";
     if (!status) newErrors.status = "Required";
     if (!addressLine1.trim()) newErrors.addressLine1 = "Required";
     if (!city.trim()) newErrors.city = "Required";
     if (!state) newErrors.state = "Required";
     if (!pincode.trim()) newErrors.pincode = "Required";
-    else if (!/^\d{6}$/.test(pincode)) newErrors.pincode = "Enter valid 6-digit pincode";
+    else if (!/^\d{6}$/.test(pincode))
+      newErrors.pincode = "Enter valid 6-digit pincode";
     if (!mobile.trim()) newErrors.mobile = "Required";
-    else if (!/^\d{10}$/.test(mobile)) newErrors.mobile = "Enter valid 10-digit mobile number";
+    else if (!/^\d{10}$/.test(mobile))
+      newErrors.mobile = "Enter valid 10-digit mobile number";
     if (!totalCapacity) newErrors.totalCapacity = "Required";
     if (!capacityUnit) newErrors.capacityUnit = "Required";
     if (!aisle) newErrors.aisle = "Required";
@@ -264,10 +267,10 @@ const CreateOrEditWareHouse: React.FC = () => {
       const formData = new FormData();
       formData.append("name", name);
       // formData.append("userId", userId);
-      formData.append("code", code);
+      // formData.append("code", code);
       // formData.append("type", type);
       // formData.append("status", status);
-      formData.append("address", address);
+      // formData.append("address", address);
       formData.append("addressLine1", addressLine1);
       formData.append("addressLine2", addressLine2);
       formData.append("city", city);
@@ -297,6 +300,186 @@ const CreateOrEditWareHouse: React.FC = () => {
       // setErrors((prev) => ({ ...prev, submit: "Failed to save warehouse." }));
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const onChangeName = (name: string) => {
+    if (name?.length > 60) {
+      setNameError("Only 60 characters allowed");
+    } else {
+      // add any regexs
+      setName(name);
+      setNameError(null);
+    }
+  };
+
+  const onChangeAddressLine1 = (addressLine1: string) => {
+    if (addressLine1?.length > 60) {
+      setAddressLine1Error("Only 60 characters allowed");
+    } else {
+      // add any regexs
+      setAddressLine1(addressLine1);
+      setAddressLine1Error(null);
+    }
+  };
+
+  const onChangeAddressLine2 = (addressLine2: string) => {
+    if (addressLine2?.length > 60) {
+      setAddressLine2Error("Only 60 characters allowed");
+    } else {
+      // add any regexs
+      setAddressLine2(addressLine2);
+      setAddressLine2Error(null);
+    }
+  };
+
+  const onChangeCity = (city: string) => {
+    if (city?.length > 30) {
+      setCityError("Only 30 characters allowed");
+    } else {
+      // add any regexs
+      setCity(city);
+      setCityError(null);
+    }
+  };
+
+  const onChangePincode = (pincode: string) => {
+    if (pincode?.length > 6) {
+      setPincodeError("Only 6 characters allowed");
+    } else {
+      // add any regexs
+      setPincode(pincode);
+      setPincodeError(null);
+    }
+  };
+
+  const onChangeMobile = (mobile: string) => {
+    if (mobile?.length > 10) {
+      setMobileError("Only 10 characters allowed");
+    } else {
+      // add any regexs
+      setMobile(mobile);
+      setMobileError(null);
+    }
+  };
+
+  const onChangeTotalCapacity = (totalCapacity: string) => {
+    if (totalCapacity) {
+      setTotalCapacityError("Please Provide Total Capacity Details");
+    } else {
+      // add any regexs
+      setTotalCapacity(totalCapacity);
+      setTotalCapacityError(null);
+    }
+  };
+
+  const onChangeAisle = (aisle: string) => {
+    if (aisle) {
+      setAisleError("Please Provide Asile Details");
+    } else {
+      // add any regexs
+      setAisle(aisle);
+      setAisleError(null);
+    }
+  };
+
+  const onChangeRack = (rack: string) => {
+    if (rack) {
+      setRackError("Please Provide Rack Details");
+    } else {
+      // add any regexs
+      setRack(rack);
+      setRackError(null);
+    }
+  };
+
+  const onChangeLevel = (level: string) => {
+    if (level) {
+      setLevelError("Please Provide Level Details");
+    } else {
+      // add any regexs
+      setLevel(level);
+      setLevelError(null);
+    }
+  };
+
+  const onChangeMaxUnits = (maxUnits: string) => {
+    if (maxUnits) {
+      setMaxUnitsError("Please Provide Max Units Details");
+    } else {
+      // add any regexs
+      setMaxUnits(maxUnits);
+      setMaxUnitsError(null);
+    }
+  };
+
+  const onChangeUserId = (userId: {
+    id: string;
+    label: string;
+    value: string;
+  }) => {
+    if (userId) {
+      setUserIdError("Please Select Manager");
+    } else {
+      // add any regexs
+      setUserId(userId);
+      setUserIdError(null);
+    }
+  };
+
+  const onChangeType = (type: {
+    id: WarehouseType;
+    label: WarehouseType;
+    value: WarehouseType;
+  }) => {
+    if (type) {
+      setTypeError("Please Select Type");
+    } else {
+      // add any regexs
+      setType(type);
+      setTypeError(null);
+    }
+  };
+
+  const onChangeStatus = (status: {
+    id: WarehouseStatus;
+    label: WarehouseStatus;
+    value: WarehouseStatus;
+  }) => {
+    if (status) {
+      setStatusError("Please Select Status");
+    } else {
+      // add any regexs
+      setStatus(status);
+      setStatusError(null);
+    }
+  };
+
+  const onChangeState = (state: {
+    id: string;
+    label: string;
+    value: string;
+  }) => {
+    if (state) {
+      setStateError("Please Select State");
+    } else {
+      // add any regexs
+      setState(state);
+      setStateError(null);
+    }
+  };
+
+  const onChangeCapacityUnit = (capacityUnit: {
+    id: CapacityUnit;
+    label: CapacityUnit;
+    value: CapacityUnit;
+  }) => {
+    if (capacityUnit) {
+      setCapacityUnitError("Please Select Capacity Unit");
+    } else {
+      // add any regexs
+      setCapacityUnit(capacityUnit);
+      setCapacityUnitError(null);
     }
   };
 
@@ -335,11 +518,10 @@ const CreateOrEditWareHouse: React.FC = () => {
               <DashBoardInput
                 placeholder="e.g. Central Hub Chennai"
                 value={name}
-                onChange={(e: any) => setName(e)}
+                onChange={(e: any) => onChangeName(e)}
+                error={nameError ? true : false}
+                errorMessage={nameError}
               />
-              {/* {errors.name && (
-                <span className="create-warehouse-error">{errors.name}</span>
-              )} */}
             </div>
 
             <div className="create-warehouse-row-split-dropdowns">
@@ -362,13 +544,12 @@ const CreateOrEditWareHouse: React.FC = () => {
                 </label>
                 <Dropdown
                   options={userOptions}
-                  label={userId?.label || 'Select User'}
-                  onSelect={(val: any) => setUserId(val)}
+                  label={userId?.label || "Select User"}
+                  onSelect={(val: any) => onChangeUserId(val)}
                   width="220px"
+                  error={userIdError ? true : false}
+                  errorMessage={userIdError}
                 />
-                {/* {errors.userId && (
-                  <span className="create-warehouse-error">{errors.userId}</span>
-                )} */}
               </div>
               <div className="create-warehouse-field-group">
                 <label>
@@ -376,13 +557,12 @@ const CreateOrEditWareHouse: React.FC = () => {
                 </label>
                 <Dropdown
                   options={typeOptions}
-                  label={type?.label || 'Select Owership Type'}
-                  onSelect={(val: any) => setType(val)}
+                  label={type?.label || "Select Owership Type"}
+                  onSelect={(val: any) => onChangeType(val)}
                   width="230px"
+                  error={typeError ? true : false}
+                  errorMessage={typeError}
                 />
-                {/* {errors.type && (
-                  <span className="create-warehouse-error">{errors.type}</span>
-                )} */}
               </div>
               <div className="create-warehouse-field-group">
                 <label>
@@ -390,23 +570,17 @@ const CreateOrEditWareHouse: React.FC = () => {
                 </label>
                 <Dropdown
                   options={statusOptions}
-                  label={status?.label || 'Select Operational Status'}
-                  onSelect={(val: any) => setStatus(val)}
+                  label={status?.label || "Select Operational Status"}
+                  onSelect={(val: any) => onChangeStatus(val)}
                   width="250px"
+                  error={statusError ? true : false}
+                  errorMessage={statusError}
                 />
-                {/* {errors.status && (
-                  <span className="create-warehouse-error">
-                    {errors.status}
-                  </span>
-                )} */}
               </div>
-
             </div>
-
           </div>
         </div>
 
-        {/* Location & Capacity — expanded address */}
         <div className="create-warehouse-card">
           <div className="create-warehouse-card-header">
             <FiMapPin className="create-warehouse-header-icon" />
@@ -414,8 +588,6 @@ const CreateOrEditWareHouse: React.FC = () => {
           </div>
 
           <div className="create-warehouse-card-body">
-
-            {/* Address Line 1 */}
             <div className="create-warehouse-field-group">
               <label>
                 Address Line 1 <span className="req">*</span>
@@ -423,78 +595,75 @@ const CreateOrEditWareHouse: React.FC = () => {
               <DashBoardInput
                 placeholder="Flat, House no., Building, Company, Apart"
                 value={addressLine1}
-                onChange={(e: any) => setAddressLine1(e)}
+                onChange={(e: any) => onChangeAddressLine1(e)}
+                error={addressLine1Error ? true : false}
+                errorMessage={addressLine1Error}
               />
-              {/* {errors.addressLine1 && (
-                <span className="create-warehouse-error">{errors.addressLine1}</span>
-              )} */}
-            </div>
 
-            {/* Address Line 2 */}
-            <div className="create-warehouse-field-group">
-              <label>Address Line 2</label>
-              <DashBoardInput
-                placeholder="Area, Street, Sector, Village"
-                value={addressLine2}
-                onChange={(e: any) => setAddressLine2(e)}
-              />
-            </div>
+              <div className="create-warehouse-field-group">
+                <label>Address Line 2</label>
+                <DashBoardInput
+                  placeholder="Area, Street, Sector, Village"
+                  value={addressLine2}
+                  onChange={(e: any) => onChangeAddressLine2(e)}
+                  error={addressLine2Error ? true : false}
+                  errorMessage={addressLine2Error}
+                />
+              </div>
 
-            {/* City, State, Pincode row */}
-            <div className="create-warehouse-row-three">
-              <div className="create-warehouse-field-group">
-                <label>
-                  City <span className="req">*</span>
-                </label>
-                <DashBoardInput
-                  placeholder="Town / City"
-                  value={city}
-                  onChange={(e: any) => setCity(e)}
-                />
-                {/* {errors.city && (
-                  <span className="create-warehouse-error">{errors.city}</span>
-                )} */}
-              </div>
-              <div className="create-warehouse-field-group">
-                <label>
-                  State <span className="req">*</span>
-                </label>
-                <Dropdown
-                  options={stateOptions}
-                  label={state?.label || "State"}
-                  onSelect={(val: any) => setState(val)}
-                />
-                {/* {errors.state && (
-                  <span className="create-warehouse-error">{errors.state}</span>
-                )} */}
-              </div>
-              <div className="create-warehouse-field-group">
-                <label>
-                  Pincode <span className="req">*</span>
-                </label>
-                <DashBoardInput
-                  placeholder="6-digit Pincode"
-                  value={pincode}
-                  onChange={(e: any) => setPincode(e)}
-                  type="number"
-                />
-                {/* {errors.pincode && (
-                  <span className="create-warehouse-error">{errors.pincode}</span>
-                )} */}
-              </div>
-              <div className="create-warehouse-field-group">
-                <label>
-                  Mobile Number <span className="req">*</span>
-                </label>
-                <DashBoardInput
-                  placeholder="10-digit Mobile Number"
-                  value={mobile}
-                  onChange={(e: any) => setMobile(e)}
-                />
+              <div className="create-warehouse-row-three">
+                <div className="create-warehouse-field-group">
+                  <label>
+                    City <span className="req">*</span>
+                  </label>
+                  <DashBoardInput
+                    placeholder="Town / City"
+                    value={city}
+                    onChange={(e: any) => onChangeCity(e)}
+                    error={cityError ? true : false}
+                    errorMessage={cityError}
+                  />
+                </div>
+                <div className="create-warehouse-field-group">
+                  <label>
+                    State <span className="req">*</span>
+                  </label>
+                  <Dropdown
+                    options={stateOptions}
+                    label={state?.label || "Select State"}
+                    onSelect={(val: any) => onChangeState(val)}
+                    error={stateError ? true : false}
+                    errorMessage={stateError}
+                  />
+                </div>
+                <div className="create-warehouse-field-group">
+                  <label>
+                    Pincode <span className="req">*</span>
+                  </label>
+                  <DashBoardInput
+                    placeholder="6-digit Pincode"
+                    value={pincode}
+                    onChange={(e: any) => onChangePincode(e)}
+                    type="number"
+                    error={pincodeError ? true : false}
+                    errorMessage={pincodeError}
+                  />
+                </div>
+                <div className="create-warehouse-field-group">
+                  <label>
+                    Mobile Number <span className="req">*</span>
+                  </label>
+                  <DashBoardInput
+                    placeholder="10-digit Mobile Number"
+                    value={mobile}
+                    onChange={(e: any) => onChangeMobile(e)}
+                    error={mobileError ? true : false}
+                    errorMessage={mobileError}
+                  />
+                </div>
               </div>
             </div>
 
-            {/* Capacity */}
             <div className="create-warehouse-row-address">
               <div className="create-warehouse-row-split-address">
                 <div className="create-warehouse-field-group">
@@ -504,14 +673,11 @@ const CreateOrEditWareHouse: React.FC = () => {
                   <DashBoardInput
                     placeholder="0"
                     value={totalCapacity}
-                    onChange={(e: any) => setTotalCapacity(e)}
+                    onChange={(e: any) => onChangeTotalCapacity(e)}
                     type="number"
+                    error={totalCapacityError ? true : false}
+                    errorMessage={totalCapacityError}
                   />
-                  {/* {errors.totalCapacity && (
-                    <span className="create-warehouse-error">
-                      {errors.totalCapacity}
-                    </span>
-                  )} */}
                 </div>
                 <div className="create-warehouse-field-group">
                   <label>
@@ -519,14 +685,11 @@ const CreateOrEditWareHouse: React.FC = () => {
                   </label>
                   <Dropdown
                     options={unitOptions}
-                    label={capacityUnit?.label || 'Select Capacity Unit'}
-                    onSelect={(val: any) => setCapacityUnit(val)}
+                    label={capacityUnit?.label || "Select Capacity Unit"}
+                    onSelect={(val: any) => onChangeCapacityUnit(val)}
+                    error={capacityUnitError ? true : false}
+                    errorMessage={capacityUnitError}
                   />
-                  {/* {errors.capacityUnit && (
-                    <span className="create-warehouse-error">
-                      {errors.capacityUnit}
-                    </span>
-                  )} */}
                 </div>
               </div>
             </div>
@@ -540,7 +703,6 @@ const CreateOrEditWareHouse: React.FC = () => {
           </div>
 
           <div className="create-warehouse-card-body-bin">
-            {/* <div className="create-warehouse-row-split-bin"> */}
             <div className="create-warehouse-field-group-bin">
               <label>
                 Aisle <span className="req">*</span>
@@ -548,11 +710,10 @@ const CreateOrEditWareHouse: React.FC = () => {
               <DashBoardInput
                 placeholder="e.g. A01"
                 value={aisle}
-                onChange={(e: any) => setAisle(e)}
+                onChange={(e: any) => onChangeAisle(e)}
+                error={aisleError ? true : false}
+                errorMessage={aisleError}
               />
-              {/* {errors.aisle && (
-                <span className="create-warehouse-error">{errors.aisle}</span>
-              )} */}
             </div>
             <div className="create-warehouse-field-group-bin">
               <label>
@@ -561,11 +722,10 @@ const CreateOrEditWareHouse: React.FC = () => {
               <DashBoardInput
                 placeholder="e.g. R02"
                 value={rack}
-                onChange={(e: any) => setRack(e)}
+                onChange={(e: any) => onChangeRack(e)}
+                error={rackError ? true : false}
+                errorMessage={rackError}
               />
-              {/* {errors.rack && (
-                <span className="create-warehouse-error">{errors.rack}</span>
-              )} */}
             </div>
             <div className="create-warehouse-field-group-bin">
               <label>
@@ -574,11 +734,10 @@ const CreateOrEditWareHouse: React.FC = () => {
               <DashBoardInput
                 placeholder="e.g. L3"
                 value={level}
-                onChange={(e: any) => setLevel(e)}
+                onChange={(e: any) => onChangeLevel(e)}
+                error={levelError ? true : false}
+                errorMessage={levelError}
               />
-              {/* {errors.level && (
-                <span className="create-warehouse-error">{errors.level}</span>
-              )} */}
             </div>
             <div className="create-warehouse-field-group-bin">
               <label>
@@ -587,16 +746,12 @@ const CreateOrEditWareHouse: React.FC = () => {
               <DashBoardInput
                 placeholder="0"
                 value={maxUnits}
-                onChange={(e: any) => setMaxUnits(e)}
+                onChange={(e: any) => onChangeMaxUnits(e)}
+                error={maxUnitsError ? true : false}
+                errorMessage={maxUnitsError}
                 type="number"
               />
-              {/* {errors.maxUnits && (
-                <span className="create-warehouse-error">
-                  {errors.maxUnits}
-                </span>
-              )} */}
             </div>
-            {/* </div> */}
           </div>
         </div>
 
@@ -609,7 +764,7 @@ const CreateOrEditWareHouse: React.FC = () => {
 
           <div className="create-warehouse-card-body">
             <div
-              className={`create-warehouse-upload-area ${name ? "error-border" : ""}`} //TODO: check here
+              className={`create-warehouse-upload-area ${imagePreviewError ? "error-border" : ""}`}
               onClick={() => fileInputRef.current?.click()}
             >
               {imagePreview ? (
@@ -643,9 +798,11 @@ const CreateOrEditWareHouse: React.FC = () => {
                 style={{ display: "none" }}
               />
             </div>
-            {/* {errors.image && (
-              <span className="create-warehouse-error">{errors.image}</span>
-            )} */}
+            {imagePreviewError && (
+              <span className="create-warehouse-error">
+                {imagePreviewError}
+              </span>
+            )}
           </div>
         </div>
       </div>

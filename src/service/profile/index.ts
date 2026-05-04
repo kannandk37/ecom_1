@@ -42,7 +42,7 @@ export class ProfileService {
 
     async get() {
         try {
-            let response = await this.axiosInstance.get(`/profile/staffs`);
+            let response = await this.axiosInstance.get(`/profiles/staffs`);
             return (profilesResponseDataToProfilesEntities(response.data));
         } catch (error) {
             console.log(error);
