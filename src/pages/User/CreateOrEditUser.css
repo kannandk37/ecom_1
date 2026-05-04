@@ -373,9 +373,9 @@
 /* ── Base ─────────────────────────────────────────────────────────────── */
 .create-management-user-container {
   font-family: var(--font-family, sans-serif);
-  padding: 30px 40px;
+  /* padding: 30px 40px; */
   width: 100%;
-  max-width: 1100px;
+  /* max-width: 1100px; */
   margin: 0 auto;
   box-sizing: border-box;
   animation: fadeIn 0.4s ease;
@@ -445,7 +445,7 @@
 .create-management-user-card {
   background: #ffffff;
   border-radius: 12px;
-  padding: 40px;
+  padding: 30px 40px 40px 40px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
   box-sizing: border-box;
 }
@@ -457,9 +457,8 @@
   align-items: center;
   justify-content: flex-start;
   gap: 24px;
-  margin-bottom: 40px;
-  padding-bottom: 40px;
-  border-bottom: 1px solid #f0f0ed;
+  padding-bottom: 25px;
+  /* border-bottom: 1px solid #f0f0ed; */
 }
 
 .create-management-user-avatar-wrapper {
@@ -586,8 +585,8 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   margin: 0;
-  border-bottom: 1px solid #f0f0ed;
-  padding-bottom: 10px;
+  /* border-bottom: 1px solid #f0f0ed; */
+  /* padding-bottom: 10px; */
 }
 
 .create-management-user-field {

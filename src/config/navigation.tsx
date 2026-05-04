@@ -180,6 +180,15 @@ export const NAV_OPTIONS: NavItem[] = [
     icon: <FaUser />,
     path: "/dashboard/users",
     component: <CreateOrEditUser />,
+        children: [
+      {
+        id: "add-users",
+        name: "Add Users",
+        icon: <FaUser />,
+        path: "/dashboard/users/add",
+        component: <CreateOrEditUser />,
+      },
+    ],
   },
 ];
 

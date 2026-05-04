@@ -8,6 +8,7 @@ import {
   FiEye,
   FiEyeOff,
   FiInfo,
+  FiPlus,
 } from "react-icons/fi";
 
 import DashBoardButton from "../../assets/ui/DashBoardButton/DashBoardButton";
@@ -17,29 +18,38 @@ import "./CreateOrEditUser.css";
 import { Profile } from "../../entity/profile";
 import { Role } from "../../entity/role";
 import { RoleService } from "../../service/role";
+import Loader2 from "../../assets/loader/Loader2";
+import { User } from "../../entity/user";
+import { AccountStatus, UserAccount } from "../../entity/user_account";
+import { UserService } from "../../service/user";
 
 const CreateOrEditUser: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isEditMode = Boolean(id);
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [mobile, setMobile] = useState("");
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [mobile, setMobile] = useState<string>("");
   const [roleId, setRoleId] = useState<{
     id: string;
     label: string;
     value: string;
   }>(null);
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [isActive, setIsActive] = useState(true);
+  const [password, setPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [isActive, setIsActive] = useState<boolean>(true);
 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [nameError, setNameError] = useState<string>("");
+  const [emailError, setEmailError] = useState<string>("");
+  const [mobileError, setMobileError] = useState<string>("");
+  const [imagePreviewError, setImagePreviewError] = useState<string>('');
+  const [roleIdError, setRoleIdError] = useState<string>('') //Please Select Role
+  const [passwordError, setPasswordError] = useState<string>("");
   const [roleOptions, setRoleOptions] = useState<
     { id: string; label: string; value: string }[]
   >([]);
@@ -47,7 +57,7 @@ const CreateOrEditUser: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const fetchDependencies = async () => {
+    (async () => {
       try {
         const rolesRes = await new RoleService().get();
         setRoleOptions(
@@ -60,8 +70,11 @@ const CreateOrEditUser: React.FC = () => {
       } catch (err) {
         console.error("Error fetching dependencies", err);
       }
-    };
-    fetchDependencies();
+    })()
+  }, [])
+
+  useEffect(() => {
+
 
     if (isEditMode) {
       setIsLoading(true);
@@ -88,15 +101,12 @@ const CreateOrEditUser: React.FC = () => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       if (file.size > 2 * 1024 * 1024) {
-        setErrors((prev) => ({
-          ...prev,
-          profilePic: "File exceeds 2MB limit",
-        }));
+        setImagePreviewError('File exceeds 2MB limit');
         return;
       }
       setImageFile(file);
       setImagePreview(URL.createObjectURL(file));
-      setErrors((prev) => ({ ...prev, profilePic: "" }));
+      setImagePreviewError(null);
     }
   };
 
@@ -112,255 +122,330 @@ const CreateOrEditUser: React.FC = () => {
     setShowPassword(true);
   };
 
-  const handleSubmit = async () => {
-    const newErrors: any = {};
-    if (!name.trim()) newErrors.name = "Required";
-    if (!email.trim()) newErrors.email = "Required";
-    if (!mobile.trim()) newErrors.mobile = "Required";
-    if (!roleId) newErrors.roleId = "Required";
-    if (!isEditMode && !password) newErrors.password = "Required for new users";
-    if (!imagePreview && !imageFile)
-      newErrors.profilePic = "Profile picture required";
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
+  const isValid = () => {
+    if (!name.trim()) {
+      setNameError("Please Provide Name");
+    } else if (!roleId) {
+      setRoleIdError("Please Select Role");
+    } else if (!email) {
+      setEmailError("Please Provide Email");
+    } else if (!mobile) {
+      setMobileError("Please Provide Mobile Number");
+    } else if (!password) {
+      setPasswordError("Please Provide Password");
+    } else {
+      return true;
     }
+    return false;
+  }
 
+  const handleSubmit = async () => {
     setIsLoading(true);
-    try {
-      navigate("/dashboard/users");
-    } catch (err) {
-      console.error(err);
-      setErrors((prev) => ({ ...prev, submit: "Failed to save user access." }));
-    } finally {
-      setIsLoading(false);
+    if (isValid()) {
+      let user = new User();
+      let role = new Role();
+      role.id = roleId.id;
+      user.roles = [role];
+      let profile = new Profile();
+      profile.name = name;
+      profile.email = email;
+      profile.mobile = mobile;
+      profile.role = role;
+      profile.user = user;
+      let userAccount = new UserAccount();
+      userAccount.email = email;
+      userAccount.password = password;
+      userAccount.user = user;
+      userAccount.status = isActive ? AccountStatus.ACTIVE : AccountStatus.INACTIVE
+      try {
+        if (isEditMode) {
+          await new UserService().updateById(id, user, role, profile, userAccount);
+        } else {
+          await new UserService().create(user, role, profile, userAccount);
+        }
+        navigate("/dashboard/users");
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
+  const OnChangeName = (name: string) => {
+    if (name?.length > 60) {
+      setNameError("Only 60 characters allowed");
+    } else {
+      // add any regexs
+      setName(name);
+      setNameError(null);
+    }
+  };
+
+  const OnChangeEmail = (email: string) => {
+    if (email?.length > 60) {
+      setEmailError("Only 60 characters allowed");
+    } else {
+      // add any regexs
+      setEmail(email);
+      setEmailError(null);
+    }
+  };
+
+
+  const OnChangePassword = (password: string) => {
+    if (password?.length > 60) {
+      setPasswordError("Only 60 characters allowed");
+    } else {
+      // add any regexs
+      setPassword(password);
+      setPasswordError(null);
+    }
+  };
+
+
+  const OnChangemobile = (mobile: string) => {
+    if (mobile?.length > 10) {
+      setMobileError("Please Provide Valid Mobile Number");
+    } else {
+      // add any regexs
+      setMobile(mobile);
+      setMobileError(null);
     }
   };
 
   return (
-    <div className="create-management-user-container">
-      {/* ── Header ── */}
-      <div className="create-management-user-top-bar">
-        {/* <div className="create-management-user-breadcrumbs">
+    <>
+      {isLoading ?
+        (
+          <Loader2 />
+        ) : (
+          <div className="create-management-user-container">
+            {/* ── Header ── */}
+            <div className="create-management-user-top-bar">
+              {/* <div className="create-management-user-breadcrumbs">
           Users &rsaquo;{" "}
           <strong>{isEditMode ? "Edit User" : "Add New User"}</strong>
         </div> */}
-        <button
-          className="create-management-user-back-btn"
-          onClick={() => navigate("/dashboard/users")}
-        >
-          <FiArrowLeft /> Back to Users
-        </button>
-        <h1 className="create-management-user-title">
-          {isEditMode ? "Edit Access Credentials" : "Create a New Access"}
-        </h1>
-        <p className="create-management-user-subtitle">
-          Create credentials for internal team members to manage the Nature
-          Candy.
-        </p>
-      </div>
+              <button
+                className="create-management-user-back-btn"
+                onClick={() => navigate("/dashboard/users")}
+              >
+                <FiArrowLeft /> Back to Users
+              </button>
+              <h1 className="create-management-user-title">
+                {isEditMode ? "Edit Access Credentials" : "Create a New Access"}
+              </h1>
+              <p className="create-management-user-subtitle">
+                Create credentials for internal team members to manage the Nature
+                Candy.
+              </p>
+            </div>
 
-      <div className="create-management-user-card">
-        {/* ── Avatar ── */}
-        <div className="create-management-user-avatar-section">
-          <div
-            className={`create-management-user-avatar-wrapper ${errors.profilePic ? "error-border" : ""}`}
-            onClick={() => fileInputRef.current?.click()}
-          >
-            {imagePreview ? (
-              <>
-                <img
-                  src={imagePreview}
-                  alt="Profile Preview"
-                  className="create-management-user-avatar-img"
-                />
-                <button
-                  className="create-management-user-avatar-remove"
-                  onClick={removeImage}
+            <div className="create-management-user-card">
+              {/* ── Avatar ── */}
+              <div className="create-management-user-avatar-section">
+                <div
+                  className={`create-management-user-avatar-wrapper ${imagePreviewError ? "error-border" : ""}`}
+                  onClick={() => fileInputRef.current?.click()}
                 >
-                  <FiX />
-                </button>
-              </>
-            ) : (
-              <div className="create-management-user-avatar-placeholder">
-                <FiCamera className="create-management-user-avatar-icon" />
-                <div className="create-management-user-avatar-edit-badge">
-                  <FiCamera />
+                  {imagePreview ? (
+                    <>
+                      <img
+                        src={imagePreview}
+                        alt="Profile Preview"
+                        className="create-management-user-avatar-img"
+                      />
+                      <button
+                        className="create-management-user-avatar-remove"
+                        onClick={removeImage}
+                      >
+                        <FiX />
+                      </button>
+                    </>
+                  ) : (
+                    <div className="create-management-user-avatar-placeholder">
+                      <FiCamera className="create-management-user-avatar-icon" />
+                      <div className="create-management-user-avatar-edit-badge">
+                        <FiCamera />
+                      </div>
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleImageChange}
+                    accept="image/png, image/jpeg"
+                    style={{ display: "none" }}
+                  />
+                </div>
+                <div className="create-management-user-avatar-text">
+                  <strong>
+                    Profile Picture <span className="req">*</span>
+                  </strong>
+                  <p>JPG or PNG. Max 2MB.</p>
+                  {imagePreviewError && (
+                    <span className="create-management-user-error">
+                      {imagePreviewError}
+                    </span>
+                  )}
                 </div>
               </div>
-            )}
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleImageChange}
-              accept="image/png, image/jpeg"
-              style={{ display: "none" }}
-            />
-          </div>
-          <div className="create-management-user-avatar-text">
-            <strong>
-              Profile Picture <span className="req">*</span>
-            </strong>
-            <p>JPG or PNG. Max 2MB.</p>
-            {errors.profilePic && (
-              <span className="create-management-user-error">
-                {errors.profilePic}
-              </span>
-            )}
-          </div>
-        </div>
 
-        {/*
+              {/*
           ── Form Grid ──
           Flat grid — no col wrapper divs.
           Section titles + fields are all direct grid children.
           Left and right cells share the same row → labels stay aligned.
         */}
-        <div className="create-management-user-form-split">
-          {/* Row 0 — titles */}
-          <h3 className="create-management-user-section-title">
-            PERSONAL INFORMATION
-          </h3>
-          <h3 className="create-management-user-section-title">
-            ACCESS & SECURITY
-          </h3>
+              <div className="create-management-user-form-split">
+                {/* Row 0 — titles */}
+                <h3 className="create-management-user-section-title">
+                  PERSONAL INFORMATION
+                </h3>
+                <h3 className="create-management-user-section-title">
+                  ACCESS & SECURITY
+                </h3>
 
-          {/* Row 1 — Name | Role */}
-          <div className="create-management-user-field">
-            <label>
-              Full Name <span className="req">*</span>
-            </label>
-            <DashBoardInput
-              placeholder="e.g. Aarav Sharma"
-              value={name}
-              onChange={(value) => setName(value)}
-              error={!!errors.name}
-              errorMessage={errors.name}
-            />
-          </div>
+                {/* Row 1 — Name | Role */}
+                <div className="create-management-user-field">
+                  <label>
+                    Full Name <span className="req">*</span>
+                  </label>
+                  <DashBoardInput
+                    placeholder="e.g. Aarav Sharma"
+                    value={name}
+                    onChange={OnChangeName}
+                    error={nameError ? true : false}
+                    errorMessage={nameError}
+                  />
+                </div>
 
-          <div className="create-management-user-field">
-            <label>
-              Account Role <span className="req">*</span>
-            </label>
-            <Dropdown
-              options={roleOptions}
-              label={roleId?.label || "Select Role"}
-              onSelect={(val: any) => setRoleId(val)}
-            />
-            {errors.roleId && (
-              <span className="create-management-user-error">
-                {errors.roleId}
-              </span>
-            )}
-          </div>
+                <div className="create-management-user-field">
+                  <label>
+                    Account Role <span className="req">*</span>
+                  </label>
+                  <Dropdown
+                    options={roleOptions}
+                    label={roleId?.label || "Select Role"}
+                    onSelect={(val: any) => { setRoleId(val); console.log(val) }}
+                    error={roleIdError ? true : false}
+                    errorMessage={roleIdError}
+                  />
+                </div>
 
-          {/* Row 2 — Email | Password */}
-          <div className="create-management-user-field">
-            <label>
-              Email Address <span className="req">*</span>
-            </label>
-            <DashBoardInput
-              placeholder="aarav@organicledger.com"
-              value={email}
-              onChange={(value) => setEmail(value)}
-              type="email"
-              error={!!errors.email}
-              errorMessage={errors.email}
-            />
-          </div>
+                {/* Row 2 — Email | Password */}
+                <div className="create-management-user-field">
+                  <label>
+                    Email Address <span className="req">*</span>
+                  </label>
+                  <DashBoardInput
+                    placeholder="aarav@organicledger.com"
+                    value={email}
+                    onChange={(value) => setEmail(value)}
+                    type="email"
+                    error={emailError ? true : false}
+                    errorMessage={emailError}
+                  />
+                </div>
 
-          <div className="create-management-user-field">
-            <label>
-              {isEditMode ? "Reset Password" : "Manual Password"}{" "}
-              {!isEditMode && <span className="req">*</span>}
-            </label>
-            <div className="create-management-user-password-row">
-              <div className="create-management-user-password-input">
-                <DashBoardInput
-                  type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(value) => setPassword(value)}
-                  icon={
-                    showPassword ? <FiEye size={20} /> : <FiEyeOff size={20} />
-                  }
-                  onClickIcon={() => setShowPassword(!showPassword)}
-                  error={!!errors.password}
-                  errorMessage={errors.password}
-                />
+                <div className="create-management-user-field">
+                  <label>
+                    {isEditMode ? "Reset Password" : "Manual Password"}{" "}
+                    {!isEditMode && <span className="req">*</span>}
+                  </label>
+                  <div className="create-management-user-password-row">
+                    <div className="create-management-user-password-input">
+                      <DashBoardInput
+                        type={showPassword ? "text" : "password"}
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(value) => setPassword(value)}
+                        icon={
+                          showPassword ? <FiEye size={20} /> : <FiEyeOff size={20} />
+                        }
+                        onClickIcon={() => setShowPassword(!showPassword)}
+                        error={passwordError ? true : false}
+                        errorMessage={passwordError}
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      className="create-management-user-generate-btn"
+                      onClick={generatePassword}
+                    >
+                      Generate
+                    </button>
+                  </div>
+                  <span className="create-management-user-hint">
+                    Ensure the password contains at least 8 characters.
+                  </span>
+                </div>
+
+                {/* Row 3 — Phone | Status */}
+                <div className="create-management-user-field">
+                  <label>
+                    Phone Number <span className="req">*</span>
+                  </label>
+                  <DashBoardInput
+                    placeholder="+91 98765 43210"
+                    value={mobile}
+                    onChange={(value) => setMobile(value)}
+                    error={mobileError ? true : false}
+                    errorMessage={mobileError}
+                  />
+                </div>
+
+                <div className="create-management-user-field">
+                  <label>Account Status</label>
+                  <div className="create-management-user-status-toggle">
+                    <button
+                      type="button"
+                      className={`status-btn ${isActive ? "active" : ""}`}
+                      onClick={() => setIsActive(true)}
+                    >
+                      Active
+                    </button>
+                    <button
+                      type="button"
+                      className={`status-btn ${!isActive ? "inactive" : ""}`}
+                      onClick={() => setIsActive(false)}
+                    >
+                      Inactive
+                    </button>
+                  </div>
+                </div>
               </div>
-              <button
-                type="button"
-                className="create-management-user-generate-btn"
-                onClick={generatePassword}
-              >
-                Generate
-              </button>
-            </div>
-            <span className="create-management-user-hint">
-              Ensure the password contains at least 8 characters.
-            </span>
-          </div>
 
-          {/* Row 3 — Phone | Status */}
-          <div className="create-management-user-field">
-            <label>
-              Phone Number <span className="req">*</span>
-            </label>
-            <DashBoardInput
-              placeholder="+91 98765 43210"
-              value={mobile}
-              onChange={(value) => setMobile(value)}
-              error={!!errors.mobile}
-              errorMessage={errors.mobile}
-            />
-          </div>
-
-          <div className="create-management-user-field">
-            <label>Account Status</label>
-            <div className="create-management-user-status-toggle">
-              <button
-                type="button"
-                className={`status-btn ${isActive ? "active" : ""}`}
-                onClick={() => setIsActive(true)}
-              >
-                Active
-              </button>
-              <button
-                type="button"
-                className={`status-btn ${!isActive ? "inactive" : ""}`}
-                onClick={() => setIsActive(false)}
-              >
-                Inactive
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* ── Footer ── */}
-        {/* <div className="create-management-user-footer"> */}
-        {/* <div className="create-management-user-footer-info">
+              {/* ── Footer ── */}
+              {/* <div className="create-management-user-footer"> */}
+              {/* <div className="create-management-user-footer-info">
             <FiInfo className="info-icon" />
             <span>Account details will be saved to the ledger.</span>
           </div> */}
-        <div className="create-management-user-footer-actions">
-          <DashBoardButton
-            name="Cancel"
-            variant="secondary"
-            onClick={() => navigate("/dashboard/users")}
-          />
-          <DashBoardButton
-            name={isEditMode ? "Save Changes" : "Create User"}
-            variant="primary"
-            onClick={handleSubmit}
-            disabled={isLoading}
-          />
-        </div>
-        {/* </div> */}
-      </div>
-    </div>
+              <div className="create-management-user-footer-actions">
+                <DashBoardButton
+                  icon={<FiX size={25} />}
+                  name="Cancel"
+                  variant="secondary"
+                  onClick={() => navigate("/dashboard/users")}
+                  width={"250px"}
+                />
+                <DashBoardButton
+                  icon={<FiPlus size={25} />}
+                  name={isEditMode ? "Save Changes" : "Create User"}
+                  variant="primary"
+                  onClick={handleSubmit}
+                  disabled={isLoading}
+                  width={"250px"}
+                />
+              </div>
+              {/* </div> */}
+            </div>
+          </div>
+        )
+      }
+    </>
   );
 };
 

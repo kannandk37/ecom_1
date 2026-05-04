@@ -66,7 +66,9 @@ export const Dropdown: React.FC<DropdownProps> = ({
         aria-haspopup="listbox"
         aria-expanded={isOpen}
       >
-        <span className="ds-dropdown-label">{selectedValue || label}</span>
+        <span className="ds-dropdown-label">{selectedValue?.charAt(0)?.toLocaleUpperCase() +
+          selectedValue?.slice(1) || label?.charAt(0)?.toLocaleUpperCase() +
+          label?.slice(1)}</span>
         <FiChevronDown
           className={`ds-dropdown-arrow ${isOpen ? "ds-dropdown-arrow--open" : ""}`}
         />

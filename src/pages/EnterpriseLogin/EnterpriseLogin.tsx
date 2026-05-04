@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./EnterpriseLogin.css";
-import { FiMail, FiLock } from "react-icons/fi";
+import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 import DashboardButton from "../../assets/ui/DashBoardButton/DashBoardButton";
 import DashboardInput from "../../assets/ui/DashBoardInput/DashBoardInput";
 import { emailRegex } from "../../utils/utils";
@@ -104,6 +104,7 @@ const Enterprise: React.FC<EnterpriseLoginProps> = ({
   const [isPasswordError, setIsPasswordError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [user, setUser] = useState<string>(""); // for now string have to be user
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   // Convert numeric props to pixel strings
   const cardWidth = typeof width === "number" ? `${width}px` : width;
@@ -215,15 +216,18 @@ const Enterprise: React.FC<EnterpriseLoginProps> = ({
 
               <DashboardInput
                 label="Password"
-                type="password"
-                placeholder="........"
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
                 value={password}
                 onChange={(val) => {
                   setPassword(val);
                   setIsPasswordError(false);
                   setUser("");
                 }}
-                icon={<FiLock />}
+                icon={
+                  showPassword ? <FiEye size={20} /> : <FiEyeOff size={20} />
+                }
+                onClickIcon={() => setShowPassword(!showPassword)}
                 error={isPasswordError}
                 errorMessage="Please Enter Password"
                 required
@@ -244,7 +248,7 @@ const Enterprise: React.FC<EnterpriseLoginProps> = ({
                 <button
                   type="button"
                   className="el-forgot-btn"
-                  onClick={() => {}}
+                  onClick={() => { }}
                 >
                   Forgot Password?
                 </button>
