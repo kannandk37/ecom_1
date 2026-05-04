@@ -34,6 +34,7 @@ import CategoryList from "../pages/Category/CategoryList/CategoryList";
 import CreateOrEditProduct from "../pages/DashBoard/Product/CreateOrEditProduct";
 import CreateOrEditVariant from "../pages/DashBoard/Variant/createOrEditVariant";
 import CreateOrEditUser from "../pages/User/CreateOrEditUser";
+import UsersList from "../pages/DashBoard/User/Users";
 export interface NavItem {
   id: string;
   name: string;
@@ -179,7 +180,7 @@ export const NAV_OPTIONS: NavItem[] = [
     name: "Users",
     icon: <FaUser />,
     path: "/dashboard/users",
-    component: <CreateOrEditUser />,
+    component: <UsersList />,
         children: [
       {
         id: "add-users",
