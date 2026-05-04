@@ -35,6 +35,7 @@ import CreateOrEditProduct from "../pages/DashBoard/Product/CreateOrEditProduct"
 import CreateOrEditVariant from "../pages/DashBoard/Variant/createOrEditVariant";
 import CreateOrEditUser from "../pages/User/CreateOrEditUser";
 import UsersList from "../pages/DashBoard/User/Users";
+import CreateOrEditWareHouse from "../pages/WareHouse/CreateOrEdiyWareHouse";
 export interface NavItem {
   id: string;
   name: string;
@@ -181,7 +182,7 @@ export const NAV_OPTIONS: NavItem[] = [
     icon: <FaUser />,
     path: "/dashboard/users",
     component: <UsersList />,
-        children: [
+    children: [
       {
         id: "add-users",
         name: "Add Users",
@@ -190,6 +191,13 @@ export const NAV_OPTIONS: NavItem[] = [
         component: <CreateOrEditUser />,
       },
     ],
+  },
+  {
+    id: "warehouses",
+    name: "WareHouses",
+    icon: <FiBox />,
+    path: "/dashboard/warehouses",
+    component: <CreateOrEditWareHouse />,
   },
 ];
 
