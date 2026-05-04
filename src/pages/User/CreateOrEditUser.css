@@ -1,0 +1,817 @@
+/* .create-management-user-container {
+  font-family: var(--font-family, sans-serif);
+  padding: 30px 40px;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  animation: fadeIn 0.4s ease;
+  background-color: #f9f5f1;
+  min-height: 100vh;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.create-management-user-top-bar {
+  margin-bottom: 30px;
+}
+
+.create-management-user-breadcrumbs {
+  font-size: 0.85rem;
+  color: #888;
+  margin-bottom: 20px;
+}
+
+.create-management-user-breadcrumbs strong {
+  color: #1a1a1a;
+}
+
+.create-management-user-back-btn {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 15px;
+  transition: color 0.2s;
+}
+
+.create-management-user-back-btn:hover {
+  color: #1a1a1a;
+}
+
+.create-management-user-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0 0 5px 0;
+}
+
+.create-management-user-subtitle {
+  color: #666;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.create-management-user-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.create-management-user-avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid #f0f0ed;
+}
+
+.create-management-user-avatar-wrapper {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 2px dashed #ccc;
+  background-color: #fcfcfc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-bottom: 15px;
+  transition: all 0.2s ease;
+}
+
+.create-management-user-avatar-wrapper:hover {
+  border-color: #8c6d3f;
+  background-color: #fdfaf5;
+}
+
+.create-management-user-avatar-wrapper.error-border {
+  border-color: #d93025;
+}
+
+.create-management-user-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.create-management-user-avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+}
+
+.create-management-user-avatar-icon {
+  font-size: 2rem;
+}
+
+.create-management-user-avatar-edit-badge {
+  position: absolute;
+  bottom: 0;
+  right: -5px;
+  background-color: #8c6d3f;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  border: 2px solid #fff;
+}
+
+.create-management-user-avatar-remove {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: #d93025;
+  color: white;
+  border: 2px solid #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+
+.create-management-user-avatar-remove:hover {
+  transform: scale(1.1);
+}
+
+.create-management-user-avatar-text {
+  text-align: center;
+}
+
+.create-management-user-avatar-text strong {
+  display: block;
+  font-size: 0.95rem;
+  color: #1a1a1a;
+  margin-bottom: 2px;
+}
+
+.create-management-user-avatar-text p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.create-management-user-form-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  margin-bottom: 40px;
+}
+
+.create-management-user-col {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.create-management-user-section-title {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #bfa888;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0 0 10px 0;
+  border-bottom: 1px solid #f0f0ed;
+  padding-bottom: 10px;
+}
+
+.create-management-user-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.create-management-user-field label {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #1a1a1a;
+}
+
+.req {
+  color: #d93025;
+}
+
+.create-management-user-error {
+  color: #d93025;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.create-management-user-hint {
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: 4px;
+}
+
+.create-management-user-password-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.create-management-user-password-input {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.create-management-user-password-input > * {
+  width: 100%;
+}
+
+.create-management-user-toggle-pass {
+  position: absolute;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+.create-management-user-toggle-pass:hover {
+  color: #1a1a1a;
+}
+
+.create-management-user-generate-btn {
+  background-color: #eee;
+  border: none;
+  border-radius: 8px;
+  padding: 0 20px;
+  height: 46px; 
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-family: var(--font-family);
+}
+
+.create-management-user-generate-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.create-management-user-status-toggle {
+  display: flex;
+  background-color: #f8f7f4;
+  border-radius: 8px;
+  padding: 4px;
+  width: 100%;
+  max-width: 250px;
+}
+
+.status-btn {
+  flex: 1;
+  padding: 10px 0;
+  border: none;
+  background: transparent;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #888;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-family: var(--font-family);
+}
+
+.status-btn.active {
+  background-color: #fff;
+  color: #27ae60;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.status-btn.inactive {
+  background-color: #fff;
+  color: #d93025;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.create-management-user-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 30px;
+  border-top: 1px solid #f0f0ed;
+}
+
+.create-management-user-footer-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #fff;
+  border: 1px solid #eee;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.create-management-user-footer-info .info-icon {
+  color: #888;
+  font-size: 1.1rem;
+}
+
+.create-management-user-footer-actions {
+  display: flex;
+  gap: 15px;
+}
+
+@media (max-width: 900px) {
+  .create-management-user-form-split {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .create-management-user-footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 20px;
+  }
+
+  .create-management-user-footer-actions {
+    justify-content: flex-end;
+  }
+} */
+
+/* ── Base ─────────────────────────────────────────────────────────────── */
+.create-management-user-container {
+  font-family: var(--font-family, sans-serif);
+  padding: 30px 40px;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  animation: fadeIn 0.4s ease;
+  background-color: #f9f5f1;
+  min-height: 100vh;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Header ───────────────────────────────────────────────────────────── */
+.create-management-user-top-bar {
+  margin-bottom: 30px;
+}
+
+.create-management-user-breadcrumbs {
+  font-size: 0.85rem;
+  color: #888;
+  margin-bottom: 20px;
+}
+
+.create-management-user-breadcrumbs strong {
+  color: #1a1a1a;
+}
+
+.create-management-user-back-btn {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 15px;
+  transition: color 0.2s;
+}
+
+.create-management-user-back-btn:hover {
+  color: #1a1a1a;
+}
+
+.create-management-user-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0 0 5px 0;
+}
+
+.create-management-user-subtitle {
+  color: #666;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* ── Main Card ────────────────────────────────────────────────────────── */
+.create-management-user-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  box-sizing: border-box;
+}
+
+/* ── Avatar Section ───────────────────────────────────────────────────── */
+.create-management-user-avatar-section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 24px;
+  margin-bottom: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid #f0f0ed;
+}
+
+.create-management-user-avatar-wrapper {
+  position: relative;
+  flex-shrink: 0;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 2px dashed #ccc;
+  background-color: #fcfcfc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.create-management-user-avatar-wrapper:hover {
+  border-color: #8c6d3f;
+  background-color: #fdfaf5;
+}
+
+.create-management-user-avatar-wrapper.error-border {
+  border-color: #d93025;
+}
+
+.create-management-user-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.create-management-user-avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+}
+
+.create-management-user-avatar-icon {
+  font-size: 2rem;
+}
+
+.create-management-user-avatar-edit-badge {
+  position: absolute;
+  bottom: 0;
+  right: -5px;
+  background-color: #8c6d3f;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  border: 2px solid #fff;
+}
+
+.create-management-user-avatar-remove {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: #d93025;
+  color: white;
+  border: 2px solid #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+
+.create-management-user-avatar-remove:hover {
+  transform: scale(1.1);
+}
+
+.create-management-user-avatar-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+}
+
+.create-management-user-avatar-text strong {
+  display: block;
+  font-size: 0.95rem;
+  color: #1a1a1a;
+}
+
+.create-management-user-avatar-text p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #888;
+}
+
+/* ── Form Grid ────────────────────────────────────────────────────────── */
+
+/*
+  Flat 2-column grid — section titles and fields are ALL direct
+  children. No col wrapper divs. Left and right fields share the
+  same grid row so labels stay perfectly horizontally aligned.
+*/
+
+.create-management-user-form-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 60px;
+  row-gap: 20px;
+  margin-bottom: 40px;
+  align-items: start;
+}
+
+.create-management-user-section-title {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #bfa888;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0;
+  border-bottom: 1px solid #f0f0ed;
+  padding-bottom: 10px;
+}
+
+.create-management-user-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.create-management-user-field label {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  line-height: 1.2;
+}
+
+.req {
+  color: #d93025;
+}
+
+.create-management-user-error {
+  color: #d93025;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.create-management-user-hint {
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+/* ── Password Row ─────────────────────────────────────────────────────── */
+.create-management-user-password-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.create-management-user-password-input {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+}
+
+.create-management-user-password-input > * {
+  width: 100%;
+}
+
+.create-management-user-generate-btn {
+  flex-shrink: 0;
+  background-color: #eee;
+  border: none;
+  border-radius: 16px;
+  padding: 0 18px;
+  height: 56px; /* matches DashBoardInput min-height exactly */
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-family: var(--font-family);
+  white-space: nowrap;
+}
+
+.create-management-user-generate-btn:hover {
+  background-color: #e0e0e0;
+}
+
+/* ── Status Toggle ────────────────────────────────────────────────────── */
+.create-management-user-status-toggle {
+  display: flex;
+  background-color: #f8f7f4;
+  border-radius: 8px;
+  padding: 4px;
+  width: fit-content;
+  min-width: 200px;
+}
+
+.status-btn {
+  flex: 1;
+  padding: 10px 20px;
+  border: none;
+  background: transparent;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #888;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-family: var(--font-family);
+}
+
+.status-btn.active {
+  background-color: #fff;
+  color: #27ae60;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.status-btn.inactive {
+  background-color: #fff;
+  color: #d93025;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+/* ── Footer ───────────────────────────────────────────────────────────── */
+.create-management-user-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 30px;
+  border-top: 1px solid #f0f0ed;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.create-management-user-footer-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #fff;
+  border: 1px solid #eee;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #666;
+  flex-shrink: 1;
+}
+
+.create-management-user-footer-info .info-icon {
+  color: #888;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.create-management-user-footer-actions {
+  display: flex;
+  gap: 15px;
+  flex-shrink: 0;
+}
+
+/* ── Responsive: Tablet ───────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .create-management-user-container {
+    padding: 24px;
+  }
+
+  .create-management-user-card {
+    padding: 28px 24px;
+  }
+
+  .create-management-user-form-split {
+    grid-template-columns: 1fr;
+    column-gap: 0;
+    row-gap: 20px;
+  }
+
+  /* Add breathing room before the second section title */
+  .create-management-user-section-title:nth-child(2) {
+    margin-top: 16px;
+  }
+
+  .create-management-user-footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .create-management-user-footer-info {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .create-management-user-footer-actions {
+    justify-content: flex-end;
+  }
+}
+
+/* ── Responsive: Mobile ───────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .create-management-user-container {
+    padding: 16px;
+  }
+
+  .create-management-user-card {
+    padding: 20px 16px;
+  }
+
+  .create-management-user-title {
+    font-size: 1.6rem;
+  }
+
+  .create-management-user-avatar-section {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .create-management-user-avatar-text {
+    align-items: center;
+  }
+
+  .create-management-user-password-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .create-management-user-generate-btn {
+    width: 100%;
+  }
+
+  .create-management-user-status-toggle {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .create-management-user-footer-actions {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .create-management-user-footer-actions > * {
+    width: 100%;
+  }
+}

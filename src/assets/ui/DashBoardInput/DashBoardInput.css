@@ -41,10 +41,11 @@
 }
 
 .db-icon {
+  cursor: pointer;
   position: absolute;
   left: 18px;
   color: #8c6d3f;
-  z-index: 2;
+  z-index: 3;
   font-size: 1.2rem;
   display: flex;
   align-items: center;

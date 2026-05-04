@@ -4,9 +4,9 @@ import Login from "./pages/Login";
 import ConfirmCheckout from "./pages/Checkout";
 import Profile from "./pages/Profile";
 import Orders from "./pages/Orders/Orders";
-import CategoryProducts, {
-  productsData,
-} from "./pages/CategoryProducts/categoryProducts";
+// import CategoryProducts, {
+//   productsData,
+// } from "./pages/CategoryProducts/categoryProducts";
 import Enterprise from "./pages/index";
 import MainLayout from "./MainLayout";
 import DashboardLayout from "./assets/ui/DashBoardLayout/DashBoardLayout";
@@ -197,7 +197,6 @@ const mockCartData: CartItem[] = [
 ];
 
 function App() {
-
   const renderRoutes: any = (items: NavItem[]) => {
     return items.flatMap((item) => {
       const routes = [];
@@ -219,7 +218,7 @@ function App() {
     discountCode: "FESTIVE10", // Optional, passed as present
     discountAmount: "-$10.00", // Optional, passed as present
     finalTotal: "$63.96",
-    onCheckout: () => { },
+    onCheckout: () => {},
   };
   return (
     <BrowserRouter>
@@ -279,11 +278,11 @@ function App() {
             path="/order/:orderId"
             element={<Order {...mockOrderData} />}
           />
-          <Route
+          {/* <Route
             path="/categories/:categoryId/products"
             element={<CategoryProducts />}
-          />
-          <Route
+          /> */}
+          {/* <Route
             path="/products/:productId"
             element={
               <ProductDetails
@@ -292,7 +291,7 @@ function App() {
                 }
               />
             }
-          />
+          /> */}
           <Route
             path="/cart"
             element={
@@ -307,9 +306,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
         </Route>
         <Route path="/checkout" element={<ConfirmCheckout />} />
-        <Route element={<DashboardLayout />}>
-          {renderRoutes(NAV_OPTIONS)}
-        </Route>
+        <Route element={<DashboardLayout />}>{renderRoutes(NAV_OPTIONS)}</Route>
         {/* <Route path="/receipt" element={<OrderReceipt
           orderNumber="123"
           date=''

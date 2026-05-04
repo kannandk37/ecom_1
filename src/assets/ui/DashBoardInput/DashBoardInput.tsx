@@ -15,6 +15,7 @@ interface DashboardInputProps {
   name?: string;
   style?: React.CSSProperties;
   row?: number;
+  onClickIcon?: () => void;
 }
 
 export const DashboardInput: React.FC<DashboardInputProps> = ({
@@ -31,6 +32,7 @@ export const DashboardInput: React.FC<DashboardInputProps> = ({
   name,
   style,
   row = 5,
+  onClickIcon,
 }) => {
   return (
     <div
@@ -40,7 +42,15 @@ export const DashboardInput: React.FC<DashboardInputProps> = ({
       {label && <label className="db-label">{label.toUpperCase()}</label>}
 
       <div className="db-input-wrapper">
-        {icon && <span className="db-icon">{icon}</span>}
+        {icon && (
+          <span
+            className="db-icon"
+            style={{ pointerEvents: onClickIcon ? "auto" : "none" }}
+            onClick={onClickIcon}
+          >
+            {icon}
+          </span>
+        )}
         {type == "textarea" ? (
           <>
             <textarea
@@ -51,7 +61,7 @@ export const DashboardInput: React.FC<DashboardInputProps> = ({
               onChange={(e) => onChange(e.target.value)}
               required={required}
               disabled={disabled}
-              className={`db-field ${icon ? 'icon' : ''}`}
+              className={`db-field ${icon ? "icon" : ""}`}
               style={{ resize: "none" }}
             />
           </>
@@ -65,7 +75,7 @@ export const DashboardInput: React.FC<DashboardInputProps> = ({
               onChange={(e) => onChange(e.target.value)}
               required={required}
               disabled={disabled}
-              className={`db-field ${icon ? 'icon' : ''}`}
+              className={`db-field ${icon ? "icon" : ""}`}
             />
           </>
         )}
@@ -79,7 +89,6 @@ export const DashboardInput: React.FC<DashboardInputProps> = ({
 };
 
 export default DashboardInput;
-
 
 // import React, { forwardRef, useRef, type ReactNode } from "react";
 // import "./DashBoardInput.css";

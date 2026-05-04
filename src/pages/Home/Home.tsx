@@ -124,20 +124,20 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    fetchProducts();
+    // fetchProducts();
     const timer = setTimeout(() => {
       setLoading(false);
     }, 1500);
   }, []);
 
-  const fetchProducts = async () => {
-    try {
-      const res = await axiosinstance.get("/api/products");
-      setProducts(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const fetchProducts = async () => {
+  //   try {
+  //     const res = await axiosinstance.get("/api/products");
+  //     setProducts(res.data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");

@@ -22,7 +22,7 @@ import Home from "../pages/Home/Home";
 import DRY_FRUITS from "../../data/DRY_FRUITS.png";
 import NUTS from "../../data/NUTS.png";
 import DATES from "../../data/DATES.png";
-import { FaIndianRupeeSign } from "react-icons/fa6";
+import { FaIndianRupeeSign, FaUser } from "react-icons/fa6";
 import { MdOutlineCategory } from "react-icons/md";
 import { TbBrandBitbucket } from "react-icons/tb";
 import DashBoardCategories from "../pages/DashBoard/Categories/DashBoardCategories";
@@ -33,6 +33,7 @@ import CreateOrEditBrand from "../pages/Brand/CreateOrEditBrand/CreateOrEditBran
 import CategoryList from "../pages/Category/CategoryList/CategoryList";
 import CreateOrEditProduct from "../pages/DashBoard/Product/CreateOrEditProduct";
 import CreateOrEditVariant from "../pages/DashBoard/Variant/createOrEditVariant";
+import CreateOrEditUser from "../pages/User/CreateOrEditUser";
 export interface NavItem {
   id: string;
   name: string;
@@ -172,6 +173,13 @@ export const NAV_OPTIONS: NavItem[] = [
     icon: <FiBox />,
     path: "/dashboard/variants",
     component: <CreateOrEditVariant />,
+  },
+  {
+    id: "users",
+    name: "Users",
+    icon: <FaUser />,
+    path: "/dashboard/users",
+    component: <CreateOrEditUser />,
   },
 ];
 

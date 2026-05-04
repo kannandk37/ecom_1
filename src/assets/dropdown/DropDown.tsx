@@ -25,7 +25,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   height = "45px",
   onSelect,
   error,
-  errorMessage
+  errorMessage,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
@@ -53,9 +53,13 @@ export const Dropdown: React.FC<DropdownProps> = ({
   };
 
   return (
-    <div className={`ds-dropdown-container`} ref={dropdownRef} style={{ width }}>
+    <div
+      className={`ds-dropdown-container`}
+      ref={dropdownRef}
+      style={{ width }}
+    >
       <button
-        className={`ds-dropdown-header ${isOpen ? "ds-dropdown-header--active" : ""} ${error ? 'error': ''}`}
+        className={`ds-dropdown-header ${isOpen ? "ds-dropdown-header--active" : ""} ${error ? "error" : ""}`}
         onClick={toggleDropdown}
         style={{ height }}
         type="button"
@@ -78,7 +82,8 @@ export const Dropdown: React.FC<DropdownProps> = ({
               role="option"
               aria-selected={selectedValue === option.value}
             >
-              {option.value}
+              {option.value?.charAt(0)?.toLocaleUpperCase() +
+                option.value?.slice(1)}
             </li>
           ))}
         </ul>

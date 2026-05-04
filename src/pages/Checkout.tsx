@@ -10,7 +10,7 @@ import { siteName } from "../utils/utils";
 import Header from "./Header/Header";
 import "./Checkout.css";
 import IdentityForm from "./Checkout/IdentityForm";
-import { productsData } from "./CategoryProducts/categoryProducts";
+// import { productsData } from "./CategoryProducts/categoryProducts";
 import AddAddress from "./Address/AddAddress";
 import { FaDollarSign } from "react-icons/fa";
 
@@ -51,23 +51,23 @@ const ConfirmCheckout = () => {
       case "payment":
         return <PaymentForm />;
       case "review":
-        return (
-          <ReviewForm
-            shippingAddress={{
-              type: "Home",
-              name: "Tester",
-              addressLine: "testing street",
-              phone: "8989892344",
-            }}
-            paymentMethod={{
-              name: "Cash on Delivery",
-              icon: <FaDollarSign />,
-              description: "Pay on door step",
-            }}
-            items={productsData}
-            onPlaceOrder={() => { }}
-          />
-        );
+      // return (
+      // <ReviewForm
+      //   shippingAddress={{
+      //     type: "Home",
+      //     name: "Tester",
+      //     addressLine: "testing street",
+      //     phone: "8989892344",
+      //   }}
+      //   paymentMethod={{
+      //     name: "Cash on Delivery",
+      //     icon: <FaDollarSign />,
+      //     description: "Pay on door step",
+      //   }}
+      //   items={productsData}
+      //   onPlaceOrder={() => { }}
+      // />
+      // );
       default:
         return <IdentityForm onNextStep={() => console.log("")} />;
     }
@@ -105,7 +105,7 @@ const ConfirmCheckout = () => {
           <div className="middle-content-scroll">{renderMiddleForm()}</div>
         </div>
 
-        <OrderSummary
+        {/* <OrderSummary
           items={productsData}
           subtotal={1500}
           shipping={0}
@@ -117,7 +117,7 @@ const ConfirmCheckout = () => {
               : setCurrentStep(stepConfig.next);
             setCurrentStep(stepConfig.next);
           }}
-        />
+        /> */}
       </div>
     </div>
   );
