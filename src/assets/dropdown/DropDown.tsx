@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./DropDown.css";
-import { FiChevronDown } from "react-icons/fi";
+import { FiChevronDown, FiX } from "react-icons/fi"; // Added FiX import
 
 interface DropdownOption {
   id: string | number;
@@ -13,7 +13,7 @@ interface DropdownProps {
   options: DropdownOption[];
   width?: string;
   height?: string;
-  onSelect?: (option: DropdownOption) => void;
+  onSelect?: (option: DropdownOption | null) => void; // Updated type to accept null
   error?: boolean;
   errorMessage?: string;
 }
@@ -52,6 +52,12 @@ export const Dropdown: React.FC<DropdownProps> = ({
     if (onSelect) onSelect(option);
   };
 
+  const handleClear = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedValue(null);
+    if (onSelect) onSelect(null);
+  };
+
   return (
     <div
       className={`ds-dropdown-container`}
@@ -66,12 +72,26 @@ export const Dropdown: React.FC<DropdownProps> = ({
         aria-haspopup="listbox"
         aria-expanded={isOpen}
       >
-        <span className="ds-dropdown-label">{selectedValue?.charAt(0)?.toLocaleUpperCase() +
-          selectedValue?.slice(1) || label?.charAt(0)?.toLocaleUpperCase() +
-          label?.slice(1)}</span>
-        <FiChevronDown
-          className={`ds-dropdown-arrow ${isOpen ? "ds-dropdown-arrow--open" : ""}`}
-        />
+        <span className="ds-dropdown-label">
+          {selectedValue
+            ? selectedValue.charAt(0).toLocaleUpperCase() + selectedValue.slice(1)
+            : label?.charAt(0).toLocaleUpperCase() + label?.slice(1)}
+        </span>
+        
+        <div className="ds-dropdown-icons">
+          {selectedValue && (
+            <div 
+              className="ds-dropdown-clear-btn" 
+              onClick={handleClear}
+              title="Clear selection"
+            >
+              <FiX />
+            </div>
+          )}
+          <FiChevronDown
+            className={`ds-dropdown-arrow ${isOpen ? "ds-dropdown-arrow--open" : ""}`}
+          />
+        </div>
       </button>
 
       {isOpen && (
