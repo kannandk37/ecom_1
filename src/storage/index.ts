@@ -19,7 +19,12 @@ export class LocalStorage {
     }
 
     async getUser() {
-        return await storage.getItem('user');
+        let data = await storage.getItem('user');
+        if (data) {
+            return JSON.parse(data) as User
+        } else {
+            return null;
+        }
     }
 
 
@@ -27,16 +32,26 @@ export class LocalStorage {
         return await storage.setItem('role', JSON.stringify(role));
     }
 
-    async getrRole(role: Role) {
-        return await storage.getItem('role');
+    async getrRole() {
+        let data = await storage.getItem('role');
+        if (data) {
+            return JSON.parse(data) as Role
+        } else {
+            return null;
+        }
     }
 
     async storeProfile(profile: Profile) {
         return await storage.setItem('profile', JSON.stringify(profile));
     }
 
-    async getProfile(profile: Profile) {
-        return await storage.getItem('profile');
+    async getProfile() {
+        let data = await storage.getItem('profile');
+        if (data) {
+            return JSON.parse(data) as Profile
+        } else {
+            return null;
+        }
     }
 
 } 

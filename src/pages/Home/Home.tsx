@@ -12,6 +12,7 @@ import FRESH_JUICE from "../../../data/FRESH_JUICE.png";
 import Loader from "../../assets/loader/Loader";
 import { CategoryService } from "../../service/category";
 import { Category } from "../../entity/category";
+import Toast from "../../assets/toast/Toast";
 
 export const productsTestData: {
   image: ReactNode;
@@ -110,16 +111,44 @@ const Home = () => {
 
   useEffect(() => {
     (async () => {
-      let categories = await new CategoryService().get();
-      setCardData(
-        categories?.map((category: Category) => {
-          return {
-            id: category.id,
-            image: DRY_FRUITS,
-            title: category.name,
-          } as CardItem;
-        }),
-      );
+      try {
+        let categories = await new CategoryService().get();
+        setCardData(
+          categories?.map((category: Category) => {
+            return {
+              id: category.id,
+              image: DRY_FRUITS,
+              title: category.name,
+            } as CardItem;
+          }),
+        );
+      } catch (error) {
+        <Toast
+          title="Category"
+          description="Unable to Get Category"
+          isError={true}
+          duration={5000} // Disappears after 4 seconds
+          onClose={() => console.log("cannpt get categories")}
+        />;
+        // failure
+        // <Toast
+        //   title="Payment Failed"
+        //   description="We couldn't process your transaction. Please check your card details."
+        //   isError={true}
+        //   actionText="Update Billing Info"
+        //   onAction={() => navigate("/billing")} // Navigates or triggers a modal
+        //   duration={6000} // Keeps the error on screen a bit longer
+        //   onClose={() => setShowToast(false)}
+        // />;
+      } finally {
+        <Toast
+          title="Category"
+          description="Unable to Get Category"
+          isError={true}
+          duration={5000} // Disappears after 4 seconds
+          onClose={() => console.log("cannpt get categories")}
+        />;
+      }
     })();
   }, []);
 
@@ -231,6 +260,13 @@ const Home = () => {
       {loading ? (
         <Loader text="Roasting your results..." />
       ) : (
+        // {/* <Toast
+        //   title="Category"
+        //   description="Unable to Get Category"
+        //   isError={true}
+        //   duration={5000} // Disappears after 4 seconds
+        //   onClose={() => console.log("cannpt get categories")}
+        // /> */}
         <div className="root-home">
           <div className="scroll-viewport">
             <div className="home-container">

@@ -1,0 +1,133 @@
+/* Container Box */
+.organic-toast-box {
+  margin-top: 100px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background-color: #ffffff;
+  padding: 20px 20px 24px 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 380px;
+  position: relative;
+  font-family: var(--font-family, sans-serif);
+  box-sizing: border-box;
+  animation: toastSlideIn 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Specific State Styling */
+.organic-toast-box.success-state {
+  border: 1px solid #f0f0ed; /* Subtle border for success */
+}
+
+.organic-toast-box.error-state {
+  border: 1px solid #f0f0ed;
+  border-left: 4px solid #d93025; /* Prominent red left border */
+}
+
+/* Icons */
+.organic-toast-icon-wrapper {
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.toast-icon-bg {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Success Colors */
+.toast-icon-bg.success-bg {
+  background-color: #e8f0e5; /* Soft pastel green */
+}
+
+.toast-icon.success-icon {
+  color: #5b7553; /* Earthy organic green */
+  font-size: 1.25rem;
+}
+
+/* Error Colors */
+.toast-icon-bg.error-bg {
+  background-color: #fce8e6; /* Soft red background */
+}
+
+.toast-icon.error-icon {
+  color: #d93025; /* Standard red */
+  font-size: 1.25rem;
+}
+
+/* Text Content */
+.organic-toast-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 10px; /* Leave space for the close 'x' */
+}
+
+.organic-toast-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #1a1a1a;
+}
+
+.organic-toast-description {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* Error Action Link */
+.organic-toast-action-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-top: 8px;
+  text-align: left;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #d93025;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  font-family: inherit;
+}
+
+.organic-toast-action-btn:hover {
+  opacity: 0.7;
+}
+
+/* Close Button */
+.organic-toast-close-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #aaa;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.organic-toast-close-btn:hover {
+  color: #1a1a1a;
+}
