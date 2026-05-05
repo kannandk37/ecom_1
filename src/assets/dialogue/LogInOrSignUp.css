@@ -1,0 +1,178 @@
+/* Full-screen dark overlay */
+.login-signup-dialogue-box-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 20px;
+  box-sizing: border-box;
+  animation: overlayFadeIn 0.3s ease;
+}
+
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* The Modal Box */
+.login-signup-dialogue-box-modal {
+  background: #ffffff;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 16px;
+  position: relative;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  font-family: var(--font-family, sans-serif);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Keeps the footer neatly inside the border radius */
+  animation: modalSlideUp 0.3s ease-out;
+}
+
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Close Button */
+.login-signup-dialogue-box-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 1.4rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+  padding: 0;
+  z-index: 10;
+}
+
+.login-signup-dialogue-box-close-btn:hover {
+  color: #1a1a1a;
+}
+
+/* Main Content Padding */
+.login-signup-dialogue-box-content {
+  padding: 40px 40px 30px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-signup-dialogue-box-icon {
+  width: 80px;
+  height: 80px;
+  color: #8c6d3f; /* Brand Brown/Gold */
+}
+
+/* Text Sections */
+.login-signup-dialogue-box-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.login-signup-dialogue-box-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+  text-align: center;
+}
+
+.login-signup-dialogue-box-subtitle {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0 0 20px 0;
+  text-align: center;
+}
+
+/* Forces the DashBoardButton to take up 100% of the width */
+.login-signup-dialogue-box-btn-wrapper {
+  width: 100%;
+}
+
+.login-signup-dialogue-box-btn-wrapper > * {
+  width: 100%;
+  justify-content: center;
+}
+
+/* The "OR" Divider */
+.login-signup-dialogue-box-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  margin: 25px 0;
+  color: #1a1a1a;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.login-signup-dialogue-box-divider::before,
+.login-signup-dialogue-box-divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.login-signup-dialogue-box-divider span {
+  padding: 0 15px;
+}
+
+/* Footer Section */
+.login-signup-dialogue-box-footer {
+  background-color: #f8f7f4;
+  padding: 20px;
+  text-align: center;
+  border-top: 1px solid #f0f0ed;
+}
+
+.login-signup-dialogue-box-footer p {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.login-signup-dialogue-box-link {
+  color: #8c6d3f;
+  font-weight: 800;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.login-signup-dialogue-box-link:hover {
+  color: #6e5531; /* Darker brown on hover */
+  text-decoration: underline;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 480px) {
+  .login-signup-dialogue-box-content {
+    padding: 35px 25px 25px 25px;
+  }
+}

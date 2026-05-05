@@ -1,30 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import "./ProductCard.css";
 import IconButton from "../icon_button/IconButton";
 export type ProductCardVariant = "primary" | "secondary" | "outline";
 export type ProductCardSize = "small" | "medium" | "large";
 import { RiHeart3Line } from "react-icons/ri";
 import { FiHeart } from "react-icons/fi";
+import { Product } from "../../entity/product";
+import NUTS from "../../../data/NUTS.png";
 
-export interface Product {
-  id: string | number;
-  image: string;
-  categoryId: Number;
-  title: string;
-  description: string;
-  price: number;
-  weight: number;
-  unit: string;
-  isFav?: boolean;
-  name?: string;
-  images: any[];
-  rating?: number;
-  reviews?: number;
-  features?: string[];
-  specs?: { label: string; value: string }[];
-  //temporary
-  quantity?: number;
-}
+// export interface Product {
+//   id: string | number;
+//   image: string;
+//   categoryId: Number;
+//   title: string;
+//   description: string;
+//   price: number;
+//   weight: number;
+//   unit: string;
+//   isFav?: boolean;
+//   name?: string;
+//   images: any[];
+//   rating?: number;
+//   reviews?: number;
+//   features?: string[];
+//   specs?: { label: string; value: string }[];
+//   //temporary
+//   quantity?: number;
+// }
 
 export interface ProductCardProps {
   products?: Product[];
@@ -49,6 +51,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onToggleFav,
   onClickAddToCart,
 }) => {
+  const [isFav, setIsFav] = useState<boolean>(true);
   const cardDynamicStyle: React.CSSProperties = {
     height: typeof height === "number" ? `${height}px` : height,
     width: typeof width === "number" ? `${width}px` : width,
@@ -66,23 +69,25 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         >
           <div className="product-card__image-wrapper">
             <img
-              src={product.image}
+              // src={product.images[0]}
+              src={NUTS}
               alt={product.title}
               className="product-card__image"
             />
             <div
-              className={`product-card__fav-btn ${product.isFav ? "is-fav" : ""}`}
+              className={`product-card__fav-btn ${isFav ? "is-fav" : ""}`}
               aria-label="Add to favorites"
               style={{ background: "transparent" }}
               onClick={(e) => {
+                setIsFav(!isFav);
                 e.stopPropagation();
                 onToggleFav?.(product);
               }}
             >
               <IconButton
-                icon={!product?.isFav ? <FiHeart /> : <RiHeart3Line />}
+                icon={!isFav ? <FiHeart /> : <RiHeart3Line />}
                 size="medium"
-                variant={!product?.isFav ? "primary" : "secondary"}
+                variant={!isFav ? "primary" : "secondary"}
               />
             </div>
           </div>

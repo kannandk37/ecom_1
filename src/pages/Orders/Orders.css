@@ -44,13 +44,15 @@
 }
 
 .breadcrumbs {
-  margin-bottom: 12px;
-  font-size: 16px;
+  margin-bottom: 24px;
   font-weight: 600;
   color: #6c6c6c;
+  display: flex;
+  flex-direction: row;
 }
 
 .breadcrumbs span {
+  font-size: 16px;
   cursor: pointer;
 }
 

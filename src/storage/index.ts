@@ -18,7 +18,7 @@ export class LocalStorage {
         return await storage.setItem('user', JSON.stringify(user));
     }
 
-    async getUser(user: User) {
+    async getUser() {
         return await storage.getItem('user');
     }
 

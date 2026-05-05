@@ -4,9 +4,9 @@ import Login from "./pages/Login";
 import ConfirmCheckout from "./pages/Checkout";
 import Profile from "./pages/Profile";
 import Orders from "./pages/Orders/Orders";
-// import CategoryProducts, {
-//   productsData,
-// } from "./pages/CategoryProducts/categoryProducts";
+import CategoryProducts, {
+  productsData,
+} from "./pages/CategoryProducts/categoryProducts";
 import Enterprise from "./pages/index";
 import MainLayout from "./MainLayout";
 import DashboardLayout from "./assets/ui/DashBoardLayout/DashBoardLayout";
@@ -278,10 +278,10 @@ function App() {
             path="/order/:orderId"
             element={<Order {...mockOrderData} />}
           />
-          {/* <Route
+          <Route
             path="/categories/:categoryId/products"
             element={<CategoryProducts />}
-          /> */}
+          />
           {/* <Route
             path="/products/:productId"
             element={

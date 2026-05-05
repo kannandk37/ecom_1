@@ -41,10 +41,10 @@ export class ProductService {
         }
     }
 
-    async getByCategoryId(categoryId: string): Promise<Product> {
+    async getByCategoryId(categoryId: string): Promise<Product[]> {
         try {
             let response = await this.axiosInstance.get(`/products/category/${categoryId}`);
-            return productResponseDatumToProductEntity(response.data as any);
+            return productsResponseDataToProductsEntities(response.data as any);
         } catch (error) {
             console.log(error);
             throw error;

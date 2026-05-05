@@ -254,7 +254,7 @@ const Home = () => {
                 <div className="categories-cards-container">
                   <CardGrid
                     cards={cardData}
-                    cardsPerColumn={1}
+                    cardsPerColumn={cardData?.length / 4}
                     //  height="320px"
                     onCardClick={handleCardClick}
                   />

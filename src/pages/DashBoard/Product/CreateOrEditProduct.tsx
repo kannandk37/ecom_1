@@ -22,7 +22,7 @@ import { FaExclamationTriangle } from "react-icons/fa";
 import { ProductService } from "../../../service/product";
 
 const CreateOrEditProduct: React.FC = () => {
-  const { id = "69dc938b030b9a34f5362800" } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isEditMode = Boolean(id);
 

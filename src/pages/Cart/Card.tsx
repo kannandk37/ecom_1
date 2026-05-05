@@ -34,7 +34,7 @@ const Cart: React.FC<CartProps> = ({
     <div className="cart-fullscreen-wrapper">
       <div className="cart-page-root">
         <div className="cart-top-nav">
-          <div className="breadcrumbs">
+          <div className="cart-breadcrumbs">
             <span
               className="home"
               onClick={() => {

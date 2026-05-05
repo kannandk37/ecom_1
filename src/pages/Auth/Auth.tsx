@@ -1,23 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Auth.css";
-import {
-  FiMail,
-  FiLock,
-  FiUser,
-  FiPhone,
-  FiArrowRight,
-  FiEyeOff,
-} from "react-icons/fi";
+import { FiMail, FiLock, FiUser, FiPhone, FiArrowRight } from "react-icons/fi";
 import BANNNER from "../../../data/Banner nuts.png";
 import BANNNER2 from "../../../data/Banner dates.png";
 import LOGO from "../../../data/logo.png";
 import AuthHeader from "../../assets/categories_header";
 import DashboardButton from "../../assets/ui/DashBoardButton/DashBoardButton";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { siteName } from "../../utils/utils";
 
 const AuthCard: React.FC = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const location = useLocation();
+  const [isLogin, setIsLogin] = useState<boolean>(true);
   const navigate = useNavigate();
 
   const toggleAuth = () => setIsLogin(!isLogin);
@@ -26,8 +20,11 @@ const AuthCard: React.FC = () => {
     backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url(${isLogin ? BANNNER2 : BANNNER})`,
   };
 
-  let categories = ["asd", "asd", "asd"];
-
+  useEffect(() => {
+    if (location?.state?.isSignUp == false) {
+      setIsLogin(false);
+    }
+  }, [location]);
   return (
     <>
       <AuthHeader marginTop="0px" />
@@ -39,7 +36,13 @@ const AuthCard: React.FC = () => {
                 <img src={LOGO} width={70} height={70}></img>
                 {siteName}
               </h1>
-              <h1 className="login-signup-title" style={{marginTop: isLogin ? '-145px' : '-240px', marginLeft: isLogin ? '75px' : ''}}>
+              <h1
+                className="login-signup-title"
+                style={{
+                  marginTop: isLogin ? "-145px" : "-240px",
+                  marginLeft: isLogin ? "75px" : "",
+                }}
+              >
                 {isLogin ? "Welcome Back" : "Join The Organic Journey"}
               </h1>
               <div className="login-signup-image-footer-card">
@@ -53,7 +56,6 @@ const AuthCard: React.FC = () => {
           </div>
 
           <div className="login-signup-auth-form-panel">
-
             <div className="login-signup-form-content">
               <p className="login-signup-subtitle">
                 {isLogin
@@ -119,7 +121,6 @@ const AuthCard: React.FC = () => {
                     </div>
                   )}
                 </div>
-
               </form>
 
               <div className="login-signup-auth-footer">
@@ -127,19 +128,22 @@ const AuthCard: React.FC = () => {
                   name={isLogin ? "Create Account" : "Sign In"}
                   variant="primary"
                   icon={<FiArrowRight />}
-                  onClick={isLogin ? () => { } : () => { }}
+                  onClick={isLogin ? () => {} : () => {}}
                 />
                 <p>
                   {isLogin
                     ? "Don't have an account?"
                     : "Already have an account?"}{" "}
-                  <span className="login-signup-toggle-link" onClick={toggleAuth}>
+                  <span
+                    className="login-signup-toggle-link"
+                    onClick={toggleAuth}
+                  >
                     {isLogin ? "Sign Up" : "Log In"}
                   </span>
                 </p>
-                  <div className="login-signup-sustainability-tag">
-                    🍃 Farm-to-Table Quality 🍃
-                  </div>
+                <div className="login-signup-sustainability-tag">
+                  🍃 Farm-to-Table Quality 🍃
+                </div>
               </div>
             </div>
           </div>

@@ -54,7 +54,8 @@ const Orders: React.FC = () => {
       <main className="orders-main-content">
         <div className="content-wrapper">
           <nav className="breadcrumbs">
-            <span onClick={() => navigate("/")}>Home</span> &gt;{" "}
+            <span onClick={() => navigate("/")}>Home</span>
+            <span>&gt; </span>
             <span className="active-crumb">Orders</span>
           </nav>
           <h1 className="orders-title">My Orders</h1>

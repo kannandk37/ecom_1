@@ -61,7 +61,7 @@ body {
   align-items: center;
 }
 
-.breadcrumbs {
+.cart-breadcrumbs {
   font-size: 1.5rem;
   color: #888;
 }
@@ -71,7 +71,7 @@ body {
   text-decoration: underline;
 }
 
-.breadcrumbs .current {
+.cart-breadcrumbs .current {
   color: #1a1a1a;
   font-weight: 600;
 }
