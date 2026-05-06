@@ -23,7 +23,7 @@ import CartTotalCard, {
   CartTotalCardProps,
 } from "./pages/CartTotalCard/CardTotalCard";
 import { CartItem } from "./assets/cart/CartItems";
-import Cart from "./pages/Cart/Card";
+import Cart from "./pages/Cart/Cart";
 import { Order, OrderProps } from "./pages/Order/Order";
 
 const mockOrderData: OrderProps = {

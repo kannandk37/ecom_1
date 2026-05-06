@@ -1,7 +1,25 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FiX } from "react-icons/fi";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import "./Toast.css";
+
+// <Toast
+//   title="Category"
+//   description="Unable to Get Category"
+//   isError={true}
+//   duration={5000} // Disappears after 4 seconds
+//   onClose={() => console.log("cannpt get categories")}
+// />;
+// failure
+// <Toast
+//   title="Payment Failed"
+//   description="We couldn't process your transaction. Please check your card details."
+//   isError={true}
+//   actionText="Update Billing Info"
+//   onAction={() => navigate("/billing")} // Navigates or triggers a modal
+//   duration={6000} // Keeps the error on screen a bit longer
+//   onClose={() => setShowToast(false)}
+// />;
 
 export interface ToastProps {
   title: string;
@@ -22,23 +40,28 @@ const Toast: React.FC<ToastProps> = ({
   onAction,
   onClose,
 }) => {
-  // Auto-dismiss logic
+  const [isClosing, setIsClosing] = useState(false);
+
+  const handleClose = () => {
+    setIsClosing(true); // Adds the 'closing' CSS class
+    setTimeout(() => {
+      onClose();
+    }, 400);
+  };
+
   useEffect(() => {
     if (duration > 0) {
       const timer = setTimeout(() => {
-        onClose();
+        handleClose();
       }, duration);
-
-      // Cleanup the timer if the component unmounts before duration ends
       return () => clearTimeout(timer);
     }
-  }, [duration, onClose]);
+  }, [duration]);
 
   return (
     <div
-      className={`organic-toast-box ${isError ? "error-state" : "success-state"}`}
+      className={`organic-toast-box ${isError ? "error-state" : "success-state"} ${isClosing ? "closing" : ""}`}
     >
-      {/* Icon Column */}
       <div className="organic-toast-icon-wrapper">
         {isError ? (
           <div className="toast-icon-bg error-bg">
@@ -51,7 +74,6 @@ const Toast: React.FC<ToastProps> = ({
         )}
       </div>
 
-      {/* Content Column */}
       <div className="organic-toast-content">
         <h4 className="organic-toast-title">{title}</h4>
 
@@ -66,10 +88,9 @@ const Toast: React.FC<ToastProps> = ({
         )}
       </div>
 
-      {/* Close Button */}
       <button
         className="organic-toast-close-btn"
-        onClick={onClose}
+        onClick={handleClose}
         aria-label="Close Toast"
       >
         <FiX />

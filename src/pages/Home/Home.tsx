@@ -19,23 +19,23 @@ export const productsTestData: {
   name: string;
   price: number;
 }[] = [
-  { image: DRY_FRUITS, name: "Almond1", price: 10 },
-  { image: NUTS, name: "Cashew2", price: 12 },
-  { image: DATES, name: "Walnut3", price: 14 },
-  { image: DRY_FRUITS, name: "Almond4", price: 10 },
-  { image: NUTS, name: "Cashew5", price: 12 },
-  { image: DATES, name: "Walnut6", price: 14 },
-  { image: DRY_FRUITS, name: "Almond7", price: 10 },
-  { image: NUTS, name: "Cashew8", price: 12 },
-  { image: DATES, name: "Walnut9", price: 14 },
-  { image: DRY_FRUITS, name: "Almond90", price: 10 },
-  { image: NUTS, name: "Cashew11", price: 12 },
-  { image: DATES, name: "Walnut12", price: 14 },
-  { image: DATES, name: "Walnut92", price: 14 },
-  { image: DRY_FRUITS, name: "Almond93", price: 10 },
-  { image: NUTS, name: "Cashew13", price: 12 },
-  { image: DATES, name: "Walnut14", price: 14 },
-];
+    { image: DRY_FRUITS, name: "Almond1", price: 10 },
+    { image: NUTS, name: "Cashew2", price: 12 },
+    { image: DATES, name: "Walnut3", price: 14 },
+    { image: DRY_FRUITS, name: "Almond4", price: 10 },
+    { image: NUTS, name: "Cashew5", price: 12 },
+    { image: DATES, name: "Walnut6", price: 14 },
+    { image: DRY_FRUITS, name: "Almond7", price: 10 },
+    { image: NUTS, name: "Cashew8", price: 12 },
+    { image: DATES, name: "Walnut9", price: 14 },
+    { image: DRY_FRUITS, name: "Almond90", price: 10 },
+    { image: NUTS, name: "Cashew11", price: 12 },
+    { image: DATES, name: "Walnut12", price: 14 },
+    { image: DATES, name: "Walnut92", price: 14 },
+    { image: DRY_FRUITS, name: "Almond93", price: 10 },
+    { image: NUTS, name: "Cashew13", price: 12 },
+    { image: DATES, name: "Walnut14", price: 14 },
+  ];
 
 const myCards: CardItem[] = [
   {
@@ -104,10 +104,10 @@ const myCards: CardItem[] = [
 const Home = () => {
   const [user, setUser] = useState<any>(null);
   const [cart, setCart] = useState<any>();
-  const [products, setProducts] = useState<any>([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(true);
   const [cardData, setCardData] = useState<CardItem[]>([]);
+  const [showError, setShowError] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
@@ -123,50 +123,20 @@ const Home = () => {
           }),
         );
       } catch (error) {
-        <Toast
-          title="Category"
-          description="Unable to Get Category"
-          isError={true}
-          duration={5000} // Disappears after 4 seconds
-          onClose={() => console.log("cannpt get categories")}
-        />;
-        // failure
-        // <Toast
-        //   title="Payment Failed"
-        //   description="We couldn't process your transaction. Please check your card details."
-        //   isError={true}
-        //   actionText="Update Billing Info"
-        //   onAction={() => navigate("/billing")} // Navigates or triggers a modal
-        //   duration={6000} // Keeps the error on screen a bit longer
-        //   onClose={() => setShowToast(false)}
-        // />;
+        setShowError(true);
+        console.log(error);
       } finally {
-        <Toast
-          title="Category"
-          description="Unable to Get Category"
-          isError={true}
-          duration={5000} // Disappears after 4 seconds
-          onClose={() => console.log("cannpt get categories")}
-        />;
+        setLoading(false);
       }
     })();
   }, []);
 
   useEffect(() => {
-    // fetchProducts();
     const timer = setTimeout(() => {
       setLoading(false);
     }, 1500);
   }, []);
 
-  // const fetchProducts = async () => {
-  //   try {
-  //     const res = await axiosinstance.get("/api/products");
-  //     setProducts(res.data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -174,38 +144,6 @@ const Home = () => {
       setUser(JSON.parse(storedUser));
     }
   }, []);
-
-  // const addToCart = async (product: any) => {
-  //   if (cart?.order) {
-  //     let cartData = {
-  //       _id: cart._id,
-  //       userId: user._id,
-  //       order: {
-  //         _id: cart?.order?._id,
-  //         products: [...cart?.order?.products, product],
-  //       },
-  //     };
-  //     console.log(cartData, "asda");
-  //     let updatedCart = await axiosinstance.put(
-  //       `/api/carts/${cartData.userId}/user`,
-  //       cartData,
-  //     );
-  //     if (updatedCart.data) {
-  //       navigate("/cart");
-  //     }
-  //   } else {
-  //     let cartData = {
-  //       userId: user._id,
-  //       order: {
-  //         products: [product],
-  //       },
-  //     };
-  //     let persistCart = await axiosinstance.post("/api/carts", cartData);
-  //     if (persistCart.data) {
-  //       navigate("/cart");
-  //     }
-  //   }
-  // };
 
   // const emptyUserCart = async () => {
   //   try {
@@ -217,14 +155,6 @@ const Home = () => {
   //     console.log(error);
   //   }
   // };
-
-  useEffect(() => {
-    console.log(cart);
-  }, [cart]);
-
-  useEffect(() => {
-    console.log(products);
-  }, [products]);
 
   useEffect(() => {
     const fetchUserCart = async () => {
@@ -260,119 +190,48 @@ const Home = () => {
       {loading ? (
         <Loader text="Roasting your results..." />
       ) : (
-        // {/* <Toast
-        //   title="Category"
-        //   description="Unable to Get Category"
-        //   isError={true}
-        //   duration={5000} // Disappears after 4 seconds
-        //   onClose={() => console.log("cannpt get categories")}
-        // /> */}
-        <div className="root-home">
-          <div className="scroll-viewport">
-            <div className="home-container">
-              <HomeBanner
-                image={Banner}
-                width="100%"
-                height="400px"
-                borderRadius="20px"
-                fontSize2="22px"
-                buttonText="Shop Now"
-                buttonVariant="primary"
-                onButtonClick={handleScrollDown}
-                showButton={true}
-                showTitle1={true}
-                showTitle2={true}
-                title1="PREMIUM QUALITY, NATURALLY DELICIOUS"
-                title2="Discover our curated collection of dry fruits, nuts, dates, and healthy snacks."
-              />
-              <div className="categoreis-container">
-                <h2 className="categories-title">Categories</h2>
-                <div className="categories-cards-container">
-                  <CardGrid
-                    cards={cardData}
-                    cardsPerColumn={cardData?.length / 4}
-                    //  height="320px"
-                    onCardClick={handleCardClick}
-                  />
-                  {/* <ProductCard /> */}
+        <>
+          {showError &&
+            <Toast
+              title="Category"
+              description="Unable to Get Categories"
+              isError={false}
+              duration={5000}
+              onClose={() => setShowError(false)}
+            />
+          }
+          <div className="root-home">
+            <div className="scroll-viewport">
+              <div className="home-container">
+                <HomeBanner
+                  image={Banner}
+                  width="100%"
+                  height="400px"
+                  borderRadius="20px"
+                  fontSize2="22px"
+                  buttonText="Shop Now"
+                  buttonVariant="primary"
+                  onButtonClick={handleScrollDown}
+                  showButton={true}
+                  showTitle1={true}
+                  showTitle2={true}
+                  title1="PREMIUM QUALITY, NATURALLY DELICIOUS"
+                  title2="Discover our curated collection of dry fruits, nuts, dates, and healthy snacks."
+                />
+                <div className="categoreis-container">
+                  <h2 className="categories-title">Categories</h2>
+                  <div className="categories-cards-container">
+                    <CardGrid
+                      cards={cardData}
+                      cardsPerColumn={cardData?.length / 4}
+                      onCardClick={handleCardClick}
+                    />
+                  </div>
                 </div>
               </div>
-              {/* <OrderItems orders={[{
-                id: '#DF-98231',
-                status: 'Delivered',
-                date: 'Oct 24, 2024',
-                totalPrice: '4,225.00',
-                address: '42 Lavender Lane, Botanical Gardens, Bangalore, 560004',
-                itemThumbnails: [
-                  DRY_FRUITS,
-                  DATES,
-                  NUTS,
-                  DRY_FRUITS,
-                  DATES
-                ],
-              },
-              {
-                id: '#DF-98104',
-                status: 'In Process',
-                date: 'Oct 22, 2024',
-                totalPrice: '1,850.00',
-                address: '88 Heritage Street, Fort Area, Mumbai, 400001',
-                itemThumbnails: [
-                  DRY_FRUITS
-                ],
-                itemDescription: 'Himalayan Green Tea (250g)',
-              },
-              {
-                id: '#DF-97882',
-                status: 'Pending Payment',
-                date: 'Oct 15, 2024',
-                totalPrice: '5,100.00',
-                address: '15 Sunrise Boulevard, IT Park, Pune, 411057',
-                itemThumbnails: [
-                  DRY_FRUITS,
-                  DATES,
-                  NUTS,
-                  DRY_FRUITS,
-                  DATES,
-                  DRY_FRUITS,
-                  DATES,
-                  NUTS,
-                  DRY_FRUITS,
-                  DATES
-                ],
-              },]} /> */}
-              {/* <ProductImageGallery images={images} height={"650px"} width={"650px"} /> */}
-              {/* <ProductCarousel /> */}
-              {/* <Carousel
-              title="Our Best Sellers"
-              data={productsTestData}
-              renderItem={(item: any) => <ProductCardGridSingle product={item} />}
-              {data.map((item: any, index: any) => (
-              <ProductCardGridSingle product={item} />
-              ))}
-              <Card
-                key={index}
-                name={item.name}
-                price={item.price}
-                image={item.image}
-              />
-              <CardGrid
-                cards={myCards}
-                cardsPerColumn={1}
-                height="320px"
-              />
-            /> */}
-              {/* <ProductCardGrid products={productsTestData} /> */}
-              {/* <ReviewCard reviews={mockReviews} /> */}
-              {/* <CustomerRievew /> */}
-              {/* <Carousel
-                title="Our Best Sellers"
-                data={productsTestData}
-              renderItem={(item: any) => <ProductCardGridSingle product={item} />}
-            /> */}
             </div>
           </div>
-        </div>
+        </>
       )}
     </>
   );
