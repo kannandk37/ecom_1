@@ -223,7 +223,7 @@ const Home = () => {
                   <div className="categories-cards-container">
                     <CardGrid
                       cards={cardData}
-                      cardsPerColumn={cardData?.length / 4}
+                      cardsPerColumn={Math.ceil(cardData?.length / 4)}
                       onCardClick={handleCardClick}
                     />
                   </div>
