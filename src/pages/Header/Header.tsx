@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { ProductService } from "../../service/product";
 import { Product } from "../../entity/product";
 import NUTS from '../../../data/NUTS.png';
+import { FaSpinner } from "react-icons/fa";
 
 interface HeaderProps {
   siteName: string;
@@ -27,9 +28,10 @@ export const Header: React.FC<HeaderProps> = ({
   onEnterpriseSignInClick,
   height = '70px'
 }) => {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState<string>("");
   const [products, setProducts] = useState<Product[]>([]);
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [showDropdown, setShowDropdown] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const navigate = useNavigate();
   const searchWrapperRef = useRef<HTMLDivElement>(null);
@@ -58,11 +60,14 @@ export const Header: React.FC<HeaderProps> = ({
     }
 
     try {
+      setIsLoading(true);
       let result = await new ProductService().getByName(searchQuery);
       setProducts([...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result]);
       setShowDropdown(true);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -102,7 +107,7 @@ export const Header: React.FC<HeaderProps> = ({
               className="search-input"
             />
             <div className="search-icons-group">
-              {query === "" && <FiSearch className="search-placeholder-icon" />}
+              {query === "" ? <FiSearch className="search-placeholder-icon" /> : isLoading ? <FaSpinner className="search-spinner" size="1.5em" /> : ''}
             </div>
 
             {showDropdown && products.length > 0 && (

@@ -51,6 +51,21 @@
   height: 60px;
 }
 
+.search-spinner {
+  animation: spin 1s linear infinite;
+  color: var(--color-primary);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .header-search-form {
   flex: 1;
   max-width: 800px;
