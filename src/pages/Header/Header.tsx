@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Header.css";
 import { FiSearch, FiUser, FiShoppingCart } from "react-icons/fi";
 import Button from "../../assets/button/Button";
@@ -6,6 +6,9 @@ import IconButton from "../../assets/icon_button/IconButton";
 import { LOGO } from "../../utils/utils";
 import { BsFillBoxSeamFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
+import { ProductService } from "../../service/product";
+import { Product } from "../../entity/product";
+import NUTS from '../../../data/NUTS.png';
 
 interface HeaderProps {
   siteName: string;
@@ -25,48 +28,107 @@ export const Header: React.FC<HeaderProps> = ({
   height = '70px'
 }) => {
   const [query, setQuery] = useState("");
+  const [products, setProducts] = useState<Product[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+
   const navigate = useNavigate();
+  const searchWrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchWrapperRef.current && !searchWrapperRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setShowDropdown(false);
     onSearch(query);
   };
 
+  const fetchProducts = async (searchQuery: string) => {
+    if (!searchQuery) {
+      setProducts([]);
+      setShowDropdown(false);
+      return;
+    }
+
+    try {
+      let result = await new ProductService().getByName(searchQuery);
+      setProducts([...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result]);
+      setShowDropdown(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setQuery(value);
+    fetchProducts(value.trim());
+  };
+
+  const handleProductClick = (productId: string) => {
+    setShowDropdown(false);
+    setQuery("");
+    navigate(`/products/${productId}`);
+  };
+
   return (
-    <header className="main-header" style={{height: height}}>
+    <header className="header-main-header" style={{ height: height }}>
       <div className="header-container" >
-        {/* Logo Section */}
         <div
           className="header-logo"
           onClick={() => (window.location.href = "/")}
         >
-          <div className="logo-icon">
-            <img className="logo-image" src={LOGO}></img>
+          <div className="header-logo-icon">
+            <img className="header-logo-image" src={LOGO} alt="Logo" />
           </div>
-          <span className="logo-text">{siteName}</span>
+          <span className="header-logo-text">{siteName}</span>
         </div>
 
-        {/* Search Bar Section */}
         <form className="header-search-form" onSubmit={handleSearchSubmit}>
-          <div className="search-input-wrapper">
+          <div className="search-input-wrapper" ref={searchWrapperRef}>
             <input
               type="text"
               placeholder="Search dry fruits, nuts, juices..."
               value={query}
-              onChange={(e) => setQuery(e.target.value?.trim())}
+              onChange={handleInputChange}
+              onFocus={() => { if (products.length > 0) setShowDropdown(true) }}
               className="search-input"
             />
             <div className="search-icons-group">
-              {query == "" && <FiSearch className="search-placeholder-icon" />}
-              <div className="divider" />
-              {/* <button type="submit" className="search-submit-btn">
-                <FiSearch />
-              </button> */}
-              <IconButton icon={<FiSearch />} variant="outline" size="small" />
+              {query === "" && <FiSearch className="search-placeholder-icon" />}
             </div>
+
+            {showDropdown && products.length > 0 && (
+              <ul className="search-results-dropdown">
+                {products.map((product: Product) => (
+                  <div className="search-results-items-list">
+                    {
+                      product ?
+                        <img src={product.images?.length > 0 ? product.images[0] : NUTS} width={'20px'} height={'20px'} style={{ borderRadius: '4px' }} />
+                        :
+                        <FiSearch className="search-placeholder-icon" />
+                    }
+                    <li
+                      key={product.id}
+                      className="search-result-item"
+                      onClick={() => handleProductClick(product.id)}
+                    >
+                      {product.name || product.title}
+                    </li>
+                  </div>
+                ))}
+              </ul>
+            )}
           </div>
         </form>
 
-        {/* Actions Section */}
         <div className="header-actions">
           <Button
             name="Sign In"
@@ -84,9 +146,6 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={onEnterpriseSignInClick}
             icon={<FiUser fontSize="15px" />}
           />
-          {/* <button className="signin-btn" onClick={onSignInClick}>
-            Sign In <FiUser className="btn-icon" />
-          </button> */}
           <IconButton
             height="40px"
             icon={<BsFillBoxSeamFill />}
@@ -103,9 +162,6 @@ export const Header: React.FC<HeaderProps> = ({
             size="medium"
             onClick={onCartClick}
           />
-          {/* <button className="cart-btn">
-            <FiShoppingCart />
-          </button> */}
         </div>
       </div>
     </header>

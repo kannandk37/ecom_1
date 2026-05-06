@@ -192,7 +192,10 @@ const CategoryProducts = ({ }) => {
   };
 
   const onClickAddToCart = (product: any) => {
-    navigate(`/cart`, { state: { product: product } });
+    //TODO: if user exists
+    // navigate(`/cart`, { state: { product: product } });
+    // TODO: if no user
+    setAuthModalOpen(true);
   };
 
   const handleToggleFav = async (clickedProduct: Product) => {

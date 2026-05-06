@@ -51,6 +51,17 @@ export class ProductService {
         }
     }
 
+    async getByName(search: string) {
+        try {
+            let url = search ? `/products?name=${search}` : `/products`
+            let response = await this.axiosInstance.get(url);
+            return productsResponseDataToProductsEntities(response.data as any);
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
     async updateById(id: string, product: Product): Promise<Product> {
         try {
             let response = await this.axiosInstance.put(`/products/${id}`, { product: product });

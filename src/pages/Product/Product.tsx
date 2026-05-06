@@ -216,6 +216,8 @@ import { StarRating } from "../../assets/review/Review";
 import { useNavigate, useParams } from "react-router-dom";
 import { Label, Product, SpecValue } from "../../entity/product";
 import { ProductService } from "../../service/product";
+import NUTS from '../../../data/NUTS.png';
+import LogInOrSignUp from "../../assets/dialogue/LogInOrSignUp";
 
 interface ProductProps {
   productData?: Product;
@@ -226,6 +228,7 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
   const [quantity, setQuantity] = useState<number>(1);
   const [product, setProduct] = useState<Product>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isAuthModalOpen, setAuthModalOpen] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -237,7 +240,7 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
           let productDatum = await new ProductService().getById(productId);
           setProduct(productDatum);
         } catch (error) {
-
+          console.log(error);
         } finally {
           setIsLoading(false);
         }
@@ -252,7 +255,7 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
           <div className="product-scroll-viewport">
             <div className="product-page">
               <div className="product-main-section">
-                <ProductImageGallery images={product?.images} />
+                <ProductImageGallery images={product?.images?.length > 0 ? product?.images : [NUTS]} />
 
                 <div className="product-info">
                   <div className="breadcrumbs">
@@ -281,8 +284,8 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
                     </div>
                     <span className="rating-text">
                       {product.averageRating} ({
-                      // product.reviews ??  // TODO: need to work on this 
-                      ''} Reviews)
+                        // product.reviews ??  // TODO: need to work on this 
+                        ''} Reviews)
                     </span>
                   </div>
 
@@ -320,7 +323,10 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
                       disabled={false}
                       onClick={() => {
                         console.log("Added to cart");
-                        navigate("/cart");
+                        // TODO: if no user
+                        setAuthModalOpen(true);
+                        // TODO: user logged in
+                        // navigate("/cart");
                       }}
                     />
                     <Button
@@ -332,6 +338,10 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
                         // product.isFav = !product.isFav;
                         setProduct(product);
                         console.log("Added to wishlist", product);
+                        // TODO: if no user
+                        setAuthModalOpen(true);
+                        // TODO: user logged in
+                        // call api to add or delete to wishlist
                       }}
                     />
                   </div>
@@ -345,7 +355,7 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
                     {product?.specs?.map((spec: SpecValue, i: number) => (
                       <div key={i} className="spec-card">
                         <span className="spec-label">{spec.label} — </span>
-                        <span className="spec-value">{spec.label == Label.SHELF_LIFE ? 'spec.value' : spec.value}</span>
+                        <span className="spec-value">{spec.label == Label.SHELF_LIFE ? `${spec.value?.quantity} ${spec.value?.unit?.charAt(0).toLocaleUpperCase() + spec.value?.unit?.slice(1)}` : spec.value}</span>
                       </div>
                     ))}
                   </div>
@@ -365,6 +375,10 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
           </div>
         </div>
       )}
+      <LogInOrSignUp
+        isOpen={isAuthModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+      />
     </>
   );
 };

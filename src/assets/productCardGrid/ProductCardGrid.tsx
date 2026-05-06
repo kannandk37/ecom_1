@@ -5,6 +5,7 @@ export interface Product {
   id?: string | number;
   productName: string;
   image: string;
+  images: string[];
   price: number;
 }
 
@@ -33,7 +34,7 @@ export const ProductCardGrid: React.FC<ProductCardGridProps> = ({
         <div key={product.id} className="pc-card" style={cardStyle}>
           <div className="pc-card__image-container" style={imageStyle}>
             <img
-              src={product.image}
+              src={product.images[0]}
               alt={product.productName}
               className="pc-card__img"
             />

@@ -217,8 +217,9 @@
 }
 
 .spec-label {
-  color: #888;
-  font-weight: 500;
+  color: #5b5b5b;
+  font-size: medium;
+  font-weight: 700;
 }
 
 .spec-value {
