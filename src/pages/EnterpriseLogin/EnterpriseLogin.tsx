@@ -114,8 +114,7 @@ const Enterprise: React.FC<EnterpriseLoginProps> = ({
     if (isValid()) {
       setIsLoading(true);
       try {
-        let response = await new UserAccountService().loginIn(email, password);
-        console.log("response", response);
+        await new UserAccountService().loginIn(email, password);
         navigate("/dashboard/orders");
         setIsLoading(false);
       } catch (error) {
@@ -248,7 +247,7 @@ const Enterprise: React.FC<EnterpriseLoginProps> = ({
                 <button
                   type="button"
                   className="el-forgot-btn"
-                  onClick={() => { }}
+                  onClick={() => {}}
                 >
                   Forgot Password?
                 </button>

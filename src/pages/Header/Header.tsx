@@ -8,8 +8,9 @@ import { BsFillBoxSeamFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import { ProductService } from "../../service/product";
 import { Product } from "../../entity/product";
-import NUTS from '../../../data/NUTS.png';
+import NUTS from "../../../data/NUTS.png";
 import { FaSpinner } from "react-icons/fa";
+import { User } from "../../entity/user";
 
 interface HeaderProps {
   siteName: string;
@@ -26,19 +27,22 @@ export const Header: React.FC<HeaderProps> = ({
   onSignInClick,
   onCartClick,
   onEnterpriseSignInClick,
-  height = '70px'
+  height = "70px",
 }) => {
   const [query, setQuery] = useState<string>("");
   const [products, setProducts] = useState<Product[]>([]);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
+  const [user, setUser] = useState<User>({});
   const navigate = useNavigate();
   const searchWrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (searchWrapperRef.current && !searchWrapperRef.current.contains(event.target as Node)) {
+      if (
+        searchWrapperRef.current &&
+        !searchWrapperRef.current.contains(event.target as Node)
+      ) {
         setShowDropdown(false);
       }
     };
@@ -62,7 +66,23 @@ export const Header: React.FC<HeaderProps> = ({
     try {
       setIsLoading(true);
       let result = await new ProductService().getByName(searchQuery);
-      setProducts([...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result]);
+      setProducts([
+        ...result,
+        ...result,
+        ...result,
+        ...result,
+        ...result,
+        ...result,
+        ...result,
+        ...result,
+        ...result,
+        ...result,
+        ...result,
+        ...result,
+        ...result,
+        ...result,
+        ...result,
+      ]);
       setShowDropdown(true);
     } catch (error) {
       console.log(error);
@@ -85,7 +105,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="header-main-header" style={{ height: height }}>
-      <div className="header-container" >
+      <div className="header-container">
         <div
           className="header-logo"
           onClick={() => (window.location.href = "/")}
@@ -103,23 +123,37 @@ export const Header: React.FC<HeaderProps> = ({
               placeholder="Search dry fruits, nuts, juices..."
               value={query}
               onChange={handleInputChange}
-              onFocus={() => { if (products.length > 0) setShowDropdown(true) }}
+              onFocus={() => {
+                if (products.length > 0) setShowDropdown(true);
+              }}
               className="search-input"
             />
             <div className="search-icons-group">
-              {query === "" ? <FiSearch className="search-placeholder-icon" /> : isLoading ? <FaSpinner className="search-spinner" size="1.5em" /> : ''}
+              {query === "" ? (
+                <FiSearch className="search-placeholder-icon" />
+              ) : isLoading ? (
+                <FaSpinner className="search-spinner" size="1.5em" />
+              ) : (
+                ""
+              )}
             </div>
 
             {showDropdown && products.length > 0 && (
               <ul className="search-results-dropdown">
                 {products.map((product: Product) => (
                   <div className="search-results-items-list">
-                    {
-                      product ?
-                        <img src={product.images?.length > 0 ? product.images[0] : NUTS} width={'20px'} height={'20px'} style={{ borderRadius: '4px' }} />
-                        :
-                        <FiSearch className="search-placeholder-icon" />
-                    }
+                    {product ? (
+                      <img
+                        src={
+                          product.images?.length > 0 ? product.images[0] : NUTS
+                        }
+                        width={"20px"}
+                        height={"20px"}
+                        style={{ borderRadius: "4px" }}
+                      />
+                    ) : (
+                      <FiSearch className="search-placeholder-icon" />
+                    )}
                     <li
                       key={product.id}
                       className="search-result-item"
@@ -135,38 +169,45 @@ export const Header: React.FC<HeaderProps> = ({
         </form>
 
         <div className="header-actions">
-          <Button
-            name="Sign In"
-            variant="outline"
-            disabled={false}
-            height="40px"
-            onClick={onSignInClick}
-            icon={<FiUser fontSize="15px" />}
-          />
-          <Button
-            name="Enterprise Sign In"
-            variant="outline"
-            disabled={false}
-            height="40px"
-            onClick={onEnterpriseSignInClick}
-            icon={<FiUser fontSize="15px" />}
-          />
-          <IconButton
-            height="40px"
-            icon={<BsFillBoxSeamFill />}
-            variant="primary"
-            disabled={false}
-            size="medium"
-            onClick={() => navigate("/orders")}
-          />
-          <IconButton
-            height="40px"
-            icon={<FiShoppingCart />}
-            variant="primary"
-            disabled={false}
-            size="medium"
-            onClick={onCartClick}
-          />
+          {!user ? (
+            <>
+              <Button
+                name="Sign In"
+                variant="outline"
+                disabled={false}
+                height="40px"
+                onClick={onSignInClick}
+                icon={<FiUser fontSize="15px" />}
+              />
+              <Button
+                name="Enterprise Sign In"
+                variant="outline"
+                disabled={false}
+                height="40px"
+                onClick={onEnterpriseSignInClick}
+                icon={<FiUser fontSize="15px" />}
+              />
+            </>
+          ) : (
+            <>
+              <IconButton
+                height="40px"
+                icon={<BsFillBoxSeamFill />}
+                variant="primary"
+                disabled={false}
+                size="medium"
+                onClick={() => navigate("/orders")}
+              />
+              <IconButton
+                height="40px"
+                icon={<FiShoppingCart />}
+                variant="primary"
+                disabled={false}
+                size="medium"
+                onClick={onCartClick}
+              />
+            </>
+          )}
         </div>
       </div>
     </header>

@@ -44,7 +44,21 @@ export class UserAccountService {
     async loginIn(email: string, password: string): Promise<AxiosResponse<any>> {
         try {
             let response: any = await this.axiosInstance.post('/login', { email: email, password: password });
-            await new LocalStorage().storeToken(response.data.token)
+
+            let user = await userResponseDatumToUserEntity(response.data.user);
+            let role = await roleResponseDatumToRoleEntity(response.data.role);
+            let profile = await profileResponseDatumToProfileEntity(response.data.profile);
+
+            let storagePersistor = new LocalStorage();
+            await storagePersistor.storeToken(response.data.token);
+            await storagePersistor.storeUser(user);
+            await storagePersistor.storeRole(role);
+            await storagePersistor.storeProfile(profile);
+
+            response.user = user;
+            response.role = role;
+            response.profile = profile;
+
             return response;
         } catch (error) {
             console.log(error);

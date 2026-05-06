@@ -1,26 +1,28 @@
-/* FULL-SCREEN OVERLAY */
 .loader2-overlay {
   position: fixed;
   inset: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: #8c6d3f3f;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  font-family: var(--font-family, sans-serif);
+  font-family: var(--font-family);
   animation: loader2-fadeIn 0.3s ease-out;
 }
 
 @keyframes loader2-fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-/* CONTENT STACK */
 .loader2-content {
   display: flex;
   flex-direction: column;
@@ -29,7 +31,6 @@
   gap: 20px;
 }
 
-/* ORBIT CONTAINER */
 .loader2-orbit-container {
   position: relative;
   width: 80px;
@@ -40,7 +41,6 @@
   align-items: center;
 }
 
-/* DASHED ORBIT RING */
 .loader2-orbit-track {
   position: absolute;
   inset: 0;
@@ -49,7 +49,6 @@
   pointer-events: none;
 }
 
-/* SPINNING WRAPPER */
 .loader2-leaf-wrapper {
   position: absolute;
   inset: 0;
@@ -58,7 +57,6 @@
   transform-origin: center center;
 }
 
-/* ORBITING ICON */
 .loader2-circling-icon {
   position: absolute;
   top: -10px;
@@ -69,7 +67,6 @@
   display: block;
 }
 
-/* CENTER ICON */
 .loader2-center-icon {
   position: relative;
   z-index: 1;
@@ -79,18 +76,28 @@
 }
 
 @keyframes loader2-spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes loader2-pulseScale {
-  0%, 100% { transform: scale(1);     opacity: 0.85; }
-  50%      { transform: scale(1.12);  opacity: 1; }
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
 }
 
-/* LOADING TEXT */
 .loader2-text {
-  color: #ffffff;
+  color: #6e4303;
   font-size: 1.05rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -101,16 +108,25 @@
   gap: 1px;
 }
 
-/* ANIMATED DOTS */
 .loader2-dot {
   opacity: 0;
   animation: loader2-dotAppear 1.2s ease-in-out infinite;
 }
 
-.loader2-dot:nth-child(2) { animation-delay: 0.2s; }
-.loader2-dot:nth-child(3) { animation-delay: 0.4s; }
+.loader2-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.loader2-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
 
 @keyframes loader2-dotAppear {
-  0%, 60%, 100% { opacity: 0; }
-  30%           { opacity: 1; }
+  0%,
+  60%,
+  100% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
 }

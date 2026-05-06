@@ -4,6 +4,7 @@ import { jsPDF } from 'jspdf';
 import { RefObject } from 'react';
 
 export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+export const mobileRegex = /^[0-9]+$/;
 export const colors = [
     "#7a5e35",
     "#4a5c6d",
