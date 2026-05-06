@@ -211,24 +211,40 @@ import ProductCardGrid from "../../assets/productCardGrid/ProductCardGrid";
 import Button from "../../assets/button/Button";
 import CustomerRievew from "../CustomerReview/CustomerRievew";
 import { productsData } from "../CategoryProducts/categoryProducts";
-import type { Product } from "../../assets/card2/ProductCard";
 import { FaHeart, FaRegHeart } from "react-icons/fa6";
 import { StarRating } from "../../assets/review/Review";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { Label, Product, SpecValue } from "../../entity/product";
+import { ProductService } from "../../service/product";
 
 interface ProductProps {
-  productData: Product;
+  productData?: Product;
 }
 
 export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
+  const { productId } = useParams();
   const [quantity, setQuantity] = useState<number>(1);
-  const [product, setProduct] = useState<any>();
+  const [product, setProduct] = useState<Product>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log(productData);
-    setProduct(productData);
-  }, [productData]);
+    (async () => {
+      if (productId) {
+        setIsLoading(true);
+        try {
+          let productDatum = await new ProductService().getById(productId);
+          setProduct(productDatum);
+        } catch (error) {
+
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    })()
+  }, [productId]);
+
   return (
     <>
       {product && (
@@ -242,7 +258,7 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
                   <div className="breadcrumbs">
                     <h2>Home</h2>
                     <h2>{">"}</h2>
-                    <h2>Nuts</h2>
+                    <h2>{product?.category?.name}</h2>
                     <h2>{">"}</h2>
                     <h2>{product?.name}</h2>
                   </div>
@@ -261,10 +277,12 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
                       color="#8c6d3f"
                     /> 
                   ))}*/}
-                      <StarRating rating={product?.rating || 0} />
+                      <StarRating rating={product?.averageRating || 0} />
                     </div>
                     <span className="rating-text">
-                      {product.rating} ({product.reviews} Reviews)
+                      {product.averageRating} ({
+                      // product.reviews ??  // TODO: need to work on this 
+                      ''} Reviews)
                     </span>
                   </div>
 
@@ -307,11 +325,11 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
                     />
                     <Button
                       name="Add to Wishlist"
-                      icon={product?.isFav ? <FaRegHeart /> : <FaHeart />}
+                      icon={product ? <FaRegHeart /> : <FaHeart />}
                       variant={"secondary"}
                       disabled={false}
                       onClick={() => {
-                        product.isFav = !product.isFav;
+                        // product.isFav = !product.isFav;
                         setProduct(product);
                         console.log("Added to wishlist", product);
                       }}
@@ -324,10 +342,10 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
                   </div>
 
                   <div className="specs-grid">
-                    {product?.specs?.map((spec: any, i: number) => (
+                    {product?.specs?.map((spec: SpecValue, i: number) => (
                       <div key={i} className="spec-card">
                         <span className="spec-label">{spec.label} — </span>
-                        <span className="spec-value">{spec.value}</span>
+                        <span className="spec-value">{spec.label == Label.SHELF_LIFE ? 'spec.value' : spec.value}</span>
                       </div>
                     ))}
                   </div>

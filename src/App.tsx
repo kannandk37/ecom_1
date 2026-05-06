@@ -282,16 +282,12 @@ function App() {
             path="/categories/:categoryId/products"
             element={<CategoryProducts />}
           />
-          {/* <Route
+          <Route
             path="/products/:productId"
             element={
-              <ProductDetails
-                productData={
-                  productsData[5]
-                }
-              />
+              <ProductDetails />
             }
-          /> */}
+          />
           <Route
             path="/cart"
             element={

@@ -135,7 +135,7 @@ let mockCategory = {
   title: "Dry Fruits",
 };
 
-const CategoryProducts = ({}) => {
+const CategoryProducts = ({ }) => {
   const { categoryId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -143,14 +143,22 @@ const CategoryProducts = ({}) => {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [isAuthModalOpen, setAuthModalOpen] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
       if (categoryId) {
-        let productsData = await new ProductService().getByCategoryId(
-          categoryId,
-        );
-        setProducts(productsData);
+        setIsLoading(true);
+        try {
+          let productsData = await new ProductService().getByCategoryId(
+            categoryId,
+          );
+          setProducts(productsData);
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setIsLoading(false);
+        }
       }
     })();
   }, [categoryId]);
