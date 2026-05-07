@@ -38,7 +38,7 @@ export interface ProductCardProps {
   size?: ProductCardSize;
   onClickAddToCart: (el: any) => void;
   onClick?: (el: any) => void;
-  onToggleFav?: (el: any) => void;
+  onToggleFav?: (product: any, variant: any, wishlist: any) => void;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -84,7 +84,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 onClick={(e) => {
                   setIsFav(!isFav);
                   e.stopPropagation();
-                  onToggleFav?.(product);
+                  onToggleFav?.(product, '', '');
                 }}
               >
                 <IconButton

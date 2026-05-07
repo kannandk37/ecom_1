@@ -11,6 +11,10 @@ import { ProductService } from "../../service/product";
 import { Product, Unit } from "../../entity/product";
 import { LocalStorage } from "../../storage";
 import LogInOrSignUp from "../../assets/dialogue/LogInOrSignUp";
+import { WishListService } from "../../service/wishlist";
+import { Wishlist } from "../../entity/wishlist";
+import { User } from "../../entity/user";
+import { Variant } from "../../entity/variant";
 
 export const productsData: Product[] = [
   {
@@ -198,7 +202,7 @@ const CategoryProducts = ({ }) => {
     setAuthModalOpen(true);
   };
 
-  const handleToggleFav = async (clickedProduct: Product) => {
+  const handleToggleFav = async (clickedProduct: Product, clickedVariant: Variant, clickedWishlist: Wishlist) => {
     // 1. OPTIMISTIC UPDATE: Update the local state immediately
     // setProducts((prevProducts) =>
     //   prevProducts.map((p) =>
@@ -213,6 +217,8 @@ const CategoryProducts = ({ }) => {
       try {
         // 2. BACKGROUND API CALL
         // await api.toggleWishlist(clickedProduct.id);
+        // console.log({userData, clickedProduct});
+        await new WishListService().toggle(userData.id, clickedProduct.id, clickedVariant?.id);
         console.log("Wishlist updated successfully");
       } catch (error) {
         // 3. ROLLBACK: If the API fails, flip it back and alert user

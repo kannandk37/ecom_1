@@ -130,9 +130,15 @@ export const Header: React.FC<HeaderProps> = ({
     setShowUserDropdown(!showUserDropdown);
   };
 
-  const onClickLogOut = () => {
-    navigate('/');
-    setShowUserDropdown(false)
+  const onClickLogOut = async () => {
+    await new LocalStorage().clearUser();
+    await new LocalStorage().clearRole();
+    await new LocalStorage().clearProfile();
+    await new LocalStorage().clearCart();
+    await new LocalStorage().clearToken();
+    // TODO: Have to change this to context api
+    window.location.href = '/';
+    setShowUserDropdown(false);
   }
 
   return (

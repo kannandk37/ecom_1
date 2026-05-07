@@ -15,6 +15,10 @@ export class LocalStorage {
         return await storage.getItem('token');
     }
 
+    async clearToken() {
+        return await storage.removeItem('token');
+    }
+
     async storeUser(user: User) {
         return await storage.setItem('user', JSON.stringify(user));
     }
@@ -28,6 +32,9 @@ export class LocalStorage {
         }
     }
 
+    async clearUser() {
+        return await storage.removeItem('user');
+    }
 
     async storeRole(role: Role) {
         return await storage.setItem('role', JSON.stringify(role));
@@ -40,6 +47,10 @@ export class LocalStorage {
         } else {
             return null;
         }
+    }
+
+    async clearRole() {
+        return await storage.removeItem('role');
     }
 
     async storeProfile(profile: Profile) {
@@ -55,6 +66,10 @@ export class LocalStorage {
         }
     }
 
+    async clearProfile() {
+        return await storage.removeItem('profile');
+    }
+
     async storeCart(cart: Cart) {
         return await storage.setItem('cart', JSON.stringify(cart));
     }
@@ -66,6 +81,10 @@ export class LocalStorage {
         } else {
             return null;
         }
+    }
+
+    async clearCart() {
+        return await storage.removeItem('cart');
     }
 
 } 

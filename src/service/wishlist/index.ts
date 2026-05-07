@@ -13,9 +13,9 @@ export class WishListService {
         this.axiosInstance = axiosinstance;
     }
 
-    async toggle(wishlist: Wishlist): Promise<Wishlist> {
+    async toggle(userId: string, productId: string, variantId?: string): Promise<Wishlist> {
         try {
-            let response = await this.axiosInstance.post('/wishlists/toggle', { wishlist })
+            let response = await this.axiosInstance.post('/wishlists/toggle', { userId, productId, variantId })
             return wishlistResponseDatumToWishlistEntity(response.data as any);
         } catch (error) {
             console.log(error);
