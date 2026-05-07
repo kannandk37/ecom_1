@@ -7,7 +7,7 @@
 }
 
 .pc-card {
-  background-color: #fdfaf5;
+  background-color: #ffffff;
   border-radius: 20px;
   padding: 12px;
   display: flex;
@@ -15,12 +15,12 @@
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.393);
 }
 
 .pc-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.64);
 }
 
 .pc-card__image-container {

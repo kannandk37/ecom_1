@@ -127,6 +127,32 @@
   overflow-y: auto;
 }
 
+.search-user-options-dropdown {
+  position: absolute;
+  top: calc(80%);
+  right: 10px;
+  width: 10%;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  z-index: 9999;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.search--user-options-items-list {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  margin-left: 10px;
+  color: var(--color-primary);
+}
+
 .search-result-item {
   padding: 12px 20px;
   font-size: 17px;
@@ -181,6 +207,7 @@
   align-items: center;
   justify-content: flex-start;
   margin-left: 10px;
+  color: var(--color-primary);
 }
 
 @media (max-width: 900px) {

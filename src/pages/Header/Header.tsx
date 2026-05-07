@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, ReactNode } from "react";
 import "./Header.css";
 import { FiSearch, FiUser, FiShoppingCart } from "react-icons/fi";
 import Button from "../../assets/button/Button";
@@ -9,8 +9,18 @@ import { useNavigate } from "react-router-dom";
 import { ProductService } from "../../service/product";
 import { Product } from "../../entity/product";
 import NUTS from "../../../data/NUTS.png";
-import { FaSpinner } from "react-icons/fa";
+import { FaRegUser, FaSpinner } from "react-icons/fa";
 import { User } from "../../entity/user";
+import { LocalStorage } from "../../storage";
+import { MdManageAccounts } from "react-icons/md";
+import { IoMdSettings } from "react-icons/io";
+import { IoLogOut } from "react-icons/io5";
+
+interface UserOptions {
+  name: string,
+  icon: ReactNode,
+  onClick: () => void
+};
 
 interface HeaderProps {
   siteName: string;
@@ -32,11 +42,13 @@ export const Header: React.FC<HeaderProps> = ({
   const [query, setQuery] = useState<string>("");
   const [products, setProducts] = useState<Product[]>([]);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
+  const [showUserDropdown, setShowUserDropdown] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [user, setUser] = useState<User>({});
+  const [user, setUser] = useState<User>(null);
   const navigate = useNavigate();
   const searchWrapperRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => { (async () => { let userData = await new LocalStorage().getUser(); setUser(userData); })() }, [])
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -49,6 +61,24 @@ export const Header: React.FC<HeaderProps> = ({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const userOptions: UserOptions[] = [
+    {
+      name: 'Profile',
+      icon: <MdManageAccounts size={20} />,
+      onClick: function () { }
+    },
+    // {
+    //   name: 'Settings',
+    //   icon: <IoMdSettings size={20} />,
+    //   onClick: function () { }
+    // },
+    {
+      name: 'Log Out',
+      icon: <IoLogOut size={20} />,
+      onClick: function () { onClickLogOut() }
+    }
+  ];
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,14 +104,7 @@ export const Header: React.FC<HeaderProps> = ({
         ...result,
         ...result,
         ...result,
-        ...result,
-        ...result,
-        ...result,
-        ...result,
-        ...result,
-        ...result,
-        ...result,
-        ...result,
+        ...result
       ]);
       setShowDropdown(true);
     } catch (error) {
@@ -102,6 +125,15 @@ export const Header: React.FC<HeaderProps> = ({
     setQuery("");
     navigate(`/products/${productId}`);
   };
+
+  const onClickUser = () => {
+    setShowUserDropdown(!showUserDropdown);
+  };
+
+  const onClickLogOut = () => {
+    navigate('/');
+    setShowUserDropdown(false)
+  }
 
   return (
     <header className="header-main-header" style={{ height: height }}>
@@ -206,6 +238,32 @@ export const Header: React.FC<HeaderProps> = ({
                 size="medium"
                 onClick={onCartClick}
               />
+              <IconButton
+                height="40px"
+                icon={<FaRegUser />}
+                variant="primary"
+                disabled={false}
+                size="medium"
+                onClick={onClickUser}
+              />
+              {showUserDropdown && userOptions.length > 0 && (
+                <ul className="search-user-options-dropdown">
+                  {userOptions.map((option: UserOptions) => (
+                    <div className="search--user-options-items-list">
+                      {option && (
+                        option.icon
+                      )}
+                      <li
+                        key={option.name}
+                        className="search-result-item"
+                        onClick={option.onClick}
+                      >
+                        {option.name}
+                      </li>
+                    </div>
+                  ))}
+                </ul>
+              )}
             </>
           )}
         </div>

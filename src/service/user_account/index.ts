@@ -20,12 +20,15 @@ export class UserAccountService {
                 email: email,
                 password: password
             })
+
             let user = await userResponseDatumToUserEntity(response.data.user);
             let role = await roleResponseDatumToRoleEntity(response.data.role);
             let profile = await profileResponseDatumToProfileEntity(response.data.profile);
 
+            let token = response.data.token;
+
             let storagePersistor = new LocalStorage();
-            await storagePersistor.storeToken(response.data.token);
+            await storagePersistor.storeToken(token);
             await storagePersistor.storeUser(user);
             await storagePersistor.storeRole(role);
             await storagePersistor.storeProfile(profile);
@@ -49,8 +52,10 @@ export class UserAccountService {
             let role = await roleResponseDatumToRoleEntity(response.data.role);
             let profile = await profileResponseDatumToProfileEntity(response.data.profile);
 
+            let token = response.data.token;
+
             let storagePersistor = new LocalStorage();
-            await storagePersistor.storeToken(response.data.token);
+            await storagePersistor.storeToken(token);
             await storagePersistor.storeUser(user);
             await storagePersistor.storeRole(role);
             await storagePersistor.storeProfile(profile);

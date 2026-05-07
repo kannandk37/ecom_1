@@ -21,7 +21,7 @@ import { User } from "../../entity/user";
 import { UserAccountService } from "../../service/user_account";
 import Loader2 from "../../assets/loader/Loader2";
 import Toast from "../../assets/toast/Toast";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 
 const AuthCard: React.FC = () => {
   const location = useLocation();
@@ -91,7 +91,7 @@ const AuthCard: React.FC = () => {
         } else {
           await new UserAccountService().signUp(name, mobile, email, password);
         }
-        navigate(-1);
+        navigate('/');
       } catch (error: any) {
         if (axios.isAxiosError(error) && error.response?.data?.statusCode) {
           setToastError(error.response?.data?.error);
@@ -351,11 +351,11 @@ const AuthCard: React.FC = () => {
                   onClick={
                     isLogin
                       ? () => {
-                          onSubmit();
-                        }
+                        onSubmit();
+                      }
                       : () => {
-                          onSubmit();
-                        }
+                        onSubmit();
+                      }
                   }
                 />
                 <p>

@@ -1,3 +1,4 @@
+import { Cart } from "../entity/cart";
 import { Profile } from "../entity/profile";
 import { Role } from "../entity/role";
 import { User } from "../entity/user";
@@ -32,7 +33,7 @@ export class LocalStorage {
         return await storage.setItem('role', JSON.stringify(role));
     }
 
-    async getrRole() {
+    async getRole() {
         let data = await storage.getItem('role');
         if (data) {
             return JSON.parse(data) as Role
@@ -49,6 +50,19 @@ export class LocalStorage {
         let data = await storage.getItem('profile');
         if (data) {
             return JSON.parse(data) as Profile
+        } else {
+            return null;
+        }
+    }
+
+    async storeCart(cart: Cart) {
+        return await storage.setItem('cart', JSON.stringify(cart));
+    }
+
+    async getCart() {
+        let data = await storage.getItem('cart');
+        if (data) {
+            return JSON.parse(data) as Cart
         } else {
             return null;
         }
