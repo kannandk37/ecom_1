@@ -16,11 +16,11 @@ import { MdManageAccounts } from "react-icons/md";
 import { IoMdSettings } from "react-icons/io";
 import { IoLogOut } from "react-icons/io5";
 
-interface UserOptions {
-  name: string,
-  icon: ReactNode,
-  onClick: () => void
-};
+export interface UserOptions {
+  name: string;
+  icon: ReactNode;
+  onClick: () => void;
+}
 
 interface HeaderProps {
   siteName: string;
@@ -48,7 +48,12 @@ export const Header: React.FC<HeaderProps> = ({
   const navigate = useNavigate();
   const searchWrapperRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { (async () => { let userData = await new LocalStorage().getUser(); setUser(userData); })() }, [])
+  useEffect(() => {
+    (async () => {
+      let userData = await new LocalStorage().getUser();
+      setUser(userData);
+    })();
+  }, []);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -64,9 +69,9 @@ export const Header: React.FC<HeaderProps> = ({
 
   const userOptions: UserOptions[] = [
     {
-      name: 'Profile',
+      name: "Profile",
       icon: <MdManageAccounts size={20} />,
-      onClick: function () { }
+      onClick: function () {},
     },
     // {
     //   name: 'Settings',
@@ -74,10 +79,12 @@ export const Header: React.FC<HeaderProps> = ({
     //   onClick: function () { }
     // },
     {
-      name: 'Log Out',
+      name: "Log Out",
       icon: <IoLogOut size={20} />,
-      onClick: function () { onClickLogOut() }
-    }
+      onClick: function () {
+        onClickLogOut();
+      },
+    },
   ];
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -104,7 +111,7 @@ export const Header: React.FC<HeaderProps> = ({
         ...result,
         ...result,
         ...result,
-        ...result
+        ...result,
       ]);
       setShowDropdown(true);
     } catch (error) {
@@ -137,9 +144,9 @@ export const Header: React.FC<HeaderProps> = ({
     await new LocalStorage().clearCart();
     await new LocalStorage().clearToken();
     // TODO: Have to change this to context api
-    window.location.href = '/';
+    window.location.href = "/";
     setShowUserDropdown(false);
-  }
+  };
 
   return (
     <header className="header-main-header" style={{ height: height }}>
@@ -256,9 +263,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <ul className="search-user-options-dropdown">
                   {userOptions.map((option: UserOptions) => (
                     <div className="search--user-options-items-list">
-                      {option && (
-                        option.icon
-                      )}
+                      {option && option.icon}
                       <li
                         key={option.name}
                         className="search-result-item"

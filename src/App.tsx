@@ -22,7 +22,6 @@ import DemoReceiptScreen from "./pages/OrderReceipt/DemoReceiptScreen/DemoReceip
 import CartTotalCard, {
   CartTotalCardProps,
 } from "./pages/CartTotalCard/CardTotalCard";
-import { CartItem } from "./assets/cart/CartItems";
 import CartScreen from "./pages/Cart/Cart";
 import { Order, OrderProps } from "./pages/Order/Order";
 
@@ -97,105 +96,6 @@ const mockOrderData: OrderProps = {
   ],
 };
 
-const mockCartData: CartItem[] = [
-  {
-    id: "cj_001",
-    name: "Organic Jumbo Cashews",
-    description: "250g Pack",
-    price: "$22.50",
-    imageUrl: DRY_FRUITS,
-    quantity: 2,
-  },
-  {
-    id: "cj_002",
-    name: "Roasted Almonds - Salted",
-    description: "150g Pack",
-    price: "$18.00",
-    imageUrl: NUTS,
-    quantity: 1,
-  },
-  {
-    id: "cj_003",
-    name: "Organic Jumbo Cashews",
-    description: "250g Pack",
-    price: "$22.50",
-    imageUrl: DRY_FRUITS,
-    quantity: 2,
-  },
-  {
-    id: "cj_004",
-    name: "Roasted Almonds - Salted",
-    description: "150g Pack",
-    price: "$18.00",
-    imageUrl: NUTS,
-    quantity: 1,
-  },
-  {
-    id: "cj_005",
-    name: "Organic Jumbo Cashews",
-    description: "250g Pack",
-    price: "$22.50",
-    imageUrl: DRY_FRUITS,
-    quantity: 2,
-  },
-  {
-    id: "cj_006",
-    name: "Roasted Almonds - Salted",
-    description: "150g Pack",
-    price: "$18.00",
-    imageUrl: NUTS,
-    quantity: 1,
-  },
-  {
-    id: "cj_007",
-    name: "Organic Jumbo Cashews",
-    description: "250g Pack",
-    price: "$22.50",
-    imageUrl: DRY_FRUITS,
-    quantity: 2,
-  },
-  {
-    id: "cj_008",
-    name: "Roasted Almonds - Salted",
-    description: "150g Pack",
-    price: "$18.00",
-    imageUrl: NUTS,
-    quantity: 1,
-  },
-  {
-    id: "cj_009",
-    name: "Organic Jumbo Cashews",
-    description: "250g Pack",
-    price: "$22.50",
-    imageUrl: DRY_FRUITS,
-    quantity: 2,
-  },
-  {
-    id: "cj_010",
-    name: "Roasted Almonds - Salted",
-    description: "150g Pack",
-    price: "$18.00",
-    imageUrl: NUTS,
-    quantity: 1,
-  },
-  {
-    id: "cj_011",
-    name: "Organic Jumbo Cashews",
-    description: "250g Pack",
-    price: "$22.50",
-    imageUrl: DRY_FRUITS,
-    quantity: 2,
-  },
-  {
-    id: "cj_012",
-    name: "Roasted Almonds - Salted",
-    description: "150g Pack",
-    price: "$18.00",
-    imageUrl: NUTS,
-    quantity: 1,
-  },
-];
-
 function App() {
   const renderRoutes: any = (items: NavItem[]) => {
     return items.flatMap((item) => {
@@ -218,7 +118,7 @@ function App() {
     discountCode: "FESTIVE10", // Optional, passed as present
     discountAmount: "-$10.00", // Optional, passed as present
     finalTotal: "$63.96",
-    onCheckout: () => { },
+    onCheckout: () => {},
   };
   return (
     <BrowserRouter>
@@ -282,18 +182,12 @@ function App() {
             path="/categories/:categoryId/products"
             element={<CategoryProducts />}
           />
-          <Route
-            path="/products/:productId"
-            element={
-              <ProductDetails />
-            }
-          />
+          <Route path="/products/:productId" element={<ProductDetails />} />
           <Route
             path="/cart"
             element={
               <CartScreen
                 cartTotal={cartTotalData}
-                items={mockCartData}
                 productsData={productsTestData}
               />
             }

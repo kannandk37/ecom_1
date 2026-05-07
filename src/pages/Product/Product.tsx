@@ -216,13 +216,13 @@ import { StarRating } from "../../assets/review/Review";
 import { useNavigate, useParams } from "react-router-dom";
 import { Label, Product, SpecValue } from "../../entity/product";
 import { ProductService } from "../../service/product";
-import NUTS from '../../../data/NUTS.png';
+import NUTS from "../../../data/NUTS.png";
 import LogInOrSignUp from "../../assets/dialogue/LogInOrSignUp";
 import { LocalStorage } from "../../storage";
 import { Cart } from "../../entity/cart";
-import { CartItem } from "../../entity/cart_items";
+import { CartItem } from "../../entity/cart_item";
 import { CartService } from "../../service/cart";
-import Loader2 from '../../assets/loader/Loader2';
+import Loader2 from "../../assets/loader/Loader2";
 
 interface ProductProps {
   productData?: Product;
@@ -250,7 +250,7 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
           setIsLoading(false);
         }
       }
-    })()
+    })();
   }, [productId]);
 
   const handleAddToCart = async () => {
@@ -266,44 +266,47 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
         cartItem.quantity = quantity;
         cart.cartItems = [cartItem];
         await new CartService().create(cart);
-        navigate('/cart');
+        navigate("/cart");
       } else {
+        setIsLoading(false);
         setAuthModalOpen(true);
       }
     } catch (error) {
       console.log(error);
-    } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   return (
     <>
-      {
-        isLoading ? (
-          <Loader2 />
-        ) : (
-          <>
-            {product && (
-              <div className="product-page-root">
-                <div className="product-scroll-viewport">
-                  <div className="product-page">
-                    <div className="product-main-section">
-                      <ProductImageGallery images={product?.images?.length > 0 ? product?.images : [NUTS]} />
+      {isLoading ? (
+        <Loader2 />
+      ) : (
+        <>
+          {product && (
+            <div className="product-page-root">
+              <div className="product-scroll-viewport">
+                <div className="product-page">
+                  <div className="product-main-section">
+                    <ProductImageGallery
+                      images={
+                        product?.images?.length > 0 ? product?.images : [NUTS]
+                      }
+                    />
 
-                      <div className="product-info">
-                        <div className="breadcrumbs">
-                          <h2>Home</h2>
-                          <h2>{">"}</h2>
-                          <h2>{product?.category?.name}</h2>
-                          <h2>{">"}</h2>
-                          <h2>{product?.name}</h2>
-                        </div>
-                        <h1 className="product-title">{product.name}</h1>
+                    <div className="product-info">
+                      <div className="breadcrumbs">
+                        <h2>Home</h2>
+                        <h2>{">"}</h2>
+                        <h2>{product?.category?.name}</h2>
+                        <h2>{">"}</h2>
+                        <h2>{product?.name}</h2>
+                      </div>
+                      <h1 className="product-title">{product.name}</h1>
 
-                        <div className="rating-row">
-                          <div className="stars">
-                            {/* {[...Array(5)].map((_, i) => (
+                      <div className="rating-row">
+                        <div className="stars">
+                          {/* {[...Array(5)].map((_, i) => (
                       <FiStar
                         key={i}
                         fill={
@@ -314,102 +317,109 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
                         color="#8c6d3f"
                       /> 
                     ))}*/}
-                            <StarRating rating={product?.averageRating || 0} />
+                          <StarRating rating={product?.averageRating || 0} />
+                        </div>
+                        <span className="rating-text">
+                          {product.averageRating} (
+                          {
+                            // product.reviews ??  // TODO: need to work on this
+                            ""
+                          }{" "}
+                          Reviews)
+                        </span>
+                      </div>
+
+                      <div className="price-row">
+                        <span className="price">₹ {product.price}</span>
+                        <span className="weight-tag">
+                          {product.weight}
+                          {product.unit} pack
+                        </span>
+                      </div>
+
+                      <ul className="feature-list">
+                        {product?.features?.map((feature: any, i: number) => (
+                          <li key={i}>{feature}</li>
+                        ))}
+                      </ul>
+
+                      <div className="purchase-actions">
+                        <h2 style={{ fontWidth: "bold" }}>Quantity:</h2>
+                        <div className="quantity-selector">
+                          <button
+                            onClick={() =>
+                              setQuantity(Math.max(1, quantity - 1))
+                            }
+                          >
+                            <FiMinus />
+                          </button>
+                          <span>{quantity}</span>
+                          <button onClick={() => setQuantity(quantity + 1)}>
+                            <FiPlus />
+                          </button>
+                        </div>
+                        <Button
+                          name="Add to Cart"
+                          icon={<FiShoppingCart />}
+                          variant="primary"
+                          disabled={false}
+                          onClick={handleAddToCart}
+                        />
+                        <Button
+                          name="Add to Wishlist"
+                          icon={product ? <FaRegHeart /> : <FaHeart />}
+                          variant={"secondary"}
+                          disabled={false}
+                          onClick={() => {
+                            // product.isFav = !product.isFav;
+                            setProduct(product);
+                            console.log("Added to wishlist", product);
+                            // TODO: if no user
+                            setAuthModalOpen(true);
+                            // TODO: user logged in
+                            // call api to add or delete to wishlist
+                          }}
+                        />
+                      </div>
+
+                      <div className="description-section">
+                        <h3>Product Description</h3>
+                        <p>{product.description}</p>
+                      </div>
+
+                      <div className="specs-grid">
+                        {product?.specs?.map((spec: SpecValue, i: number) => (
+                          <div key={i} className="spec-card">
+                            <span className="spec-label">{spec.label} — </span>
+                            <span className="spec-value">
+                              {spec.label == Label.SHELF_LIFE
+                                ? `${spec.value?.quantity} ${spec.value?.unit?.charAt(0).toLocaleUpperCase() + spec.value?.unit?.slice(1)}`
+                                : spec.value}
+                            </span>
                           </div>
-                          <span className="rating-text">
-                            {product.averageRating} ({
-                              // product.reviews ??  // TODO: need to work on this 
-                              ''} Reviews)
-                          </span>
-                        </div>
-
-                        <div className="price-row">
-                          <span className="price">₹ {product.price}</span>
-                          <span className="weight-tag">
-                            {product.weight}
-                            {product.unit} pack
-                          </span>
-                        </div>
-
-                        <ul className="feature-list">
-                          {product?.features?.map((feature: any, i: number) => (
-                            <li key={i}>{feature}</li>
-                          ))}
-                        </ul>
-
-                        <div className="purchase-actions">
-                          <h2 style={{ fontWidth: "bold" }}>Quantity:</h2>
-                          <div className="quantity-selector">
-                            <button
-                              onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                            >
-                              <FiMinus />
-                            </button>
-                            <span>{quantity}</span>
-                            <button onClick={() => setQuantity(quantity + 1)}>
-                              <FiPlus />
-                            </button>
-                          </div>
-                          <Button
-                            name="Add to Cart"
-                            icon={<FiShoppingCart />}
-                            variant="primary"
-                            disabled={false}
-                            onClick={handleAddToCart}
-                          />
-                          <Button
-                            name="Add to Wishlist"
-                            icon={product ? <FaRegHeart /> : <FaHeart />}
-                            variant={"secondary"}
-                            disabled={false}
-                            onClick={() => {
-                              // product.isFav = !product.isFav;
-                              setProduct(product);
-                              console.log("Added to wishlist", product);
-                              // TODO: if no user
-                              setAuthModalOpen(true);
-                              // TODO: user logged in
-                              // call api to add or delete to wishlist
-                            }}
-                          />
-                        </div>
-
-                        <div className="description-section">
-                          <h3>Product Description</h3>
-                          <p>{product.description}</p>
-                        </div>
-
-                        <div className="specs-grid">
-                          {product?.specs?.map((spec: SpecValue, i: number) => (
-                            <div key={i} className="spec-card">
-                              <span className="spec-label">{spec.label} — </span>
-                              <span className="spec-value">{spec.label == Label.SHELF_LIFE ? `${spec.value?.quantity} ${spec.value?.unit?.charAt(0).toLocaleUpperCase() + spec.value?.unit?.slice(1)}` : spec.value}</span>
-                            </div>
-                          ))}
-                        </div>
+                        ))}
                       </div>
                     </div>
+                  </div>
 
-                    <div className="related-section">
-                      <h2 className="section-title">You May Also Like</h2>
-                      {/* Using your existing component */}
-                      <ProductCardGrid products={productsData as any} />
-                    </div>
-                    <div className="related-section">
-                      <h2 className="section-title">Customer Review</h2>
-                      <CustomerRievew />
-                    </div>
+                  <div className="related-section">
+                    <h2 className="section-title">You May Also Like</h2>
+                    <ProductCardGrid products={productsData as any} />
+                  </div>
+                  <div className="related-section">
+                    <h2 className="section-title">Customer Review</h2>
+                    <CustomerRievew />
                   </div>
                 </div>
               </div>
-            )}
-            <LogInOrSignUp
-              isOpen={isAuthModalOpen}
-              onClose={() => setAuthModalOpen(false)}
-            />
-          </>
-        )
-      }
+            </div>
+          )}
+          <LogInOrSignUp
+            isOpen={isAuthModalOpen}
+            onClose={() => setAuthModalOpen(false)}
+          />
+        </>
+      )}
     </>
   );
 };

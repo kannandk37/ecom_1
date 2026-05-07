@@ -142,13 +142,18 @@ body {
 }
 
 .empty-cart-message {
-  padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  padding: 80px 20px;
   text-align: center;
   color: #888;
-  font-size: 1.1rem;
+  font-size: 2.1rem;
   background: #fdfaf5;
   border-radius: 12px;
-  border: 1px dashed #ddd;
+  /* border: 1px dashed #ddd; */
 }
 
 /* RECOMMENDATIONS SECTION */

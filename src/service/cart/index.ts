@@ -1,7 +1,7 @@
 import { AxiosInstance } from "axios";
 import axiosinstance from "..";
 import { Cart } from "../../entity/cart";
-import { cartResponseDatumToCartEntity } from "./transformer/index,";
+import { cartResponseDatumToCartEntity } from "./transformer";
 
 
 export class CartService {
@@ -41,9 +41,9 @@ export class CartService {
         }
     }
 
-    async updateById(id: string, cart: Cart): Promise<Cart> {
+    async deleteCartItemFromCartByCartIdandCartItemId(id: string, cartItemId: string): Promise<Cart> {
         try {
-            let response = await this.axiosInstance.put(`/carts/${id}`, { cart: cart });
+            let response = await this.axiosInstance.delete(`/carts/${id}/items/${cartItemId}`);
             return cartResponseDatumToCartEntity(response.data as any);
         } catch (error) {
             console.log(error);

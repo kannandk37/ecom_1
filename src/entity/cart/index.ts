@@ -1,4 +1,4 @@
-import { CartItem } from "../cart_items";
+import { CartItem } from "../cart_item";
 import { User } from "../user";
 
 export class Cart {

@@ -7,6 +7,9 @@
   border-right: 1px solid rgba(0, 0, 0, 0.05);
   overflow: hidden;
   align-items: flex-start;
+
+  height: 100vh;
+  box-sizing: border-box;
 }
 
 .sidebar-toggle {
@@ -178,4 +181,64 @@ nav button.active {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.sidebar-search-user-options-dropdown {
+  position: absolute;
+  bottom: 70px;
+  left: 10px;
+  width: 200px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  z-index: 9999;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.sidebar-search--user-options-items-list {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  margin-left: 10px;
+  color: var(--color-primary);
+}
+
+.sidebar-search-result-item {
+  padding: 12px 20px;
+  font-size: 17px;
+  font-weight: 400;
+  color: #333;
+  cursor: pointer;
+  border-bottom: 1px solid #f5f5f5;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-search-result-item:last-child {
+  border-bottom: none;
+}
+
+.sidebar-search-result-item:hover {
+  color: #bc9a5c;
+  font-weight: 500;
+}
+
+.sidebar-sidebar-footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  position: relative;
 }

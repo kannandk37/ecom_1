@@ -1,4 +1,4 @@
-import { CartItem } from "../../../entity/cart_items";
+import { CartItem } from "../../../entity/cart_item";
 import { productResponseDatumToProductEntity } from "../../product/transformer";
 import { variantResponseDatumToVariantEntity } from "../../variant/transformer";
 

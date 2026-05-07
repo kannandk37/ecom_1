@@ -8,33 +8,31 @@ import "./Cart.css";
 import { Button } from "../../assets/button/Button";
 import ProductCardGridSingle from "../../assets/ProductCardGridSingle/ProductCardGridSingle";
 import { useNavigate } from "react-router-dom";
-import CartItems, { CartItem } from "../../assets/cart/CartItems";
+import CartItems from "../../assets/cart/CartItems";
 import { LocalStorage } from "../../storage";
 import { CartService } from "../../service/cart";
 import { Cart } from "../../entity/cart";
-import Loader2 from '../../assets/loader/Loader2';
+import Loader2 from "../../assets/loader/Loader2";
+import { CartItem } from "../../entity/cart_item";
+import { CartItemService } from "../../service/cart_item";
+import { User } from "../../entity/user";
+import { WishListService } from "../../service/wishlist";
 export interface CartProps {
-  items: CartItem[];
   cartTotal: CartTotalCardProps;
   productsData: any[];
-  onContinueShopping?: () => void;
   onCheckout?: () => void;
-  onRemoveItem?: (id: string) => void;
 }
 
 const CartScreen: React.FC<CartProps> = ({
-  items = [],
   cartTotal,
   productsData,
-  onContinueShopping,
   onCheckout,
-  onRemoveItem,
 }) => {
-  const itemCount = items.length;
   const navigate = useNavigate();
   const [cart, setCart] = useState<Cart>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  // const products
+  const [itemsData, setItemsData] = useState<CartItem[]>([]);
+  const [user, setUser] = useState<User>();
 
   useEffect(() => {
     (async () => {
@@ -42,117 +40,180 @@ const CartScreen: React.FC<CartProps> = ({
       try {
         let user = await new LocalStorage().getUser();
         if (user?.id) {
-          let cartData = await new CartService().getMyCart();
-          setCart(cartData);
+          setUser(user);
+          await fetchCart();
         }
       } catch (error) {
         console.log(error);
       } finally {
         setIsLoading(false);
       }
-    })()
+    })();
   }, []);
+
+  const fetchCart = async () => {
+    try {
+      let cartData = await new CartService().getMyCart();
+      setCart(cartData);
+      setItemsData(cartData.cartItems);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const onContinueShopping = () => {
+    navigate("/");
+  };
+
+  const onIncreaseQuantity = async (cartItem: CartItem) => {
+    try {
+      let updatedCartItem = await new CartItemService().updateById(
+        cartItem.id,
+        cartItem,
+      );
+      if (updatedCartItem?.id) {
+        setItemsData((prevItems) => {
+          return prevItems.map((item) => {
+            if (item.id === updatedCartItem.id) {
+              return updatedCartItem;
+            }
+            return item;
+          });
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const onRemoveItem = async (cartItem: CartItem) => {
+    try {
+      let cartData =
+        await new CartService().deleteCartItemFromCartByCartIdandCartItemId(
+          cart.id,
+          cartItem.id,
+        );
+      if (cartData?.id) {
+        setCart(cartData);
+        setItemsData(cartData.cartItems);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const onSaveForLater = async (cartItem: CartItem) => {
+    try {
+      let wishList = await new WishListService().toggle(
+        user.id,
+        cartItem.product.id,
+        cartItem?.variant?.id ? cartItem?.variant?.id : null,
+      );
+      if (wishList?.id) {
+        await onRemoveItem(cartItem);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
-      {isLoading ?
-        (
-          <Loader2 />
-        ) : (
-          <div className="cart-fullscreen-wrapper">
-            <div className="cart-page-root">
-              <div className="cart-top-nav">
-                <div className="cart-breadcrumbs">
-                  <span
-                    className="home"
-                    onClick={() => {
-                      console.log("Continue shopping");
-                      navigate("/");
-                    }}
-                  >
-                    Home
-                  </span>{" "}
-                  &rsaquo; <span className="current">Cart</span>
-                </div>
-                <Button
-                  disabled={false}
-                  icon={<FiArrowLeft />}
-                  name="Continue Shopping"
-                  onClick={() => onContinueShopping}
-                  height={"45px"}
-                  fontSize={"18px"}
+      {isLoading ? (
+        <Loader2 />
+      ) : (
+        <div className="cart-fullscreen-wrapper">
+          <div className="cart-page-root">
+            <div className="cart-top-nav">
+              <div className="cart-breadcrumbs">
+                <span
+                  className="home"
+                  onClick={() => {
+                    console.log("Continue shopping");
+                    navigate("/");
+                  }}
+                >
+                  Home
+                </span>{" "}
+                &rsaquo; <span className="current">Cart</span>
+              </div>
+              <Button
+                disabled={false}
+                icon={<FiArrowLeft />}
+                name="Continue Shopping"
+                onClick={() => onContinueShopping}
+                height={"45px"}
+                fontSize={"18px"}
+              />
+            </div>
+
+            <div className="cart-header-wrapper">
+              <h1 className="cart-page-title">Shopping Cart</h1>
+              <span className="cart-item-count">{itemsData?.length} items</span>
+            </div>
+
+            <div className="cart-main-layout">
+              <div className="cart-items-section">
+                {itemsData?.length > 0 ? (
+                  <CartItems
+                    data={itemsData}
+                    onIncreaseQuantity={onIncreaseQuantity}
+                    onRemove={onRemoveItem}
+                    onSaveForLater={onSaveForLater}
+                  />
+                ) : (
+                  <div className="empty-cart-message">
+                    <p>Your cart is currently empty.</p>
+                    <Button
+                      disabled={false}
+                      icon={<FiArrowLeft />}
+                      name="Continue Shopping"
+                      onClick={onContinueShopping}
+                      height={"45px"}
+                      fontSize={"18px"}
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="cart-summary-section">
+                <CartTotalCard
+                  {...cartTotal}
+                  onCheckout={
+                    onCheckout ||
+                    (() => {
+                      console.log("Proceeding to checkout");
+                      navigate("/checkout");
+                    })
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="cart-recommendations-section">
+              <div className="carousel-wrapper">
+                <Carousel
+                  title="Your Wish List"
+                  data={productsData}
+                  renderItem={(item: any) => (
+                    <ProductCardGridSingle product={item} />
+                  )}
                 />
               </div>
 
-              <div className="cart-header-wrapper">
-                <h1 className="cart-page-title">Shopping Cart</h1>
-                <span className="cart-item-count">{itemCount} items</span>
-              </div>
-
-              <div className="cart-main-layout">
-                <div className="cart-items-section">
-                  {itemCount > 0 ? (
-                    <CartItems data={items} onRemove={onRemoveItem} />
-                  ) : (
-                    <div className="empty-cart-message">
-                      <p>Your cart is currently empty.</p>
-                      <Button
-                        disabled={false}
-                        icon={<FiArrowLeft />}
-                        name="Continue Shopping"
-                        onClick={() =>
-                          onContinueShopping ||
-                          (() => {
-                            console.log("Continue shopping");
-                            navigate("/");
-                          })
-                        }
-                        height={"45px"}
-                        fontSize={"18px"}
-                      />
-                    </div>
+              <div className="carousel-wrapper">
+                <Carousel
+                  title="You May Also Like"
+                  data={productsData}
+                  renderItem={(item: any) => (
+                    <ProductCardGridSingle product={item} />
                   )}
-                </div>
-
-                <div className="cart-summary-section">
-                  <CartTotalCard
-                    {...cartTotal}
-                    onCheckout={
-                      onCheckout ||
-                      (() => {
-                        console.log("Proceeding to checkout");
-                        navigate("/checkout");
-                      })
-                    }
-                  />
-                </div>
-              </div>
-
-              <div className="cart-recommendations-section">
-                <div className="carousel-wrapper">
-                  <Carousel
-                    title="Your Wish List"
-                    data={productsData}
-                    renderItem={(item: any) => (
-                      <ProductCardGridSingle product={item} />
-                    )}
-                  />
-                </div>
-
-                <div className="carousel-wrapper">
-                  <Carousel
-                    title="You May Also Like"
-                    data={productsData}
-                    renderItem={(item: any) => (
-                      <ProductCardGridSingle product={item} />
-                    )}
-                  />
-                </div>
+                />
               </div>
             </div>
           </div>
-
-        )}
+        </div>
+      )}
     </>
   );
 };

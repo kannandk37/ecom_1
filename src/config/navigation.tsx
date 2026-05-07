@@ -46,76 +46,7 @@ export interface NavItem {
   component?: JSX.Element;
   children?: NavItem[];
 }
-const mockOrderData: OrderProps = {
-  orderNumber: "DF-98231",
-  orderDate: "October 24, 2023 at 10:42 AM",
-  status: "Delivered",
-  items: [
-    {
-      name: "Heritage Sourdough Boule",
-      variant: "800g Standard",
-      quantity: 2,
-      price: 12.0,
-      thumbnail: DRY_FRUITS,
-    },
-    {
-      name: "Wildflower Raw Honey",
-      variant: "500g Jar",
-      quantity: 1,
-      price: 18.5,
-      thumbnail: NUTS,
-    },
-    {
-      name: "Heritage Sourdough Boule",
-      variant: "800g Standard",
-      quantity: 2,
-      price: 12.0,
-      thumbnail: DRY_FRUITS,
-    },
-    {
-      name: "Wildflower Raw Honey",
-      variant: "500g Jar",
-      quantity: 1,
-      price: 18.5,
-      thumbnail: NUTS,
-    },
-    {
-      name: "Heritage Sourdough Boule",
-      variant: "800g Standard",
-      quantity: 2,
-      price: 12.0,
-      thumbnail: DRY_FRUITS,
-    },
-    {
-      name: "Wildflower Raw Honey",
-      variant: "500g Jar",
-      quantity: 1,
-      price: 18.5,
-      thumbnail: NUTS,
-    },
-  ],
-  shippingAddress: {
-    name: "Eleanor Vance",
-    street: "124 Hill House Lane",
-    apt: "Apt 3B",
-    city: "Berkshire",
-    state: "MA",
-    zip: "01220",
-    country: "United States",
-  },
-  paymentInfo: {
-    method: "Google Pay",
-    transactionId: "TXN-88492019-GPAY",
-    date: "Oct 24, 2023, 10:42 AM",
-  },
-  summary: [
-    { label: "Subtotal (3 items)", value: 42.5 },
-    { label: "Discount (AUTUMN15)", value: -6.38 },
-    { label: "Shipping Charges", value: 5.0 },
-    { label: "Estimated Tax", value: 3.4 },
-    { label: "Total Paid", value: 44.52, isTotal: true },
-  ],
-};
+
 export const NAV_OPTIONS: NavItem[] = [
   {
     id: "orders",
@@ -202,6 +133,77 @@ export const NAV_OPTIONS: NavItem[] = [
     component: <CreateOrEditWareHouse />,
   },
 ];
+
+const mockOrderData: OrderProps = {
+  orderNumber: "DF-98231",
+  orderDate: "October 24, 2023 at 10:42 AM",
+  status: "Delivered",
+  items: [
+    {
+      name: "Heritage Sourdough Boule",
+      variant: "800g Standard",
+      quantity: 2,
+      price: 12.0,
+      thumbnail: DRY_FRUITS,
+    },
+    {
+      name: "Wildflower Raw Honey",
+      variant: "500g Jar",
+      quantity: 1,
+      price: 18.5,
+      thumbnail: NUTS,
+    },
+    {
+      name: "Heritage Sourdough Boule",
+      variant: "800g Standard",
+      quantity: 2,
+      price: 12.0,
+      thumbnail: DRY_FRUITS,
+    },
+    {
+      name: "Wildflower Raw Honey",
+      variant: "500g Jar",
+      quantity: 1,
+      price: 18.5,
+      thumbnail: NUTS,
+    },
+    {
+      name: "Heritage Sourdough Boule",
+      variant: "800g Standard",
+      quantity: 2,
+      price: 12.0,
+      thumbnail: DRY_FRUITS,
+    },
+    {
+      name: "Wildflower Raw Honey",
+      variant: "500g Jar",
+      quantity: 1,
+      price: 18.5,
+      thumbnail: NUTS,
+    },
+  ],
+  shippingAddress: {
+    name: "Eleanor Vance",
+    street: "124 Hill House Lane",
+    apt: "Apt 3B",
+    city: "Berkshire",
+    state: "MA",
+    zip: "01220",
+    country: "United States",
+  },
+  paymentInfo: {
+    method: "Google Pay",
+    transactionId: "TXN-88492019-GPAY",
+    date: "Oct 24, 2023, 10:42 AM",
+  },
+  summary: [
+    { label: "Subtotal (3 items)", value: 42.5 },
+    { label: "Discount (AUTUMN15)", value: -6.38 },
+    { label: "Shipping Charges", value: 5.0 },
+    { label: "Estimated Tax", value: 3.4 },
+    { label: "Total Paid", value: 44.52, isTotal: true },
+  ],
+};
 
 // export const NAV_OPTIONS: SidebarOption[] = [
 //   {

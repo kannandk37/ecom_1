@@ -5,9 +5,9 @@ import React, {
   useCallback,
   useMemo,
   ReactNode,
-} from 'react';
-import { Cart } from '../../entity/cart';
-import { CartItem } from '../../entity/cart_items';
+} from "react";
+import { Cart } from "../../entity/cart";
+import { CartItem } from "../../entity/cart_item";
 
 interface CartContextValue {
   cart: Cart | null;
@@ -18,15 +18,21 @@ interface CartContextValue {
   applyPromocode: (code: string) => void;
   removePromocode: () => void;
   clearCart: () => void;
-  totalItems: number;   // derived: sum of all quantities
-  totalPrice: number;   // derived: sum of price × quantity (uses variant price if available)
+  totalItems: number; // derived: sum of all quantities
+  totalPrice: number; // derived: sum of price × quantity (uses variant price if available)
 }
 
 const CartContext = createContext<CartContextValue | undefined>(undefined);
 
-function calcTotals(cart: Cart | null): { totalItems: number; totalPrice: number } {
+function calcTotals(cart: Cart | null): {
+  totalItems: number;
+  totalPrice: number;
+} {
   if (!cart?.cartItems?.length) return { totalItems: 0, totalPrice: 0 };
-  const totalItems = cart.cartItems.reduce((sum, i) => sum + (i.quantity ?? 0), 0);
+  const totalItems = cart.cartItems.reduce(
+    (sum, i) => sum + (i.quantity ?? 0),
+    0,
+  );
   const totalPrice = cart.cartItems.reduce((sum, i) => {
     const price = i.variant?.price ?? i.product?.price ?? 0;
     return sum + price * (i.quantity ?? 0);
@@ -34,7 +40,9 @@ function calcTotals(cart: Cart | null): { totalItems: number; totalPrice: number
   return { totalItems, totalPrice };
 }
 
-export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const CartProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [cart, setCartState] = useState<Cart | null>(null);
 
   const setCart = useCallback((c: Cart | null) => {
@@ -54,7 +62,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           cartItems: prev.cartItems!.map((i) =>
             i.id === item.id
               ? { ...i, quantity: (i.quantity ?? 0) + (item.quantity ?? 1) }
-              : i
+              : i,
           ),
         };
       }
@@ -84,9 +92,10 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
       return {
         ...prev,
-        cartItems: prev.cartItems?.map((i) =>
-          i.id === cartItemId ? { ...i, quantity } : i
-        ) ?? [],
+        cartItems:
+          prev.cartItems?.map((i) =>
+            i.id === cartItemId ? { ...i, quantity } : i,
+          ) ?? [],
       };
     });
   }, []);
@@ -97,13 +106,13 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const removePromocode = useCallback(() => {
     setCartState((prev) =>
-      prev ? { ...prev, appliedPromocode: undefined } : null
+      prev ? { ...prev, appliedPromocode: undefined } : null,
     );
   }, []);
 
   const clearCart = useCallback(() => {
     setCartState((prev) =>
-      prev ? { ...prev, cartItems: [], appliedPromocode: undefined } : null
+      prev ? { ...prev, cartItems: [], appliedPromocode: undefined } : null,
     );
   }, []);
 
@@ -134,15 +143,14 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       clearCart,
       totalItems,
       totalPrice,
-    ]
+    ],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };
 
-
 export function useCart(): CartContextValue {
   const ctx = useContext(CartContext);
-  if (!ctx) throw new Error('useCart must be used inside <CartProvider>');
+  if (!ctx) throw new Error("useCart must be used inside <CartProvider>");
   return ctx;
 }
