@@ -23,7 +23,7 @@ import CartTotalCard, {
   CartTotalCardProps,
 } from "./pages/CartTotalCard/CardTotalCard";
 import { CartItem } from "./assets/cart/CartItems";
-import Cart from "./pages/Cart/Cart";
+import CartScreen from "./pages/Cart/Cart";
 import { Order, OrderProps } from "./pages/Order/Order";
 
 const mockOrderData: OrderProps = {
@@ -218,7 +218,7 @@ function App() {
     discountCode: "FESTIVE10", // Optional, passed as present
     discountAmount: "-$10.00", // Optional, passed as present
     finalTotal: "$63.96",
-    onCheckout: () => {},
+    onCheckout: () => { },
   };
   return (
     <BrowserRouter>
@@ -291,7 +291,7 @@ function App() {
           <Route
             path="/cart"
             element={
-              <Cart
+              <CartScreen
                 cartTotal={cartTotalData}
                 items={mockCartData}
                 productsData={productsTestData}

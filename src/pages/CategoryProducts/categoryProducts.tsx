@@ -195,11 +195,16 @@ const CategoryProducts = ({ }) => {
     navigate(`/products/${product.id}`, { state: { product: product } });
   };
 
-  const onClickAddToCart = (product: any) => {
-    //TODO: if user exists
-    // navigate(`/cart`, { state: { product: product } });
-    // TODO: if no user
-    setAuthModalOpen(true);
+  const onClickAddToCart = async (product: any) => {
+
+    let userData = await new LocalStorage().getUser();
+
+    if (!userData) {
+      setAuthModalOpen(true);
+    } else {
+      setAuthModalOpen(false);
+      navigate(`/cart`);
+    }
   };
 
   const handleToggleFav = async (clickedProduct: Product, clickedVariant: Variant, clickedWishlist: Wishlist) => {
