@@ -2,6 +2,7 @@ import { Cart } from "../entity/cart";
 import { Profile } from "../entity/profile";
 import { Role } from "../entity/role";
 import { User } from "../entity/user";
+import { Wishlist } from "../entity/wishlist";
 
 const storage = localStorage;
 
@@ -85,6 +86,23 @@ export class LocalStorage {
 
     async clearCart() {
         return await storage.removeItem('cart');
+    }
+
+    async storeWishlists(wishlists: Wishlist[]) {
+        return await storage.setItem('wishlists', JSON.stringify(wishlists));
+    }
+
+    async getWishlists() {
+        let data = await storage.getItem('wishlists');
+        if (data) {
+            return JSON.parse(data) as Wishlist[]
+        } else {
+            return null;
+        }
+    }
+
+    async clearWishlists() {
+        return await storage.removeItem('wishlists');
     }
 
 } 

@@ -18,6 +18,7 @@ import { CartItemService } from "../../service/cart_item";
 import { User } from "../../entity/user";
 import { WishListService } from "../../service/wishlist";
 import { useCart } from "../../context/cart";
+import { useWishlist } from "../../context/wishlist";
 export interface CartProps {
   cartTotal: CartTotalCardProps;
   productsData: any[];
@@ -34,7 +35,8 @@ const CartScreen: React.FC<CartProps> = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [itemsData, setItemsData] = useState<CartItem[]>([]);
   const [user, setUser] = useState<User>();
-  const {setCart} = useCart()
+  const { setCart } = useCart();
+  const { wishlists } = useWishlist();
 
   useEffect(() => {
     (async () => {
@@ -97,7 +99,7 @@ const CartScreen: React.FC<CartProps> = ({
           cartItem.id,
         );
       if (cartResponseData?.id) {
-      console.log('setting again');
+        console.log("setting again");
         setCartData(cartResponseData);
         setCart(cartResponseData);
         setItemsData(cartResponseData.cartItems);
@@ -114,9 +116,9 @@ const CartScreen: React.FC<CartProps> = ({
         cartItem.product.id,
         cartItem?.variant?.id ? cartItem?.variant?.id : null,
       );
-      console.log(wishList, 'wishList');
+      console.log(wishList, "wishList");
       if (wishList?.id) {
-      console.log('going to reomve');
+        console.log("going to reomve");
         await onRemoveItem(cartItem);
       }
     } catch (error) {
@@ -196,17 +198,19 @@ const CartScreen: React.FC<CartProps> = ({
                 />
               </div>
             </div>
-
             <div className="cart-recommendations-section">
+              {/* {wishlists.map((wishlist) => wishlist.product)?.length > 0 && ( */}
               <div className="carousel-wrapper">
                 <Carousel
                   title="Your Wish List"
-                  data={productsData}
+                  data={wishlists.map((wishlist) => wishlist.product)}
                   renderItem={(item: any) => (
                     <ProductCardGridSingle product={item} />
                   )}
                 />
               </div>
+              {/* )} */}
+              {wishlists.map((wishlist) => wishlist.product)?.length}
 
               <div className="carousel-wrapper">
                 <Carousel

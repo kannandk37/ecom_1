@@ -1,9 +1,10 @@
-import React, { ReactNode } from 'react';
-import { UserProvider } from './user';
-import { RoleProvider } from './role';
-import { ProfileProvider } from './profile';
-import { CartProvider } from './cart';
-import { AuthProvider } from './auth';
+import React, { ReactNode } from "react";
+import { UserProvider } from "./user";
+import { RoleProvider } from "./role";
+import { ProfileProvider } from "./profile";
+import { CartProvider } from "./cart";
+import { AuthProvider } from "./auth";
+import { WishlistProvider } from "./wishlist";
 
 /*
   Provider order matters:
@@ -21,9 +22,9 @@ export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
       <RoleProvider>
         <ProfileProvider>
           <CartProvider>
-            <AuthProvider>
-              {children}
-            </AuthProvider>
+            <WishlistProvider>
+              <AuthProvider>{children}</AuthProvider>
+            </WishlistProvider>
           </CartProvider>
         </ProfileProvider>
       </RoleProvider>

@@ -6,17 +6,19 @@ import React, {
   useEffect,
   useMemo,
   ReactNode,
-} from 'react';
+} from "react";
 
-import { useUser } from '../user';
-import { useRole } from '../role';
-import { useProfile } from '../profile';
-import { useCart } from '../cart';
-import { LocalStorage } from '../../storage';
-import { User } from '../../entity/user';
-import { Role } from '../../entity/role';
-import { Cart } from '../../entity/cart';
-import { Profile } from '../../entity/profile';
+import { useUser } from "../user";
+import { useRole } from "../role";
+import { useProfile } from "../profile";
+import { useCart } from "../cart";
+import { LocalStorage } from "../../storage";
+import { User } from "../../entity/user";
+import { Role } from "../../entity/role";
+import { Cart } from "../../entity/cart";
+import { Profile } from "../../entity/profile";
+import { useWishlist } from "../wishlist";
+import { Wishlist } from "../../entity/wishlist";
 
 const ls = new LocalStorage();
 
@@ -26,18 +28,21 @@ interface SignInPayload {
   role: Role;
   profile: Profile;
   cart?: Cart | null;
+  wishlists?: Wishlist[] | null;
 }
 
 interface AuthContextValue {
   isLoggedIn: boolean;
-  isLoading: boolean;  // true while rehydrating on first render
+  isLoading: boolean; // true while rehydrating on first render
   signIn: (payload: SignInPayload) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true); // true until rehydration done
 
@@ -45,6 +50,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const { setRole, clearRole } = useRole();
   const { setProfile, clearProfile } = useProfile();
   const { setCart, clearCart } = useCart();
+  const { setWishlists, clearWishlist } = useWishlist();
 
   // ── Rehydration ─────────────────────────────────────────────────────────────
   // Runs once on mount.
@@ -53,13 +59,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     const rehydrate = async () => {
       try {
-        const [token, user, role, profile, cart] = await Promise.all([
-          ls.getToken('token'),
-          ls.getUser(),
-          ls.getRole(),
-          ls.getProfile(),
-          ls.getCart(),
-        ]);
+        const [token, user, role, profile, cart, wishlists] = await Promise.all(
+          [
+            ls.getToken("token"),
+            ls.getUser(),
+            ls.getRole(),
+            ls.getProfile(),
+            ls.getCart(),
+            ls.getWishlists(),
+          ],
+        );
 
         // Only restore session if the essentials are present
         if (token && user && role && profile) {
@@ -67,11 +76,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           setRole(role);
           setProfile(profile);
           if (cart) setCart(cart);
+          if (wishlists) setWishlists(wishlists);
           setIsLoggedIn(true);
         }
       } catch (err) {
         // localStorage unavailable or corrupted — start fresh
-        console.warn('Session rehydration failed:', err);
+        console.warn("Session rehydration failed:", err);
       } finally {
         setIsLoading(false);
       }
@@ -85,7 +95,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Saves everything to localStorage via your LocalStorage class,
   // then populates all contexts.
   const signIn = useCallback(
-    async ({ token, user, role, profile, cart }: SignInPayload) => {
+    async ({ token, user, role, profile, cart, wishlists }: SignInPayload) => {
       try {
         // Persist to localStorage first so rehydration works on refresh
         await Promise.all([
@@ -94,6 +104,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           ls.storeRole(role),
           ls.storeProfile(profile),
           ...(cart ? [ls.storeCart(cart)] : []),
+          ...(wishlists ? [ls.storeWishlists(wishlists)] : []),
         ]);
 
         // Then populate all contexts
@@ -101,12 +112,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setRole(role);
         setProfile(profile);
         if (cart) setCart(cart);
+        if (wishlists) setWishlists(wishlists);
         setIsLoggedIn(true);
       } catch (err) {
-        console.error('Sign in failed to persist session:', err);
+        console.error("Sign in failed to persist session:", err);
       }
     },
-    [setUser, setRole, setProfile, setCart]
+    [setUser, setRole, setProfile, setCart, setWishlists],
   );
 
   // ── Sign Out ────────────────────────────────────────────────────────────────
@@ -114,26 +126,28 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const signOut = useCallback(async () => {
     try {
       await Promise.all([
-        localStorage.removeItem('token'),
-        localStorage.removeItem('user'),
-        localStorage.removeItem('role'),
-        localStorage.removeItem('profile'),
-        localStorage.removeItem('cart'),
+        localStorage.removeItem("token"),
+        localStorage.removeItem("user"),
+        localStorage.removeItem("role"),
+        localStorage.removeItem("profile"),
+        localStorage.removeItem("cart"),
+        localStorage.removeItem("wishlist"),
       ]);
     } catch (err) {
-      console.warn('Sign out cleanup failed:', err);
+      console.warn("Sign out cleanup failed:", err);
     } finally {
       clearUser();
       clearRole();
       clearProfile();
       clearCart();
+      clearWishlist();
       setIsLoggedIn(false);
     }
-  }, [clearUser, clearRole, clearProfile, clearCart]);
+  }, [clearUser, clearRole, clearProfile, clearCart, clearWishlist]);
 
   const value = useMemo<AuthContextValue>(
     () => ({ isLoggedIn, isLoading, signIn, signOut }),
-    [isLoggedIn, isLoading, signIn, signOut]
+    [isLoggedIn, isLoading, signIn, signOut],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -141,6 +155,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 export function useAuth(): AuthContextValue {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used inside <AuthProvider>');
+  if (!ctx) throw new Error("useAuth must be used inside <AuthProvider>");
   return ctx;
 }

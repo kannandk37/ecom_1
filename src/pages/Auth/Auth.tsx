@@ -25,9 +25,11 @@ import axios from "axios";
 import { CartService } from "../../service/cart";
 import { WishListService } from "../../service/wishlist";
 import { useCart } from "../../context/cart";
+import { useWishlist } from "../../context/wishlist";
 
 const AuthCard: React.FC = () => {
-  const {setCart} = useCart();
+  const { setCart } = useCart();
+  const { setWishlists } = useWishlist();
   const location = useLocation();
   const [isLogin, setIsLogin] = useState<boolean>(true);
   const navigate = useNavigate();
@@ -91,12 +93,14 @@ const AuthCard: React.FC = () => {
       try {
         if (isLogin) {
           // TODO: nned to check this login in flow
-          let response = await new UserAccountService().loginIn(email, password);
-
+          let response = await new UserAccountService().loginIn(
+            email,
+            password,
+          );
         } else {
           await new UserAccountService().signUp(name, mobile, email, password);
         }
-        navigate('/');
+        navigate("/");
       } catch (error: any) {
         if (axios.isAxiosError(error) && error.response?.data?.statusCode) {
           setToastError(error.response?.data?.error);
@@ -106,6 +110,7 @@ const AuthCard: React.FC = () => {
         let cartData = await new CartService().getMyCart();
         let wishListData = await new WishListService().getMyWishList();
         setCart(cartData);
+        setWishlists(wishListData);
         // TODO: orders
       }
     }
@@ -360,11 +365,11 @@ const AuthCard: React.FC = () => {
                   onClick={
                     isLogin
                       ? () => {
-                        onSubmit();
-                      }
+                          onSubmit();
+                        }
                       : () => {
-                        onSubmit();
-                      }
+                          onSubmit();
+                        }
                   }
                 />
                 <p>

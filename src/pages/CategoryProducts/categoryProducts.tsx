@@ -15,6 +15,7 @@ import { WishListService } from "../../service/wishlist";
 import { Wishlist } from "../../entity/wishlist";
 import { User } from "../../entity/user";
 import { Variant } from "../../entity/variant";
+import { useWishlist } from "../../context/wishlist";
 
 export const productsData: Product[] = [
   {
@@ -139,7 +140,7 @@ let mockCategory = {
   title: "Dry Fruits",
 };
 
-const CategoryProducts = ({ }) => {
+const CategoryProducts = ({}) => {
   const { categoryId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -148,6 +149,7 @@ const CategoryProducts = ({ }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [isAuthModalOpen, setAuthModalOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { addToWishlist, removeFromWishlist } = useWishlist();
 
   useEffect(() => {
     (async () => {
@@ -196,7 +198,6 @@ const CategoryProducts = ({ }) => {
   };
 
   const onClickAddToCart = async (product: any) => {
-
     let userData = await new LocalStorage().getUser();
 
     if (!userData) {
@@ -207,7 +208,11 @@ const CategoryProducts = ({ }) => {
     }
   };
 
-  const handleToggleFav = async (clickedProduct: Product, clickedVariant: Variant, clickedWishlist: Wishlist) => {
+  const handleToggleFav = async (
+    clickedProduct: Product,
+    clickedVariant: Variant,
+    clickedWishlist: Wishlist,
+  ) => {
     // 1. OPTIMISTIC UPDATE: Update the local state immediately
     // setProducts((prevProducts) =>
     //   prevProducts.map((p) =>
@@ -223,8 +228,19 @@ const CategoryProducts = ({ }) => {
         // 2. BACKGROUND API CALL
         // await api.toggleWishlist(clickedProduct.id);
         // console.log({userData, clickedProduct});
-        await new WishListService().toggle(userData.id, clickedProduct.id, clickedVariant?.id);
-        console.log("Wishlist updated successfully");
+        let response = await new WishListService().toggle(
+          userData.id,
+          clickedProduct.id,
+          clickedVariant?.id,
+        );
+        if (response) {
+          if (response.id) {
+            addToWishlist(response);
+          } else {
+            removeFromWishlist(clickedWishlist.id);
+          }
+        }
+        console.log("Wishlist updated successfully", response);
       } catch (error) {
         // 3. ROLLBACK: If the API fails, flip it back and alert user
         console.error("Failed to update wishlist", error);
