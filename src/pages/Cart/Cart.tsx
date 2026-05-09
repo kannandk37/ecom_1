@@ -17,6 +17,7 @@ import { CartItem } from "../../entity/cart_item";
 import { CartItemService } from "../../service/cart_item";
 import { User } from "../../entity/user";
 import { WishListService } from "../../service/wishlist";
+import { useCart } from "../../context/cart";
 export interface CartProps {
   cartTotal: CartTotalCardProps;
   productsData: any[];
@@ -29,10 +30,11 @@ const CartScreen: React.FC<CartProps> = ({
   onCheckout,
 }) => {
   const navigate = useNavigate();
-  const [cart, setCart] = useState<Cart>(null);
+  const [cartData, setCartData] = useState<Cart>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [itemsData, setItemsData] = useState<CartItem[]>([]);
   const [user, setUser] = useState<User>();
+  const {setCart} = useCart()
 
   useEffect(() => {
     (async () => {
@@ -54,8 +56,9 @@ const CartScreen: React.FC<CartProps> = ({
   const fetchCart = async () => {
     try {
       let cartData = await new CartService().getMyCart();
-      setCart(cartData);
+      setCartData(cartData);
       setItemsData(cartData.cartItems);
+      setCart(cartData);
     } catch (error) {
       console.log(error);
     }
@@ -88,14 +91,16 @@ const CartScreen: React.FC<CartProps> = ({
 
   const onRemoveItem = async (cartItem: CartItem) => {
     try {
-      let cartData =
+      let cartResponseData =
         await new CartService().deleteCartItemFromCartByCartIdandCartItemId(
-          cart.id,
+          cartData.id,
           cartItem.id,
         );
-      if (cartData?.id) {
-        setCart(cartData);
-        setItemsData(cartData.cartItems);
+      if (cartResponseData?.id) {
+      console.log('setting again');
+        setCartData(cartResponseData);
+        setCart(cartResponseData);
+        setItemsData(cartResponseData.cartItems);
       }
     } catch (error) {
       console.log(error);
@@ -109,7 +114,9 @@ const CartScreen: React.FC<CartProps> = ({
         cartItem.product.id,
         cartItem?.variant?.id ? cartItem?.variant?.id : null,
       );
+      console.log(wishList, 'wishList');
       if (wishList?.id) {
+      console.log('going to reomve');
         await onRemoveItem(cartItem);
       }
     } catch (error) {

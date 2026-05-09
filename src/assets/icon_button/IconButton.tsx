@@ -15,6 +15,7 @@ export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
   height?: string | number;
   variant?: IconButtonVariant;
   onclick?: () => void;
+  badge?: number;
 }
 
 export const IconButton: React.FC<IconButtonProps> = ({
@@ -27,6 +28,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
   className = "",
   style,
   onClick,
+  badge,
   ...rest
 }) => {
   const finalDimensions = useMemo(() => {
@@ -54,18 +56,28 @@ export const IconButton: React.FC<IconButtonProps> = ({
     .filter(Boolean)
     .join(" ");
 
+  const showBadge = badge !== undefined && badge > 0;
+
   return (
-    <button
-      className={classNames}
-      style={combinedStyles}
-      disabled={disabled}
-      type={rest.type || "button"}
-      aria-label={rest["aria-label"] || "icon button"}
-      {...rest}
-      onClick={onClick}
-    >
-      <span className="icon-button__content">{icon}</span>
-    </button>
+    <span className="icon-button__wrapper">
+      <button
+        className={classNames}
+        style={combinedStyles}
+        disabled={disabled}
+        type={rest.type || "button"}
+        aria-label={rest["aria-label"] || "icon button"}
+        {...rest}
+        onClick={onClick}
+      >
+        <span className="icon-button__content">{icon}</span>
+      </button>
+
+      {showBadge && (
+        <span className="icon-button__badge" aria-label={`${badge} items`}>
+          {badge > 99 ? "99+" : badge}
+        </span>
+      )}
+    </span>
   );
 };
 

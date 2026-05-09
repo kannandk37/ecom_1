@@ -23,9 +23,9 @@ export class WishListService {
         }
     }
 
-    async getByUserId(userId: string): Promise<Wishlist[]> {
+    async getMyWishList(): Promise<Wishlist[]> {
         try {
-            let response = await this.axiosInstance.get(`/wishlists/user/${userId}`);
+            let response = await this.axiosInstance.get(`/wishlists/me`);
             return wishlistsResponseDataToWishlistsEntities(response.data as any);
         } catch (error) {
             console.log(error);

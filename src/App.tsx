@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Home, { productsTestData } from "./pages/Home/Home";
 import Login from "./pages/Login";
 import ConfirmCheckout from "./pages/Checkout";
@@ -24,6 +24,7 @@ import CartTotalCard, {
 } from "./pages/CartTotalCard/CardTotalCard";
 import CartScreen from "./pages/Cart/Cart";
 import { Order, OrderProps } from "./pages/Order/Order";
+import { useEffect } from "react";
 
 const mockOrderData: OrderProps = {
   orderNumber: "DF-98231",
@@ -96,7 +97,45 @@ const mockOrderData: OrderProps = {
   ],
 };
 
+//TODO: this method need to be tested, it is called in App();
+function useAutoRefresh(timeoutLimit = 15 * 60 * 1000) {
+  // const location = useLocation(); // Get current path (e.g., "/support")
+
+  useEffect(() => {
+    // List of paths you DON'T want to refresh
+    // const excludedPaths = ['']; // e.g.: we can give path here so if screen is in that path it wont reload  '/support', '/checkout', '/live-chat'
+
+    // Check if the current page is in the list
+    // const isExcluded = excludedPaths.includes(location.pathname);
+
+    let awayTimer: any;
+
+    const handleVisibilityChange = () => {
+      if (document.hidden 
+        // && !isExcluded
+      ) {
+        awayTimer = setTimeout(() => {
+          window.location.reload();
+        }, timeoutLimit);
+      } else {
+        clearTimeout(awayTimer);
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      clearTimeout(awayTimer);
+    };
+  }, [
+    // location.pathname, timeoutLimit
+  ]); // Re-run logic when the path changes
+}
+
+
 function App() {
+  useAutoRefresh(30 * 60 * 1000);
   const renderRoutes: any = (items: NavItem[]) => {
     return items.flatMap((item) => {
       const routes = [];
@@ -118,7 +157,7 @@ function App() {
     discountCode: "FESTIVE10", // Optional, passed as present
     discountAmount: "-$10.00", // Optional, passed as present
     finalTotal: "$63.96",
-    onCheckout: () => {},
+    onCheckout: () => { },
   };
   return (
     <BrowserRouter>

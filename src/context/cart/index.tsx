@@ -29,10 +29,7 @@ function calcTotals(cart: Cart | null): {
   totalPrice: number;
 } {
   if (!cart?.cartItems?.length) return { totalItems: 0, totalPrice: 0 };
-  const totalItems = cart.cartItems.reduce(
-    (sum, i) => sum + (i.quantity ?? 0),
-    0,
-  );
+  const totalItems = cart.cartItems?.length > 0 ? cart.cartItems?.length : 0;
   const totalPrice = cart.cartItems.reduce((sum, i) => {
     const price = i.variant?.price ?? i.product?.price ?? 0;
     return sum + price * (i.quantity ?? 0);

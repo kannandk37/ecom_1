@@ -15,6 +15,7 @@ import { LocalStorage } from "../../storage";
 import { MdManageAccounts } from "react-icons/md";
 import { IoMdSettings } from "react-icons/io";
 import { IoLogOut } from "react-icons/io5";
+import { useCart } from "../../context/cart";
 
 export interface UserOptions {
   name: string;
@@ -47,6 +48,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [user, setUser] = useState<User>(null);
   const navigate = useNavigate();
   const searchWrapperRef = useRef<HTMLDivElement>(null);
+  const {totalItems} = useCart();
 
   useEffect(() => {
     (async () => {
@@ -250,6 +252,7 @@ export const Header: React.FC<HeaderProps> = ({
                 disabled={false}
                 size="medium"
                 onClick={onCartClick}
+                badge={totalItems > 0 ? totalItems : 0}
               />
               <IconButton
                 height="40px"

@@ -22,8 +22,12 @@ import { UserAccountService } from "../../service/user_account";
 import Loader2 from "../../assets/loader/Loader2";
 import Toast from "../../assets/toast/Toast";
 import axios from "axios";
+import { CartService } from "../../service/cart";
+import { WishListService } from "../../service/wishlist";
+import { useCart } from "../../context/cart";
 
 const AuthCard: React.FC = () => {
+  const {setCart} = useCart();
   const location = useLocation();
   const [isLogin, setIsLogin] = useState<boolean>(true);
   const navigate = useNavigate();
@@ -87,7 +91,8 @@ const AuthCard: React.FC = () => {
       try {
         if (isLogin) {
           // TODO: nned to check this login in flow
-          await new UserAccountService().loginIn(email, password);
+          let response = await new UserAccountService().loginIn(email, password);
+
         } else {
           await new UserAccountService().signUp(name, mobile, email, password);
         }
@@ -96,8 +101,12 @@ const AuthCard: React.FC = () => {
         if (axios.isAxiosError(error) && error.response?.data?.statusCode) {
           setToastError(error.response?.data?.error);
         }
-      } finally {
         setIsLoading(false);
+      } finally {
+        let cartData = await new CartService().getMyCart();
+        let wishListData = await new WishListService().getMyWishList();
+        setCart(cartData);
+        // TODO: orders
       }
     }
   };
