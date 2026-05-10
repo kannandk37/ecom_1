@@ -223,6 +223,7 @@ import { Cart } from "../../entity/cart";
 import { CartItem } from "../../entity/cart_item";
 import { CartService } from "../../service/cart";
 import Loader2 from "../../assets/loader/Loader2";
+import { useCart } from "../../context/cart";
 
 interface ProductProps {
   productData?: Product;
@@ -234,6 +235,21 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
   const [product, setProduct] = useState<Product>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isAuthModalOpen, setAuthModalOpen] = useState<boolean>(false);
+  const {
+    cart,
+    isHydrated,
+    cartError,
+    clearCartError,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    applyPromocode,
+    removePromocode,
+    clearCart,
+    setCart,
+    totalItems,
+    totalPrice,
+  } = useCart();
 
   const navigate = useNavigate();
 
@@ -253,19 +269,40 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
     })();
   }, [productId]);
 
+  // const handleAddToCart = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     let user = await new LocalStorage().getUser();
+  //     if (user?.id) {
+  //       let cart = new Cart();
+  //       let cartItem = new CartItem();
+  //       cartItem.product = product;
+  //       //TODO: have to add for variant;
+  //       cartItem.variant = null;
+  //       cartItem.quantity = quantity;
+  //       cart.cartItems = [cartItem];
+  //       await new CartService().create(cart);
+  //       navigate("/cart");
+  //     } else {
+  //       setIsLoading(false);
+  //       setAuthModalOpen(true);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     setIsLoading(false);
+  //   }
+  // };
+
   const handleAddToCart = async () => {
     setIsLoading(true);
     try {
       let user = await new LocalStorage().getUser();
       if (user?.id) {
-        let cart = new Cart();
-        let cartItem = new CartItem();
+        const cartItem = new CartItem();
         cartItem.product = product;
-        //TODO: have to add for variant;
         cartItem.variant = null;
-        cartItem.quantity = quantity;
-        cart.cartItems = [cartItem];
-        await new CartService().create(cart);
+        cartItem.quantity = 1;
+        await addToCart(cartItem);
         navigate("/cart");
       } else {
         setIsLoading(false);

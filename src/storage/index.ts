@@ -12,12 +12,24 @@ export class LocalStorage {
         return await storage.setItem('token', token);
     }
 
-    async getToken(token: string) {
+    async getToken() {
         return await storage.getItem('token');
     }
 
     async clearToken() {
         return await storage.removeItem('token');
+    }
+
+    async storeRefreshToken(refreshToken: string) {
+        return await storage.setItem('refreshtoken', refreshToken);
+    }
+
+    async getRefreshToken() {
+        return await storage.getItem('refreshtoken');
+    }
+
+    async clearRefreshToken() {
+        return await storage.removeItem('refreshtoken');
     }
 
     async storeUser(user: User) {
@@ -97,7 +109,7 @@ export class LocalStorage {
         if (data) {
             return JSON.parse(data) as Wishlist[]
         } else {
-            return null;
+            return [];
         }
     }
 

@@ -1,0 +1,265 @@
+import { useCart } from "../../context/cart";
+import { CartItem } from "../../entity/cart_item";
+import { useEffect } from "react";
+
+const AnyComponent = () => {
+  const {
+    cart,
+    isHydrated,
+    cartError,
+    clearCartError,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    applyPromocode,
+    removePromocode,
+    clearCart,
+    setCart,
+    totalItems,
+    totalPrice,
+  } = useCart();
+
+  // ── 1. Toast watcher — put this in ONE place only (App.tsx or layout) ────
+  useEffect(() => {
+    if (!cartError) return;
+    showToast(cartError.message); // your toast method
+    clearCartError();
+  }, [cartError]);
+
+  // ── 2. Guard until localStorage + API hydration is done ──────────────────
+  if (!isHydrated) return <Loader />;
+
+  // ── 3. Read cart items ────────────────────────────────────────────────────
+  const cartItems = cart?.cartItems ?? [];
+  // use: cartItems.map(...) to render list
+
+  // ── 4. Item count — navbar badge, header count ────────────────────────────
+  // totalItems is always derived from cart, never stale
+  // use: <span>{totalItems}</span>
+
+  // ── 5. Total price — summary section ─────────────────────────────────────
+  // use: <span>₹{totalPrice.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
+
+  // ── 6. Add to cart — product card, product detail ────────────────────────
+  const handleAddToCart = async () => {
+    const cartItem = new CartItem();
+    cartItem.product = product;       // your product object
+    cartItem.variant = null;          // or selected variant
+    cartItem.quantity = 1;            // or selected quantity
+    await addToCart(cartItem);
+    // UI updates instantly (optimistic)
+    // on fail — auto rollback + cartError set → toast shows
+  };
+
+  // ── 7. Remove item — cart item row ────────────────────────────────────────
+  const handleRemove = async (cartItemId: string) => {
+    await removeFromCart(cartItemId);
+    // UI updates instantly (optimistic)
+    // on fail — auto rollback + toast
+  };
+
+  // ── 8. Increase quantity ──────────────────────────────────────────────────
+  const handleIncrease = async (cartItemId: string, currentQty: number) => {
+    await updateQuantity(cartItemId, currentQty + 1);
+    // debounced API — UI updates on every tap instantly
+  };
+
+  // ── 9. Decrease quantity ──────────────────────────────────────────────────
+  const handleDecrease = async (cartItemId: string, currentQty: number) => {
+    await updateQuantity(cartItemId, currentQty - 1);
+    // passing 0 → auto removes item
+    // passing negative → sanitised to 0 → auto removes item
+  };
+
+  // ── 10. Direct quantity input — user types a number ───────────────────────
+  const handleQuantityInput = async (cartItemId: string, value: string) => {
+    const parsed = parseInt(value, 10);
+    if (isNaN(parsed)) return;        // ignore non-numeric input
+    await updateQuantity(cartItemId, parsed);
+  };
+
+  // ── 11. Apply promo code ──────────────────────────────────────────────────
+  const handleApplyPromo = () => {
+    applyPromocode("SAVE10");
+    // local only until promo API is wired
+    // empty/whitespace string is ignored internally
+  };
+
+  // ── 12. Remove promo code ─────────────────────────────────────────────────
+  const handleRemovePromo = () => {
+    removePromocode();
+  };
+
+  // ── 13. Read applied promo ────────────────────────────────────────────────
+  const appliedPromo = cart?.appliedPromocode ?? null;
+  // use: {appliedPromo && <span>Promo applied: {appliedPromo}</span>}
+
+  // ── 14. Clear entire cart ─────────────────────────────────────────────────
+  const handleClearCart = async () => {
+    await clearCart();
+    // optimistic — cart items wiped instantly
+    // on fail — rollback + toast
+  };
+
+  // ── 15. Full cart replacement — after login / server merge ────────────────
+  const handleCartFromServer = (serverCart: Cart) => {
+    setCart(serverCart);
+    // replaces state + localStorage in one call
+  };
+
+  // ── 16. Check if specific product is in cart ──────────────────────────────
+  const isInCart = (productId: string): boolean => {
+    return cart?.cartItems?.some((i) => i.product?.id === productId) ?? false;
+  };
+
+  // ── 17. Get quantity of specific item in cart ─────────────────────────────
+  const getItemQuantity = (productId: string): number => {
+    return (
+      cart?.cartItems?.find((i) => i.product?.id === productId)?.quantity ?? 0
+    );
+  };
+
+  // ── 18. Logout — clear cart state + localStorage ─────────────────────────
+  const handleLogout = () => {
+    setCart(null);
+    // then clear token, navigate to login etc.
+  };
+
+  // ── 19. Empty cart check ──────────────────────────────────────────────────
+  const isEmpty = !cart?.cartItems?.length;
+  // use: {isEmpty && <EmptyCartMessage />}
+
+  // ── 20. Cart exists and is active check ───────────────────────────────────
+  const isCartActive = cart?.isActive ?? false;
+};
+
+
+Where each method belongs across your app:
+MethodWhere to calladdToCart ProductCard, ProductDetail, QuickAdd removeFromCartCartItem row, CartScreenupdateQuantityCartItem row +/- buttons, quantity inputapplyPromocodeCartSummary, PromoInputremovePromocodeCartSummaryclearCartCartScreen, OrderConfirmationsetCart(null)Logout handlersetCart(serverCart)Post-login cart mergecart?.cartItemsCartScreen, CartItems componenttotalItemsNavbar badge, CartScreen headertotalPriceCartSummary, CartTotalCardisHydratedCartScreen, any page that renders cart on loadcartError + clearCartErrorApp.tsx or layout — one place onlyisInCart(productId)ProductCard heart/add button stategetItemQuantity(productId)ProductCard, ProductDetail quantity display
+
+
+
+
+
+
+
+
+
+use case as hooks for Product screen 
+
+import { useAddToCart } from "../../hooks/useAddToCart";
+import { useToast } from "../../hooks/useToast"; // your toast hook
+
+const ProductDetailScreen = ({ product }) => {
+  const [isAuthModalOpen, setAuthModalOpen] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const { showToast } = useToast();
+
+  const {
+    handleAddToCart,
+    handlePostLoginAddToCart,
+    isAddingToCart,
+    isInCart,
+    getCartQuantity,
+  } = useAddToCart({
+    showToast,
+    onAuthRequired: () => setAuthModalOpen(true),
+    onSuccess: () => setQuantity(1), // reset quantity after add
+  });
+
+  return (
+    <div>
+      {/* Quantity selector */}
+      <div className="quantity-selector">
+        <button onClick={() => setQuantity((q) => Math.max(1, q - 1))} disabled={isAddingToCart}>−</button>
+        <span>{quantity}</span>
+        <button onClick={() => setQuantity((q) => q + 1)} disabled={isAddingToCart}>+</button>
+      </div>
+
+      {/* Add to cart button */}
+      <button
+        onClick={() => handleAddToCart(product, quantity)}
+        disabled={isAddingToCart || (product.stock !== undefined && product.stock <= 0)}
+      >
+        {product.stock !== undefined && product.stock <= 0
+          ? "Out of Stock"
+          : isAddingToCart
+          ? "Adding..."
+          : isInCart(product.id)
+          ? "Go to Cart"
+          : "Add to Cart"}
+      </button>
+
+      {/* Already in cart — show current quantity */}
+      {isInCart(product.id) && (
+        <span>{getCartQuantity(product.id)} in cart</span>
+      )}
+
+      <LogInOrSignUp
+        isOpen={isAuthModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        onSuccess={handlePostLoginAddToCart}
+      />
+    </div>
+  );
+};
+
+
+
+
+
+
+
+
+use case as hooks for Product card
+
+import { useAddToCart } from "../../hooks/useAddToCart";
+import { useToast } from "../../hooks/useToast";
+
+const ProductCard = ({ product, onClick }) => {
+  const { showToast } = useToast();
+  const [isAuthModalOpen, setAuthModalOpen] = useState(false);
+
+  const {
+    handleAddToCart,
+    handlePostLoginAddToCart,
+    isAddingToCart,
+    addedProductId,
+    isInCart,
+  } = useAddToCart({
+    showToast,
+    onAuthRequired: () => setAuthModalOpen(true),
+    // no onSuccess — card stays where it is
+  });
+
+  // per-card loading — only show spinner on THIS card's button
+  const isThisCardAdding = isAddingToCart && addedProductId === product.id;
+
+  return (
+    <div className="product-card" onClick={() => onClick?.(product)}>
+      <img src={product.image} alt={product.title} />
+      <h3>{product.title}</h3>
+      <span>₹{product.price}</span>
+
+      <button
+        onClick={(e) => {
+          e.stopPropagation(); // don't trigger card click
+          handleAddToCart(product, 1);
+        }}
+        disabled={isThisCardAdding}
+      >
+        {isThisCardAdding
+          ? "Adding..."
+          : isInCart(product.id)
+          ? "In Cart"
+          : "Add to Cart"}
+      </button>
+
+      <LogInOrSignUp
+        isOpen={isAuthModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        onSuccess={handlePostLoginAddToCart}
+      />
+    </div>
+  );
+};

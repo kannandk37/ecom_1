@@ -5,8 +5,10 @@ import React, {
   useCallback,
   useMemo,
   ReactNode,
+  useEffect,
 } from "react";
 import { Wishlist } from "../../entity/wishlist";
+import { LocalStorage } from "../../storage";
 
 interface WishlistContextValue {
   wishlists: Wishlist[];
@@ -26,6 +28,16 @@ export const WishlistProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [wishlists, setWishlistsState] = useState<Wishlist[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const ls = new LocalStorage();
+      let wishlists = await ls.getWishlists();
+      if (wishlists?.length > 0) {
+        setWishlistsState(wishlists);
+      }
+    })();
+  }, []);
 
   const setWishlists = useCallback((items: Wishlist[]) => {
     setWishlistsState(items);

@@ -26,6 +26,7 @@ import { CartService } from "../../service/cart";
 import { WishListService } from "../../service/wishlist";
 import { useCart } from "../../context/cart";
 import { useWishlist } from "../../context/wishlist";
+import { useAuth } from "../../context/auth";
 
 const AuthCard: React.FC = () => {
   const { setCart } = useCart();
@@ -50,6 +51,7 @@ const AuthCard: React.FC = () => {
   const [showRe_Password, setShowRe_Password] = useState<boolean>(false);
   const [toastError, setToastError] = useState<string>(null);
   const toggleAuth = () => setIsLogin(!isLogin);
+  const { signIn } = useAuth();
 
   const panelStyle = {
     backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url(${isLogin ? BANNNER2 : BANNNER})`,
@@ -109,6 +111,7 @@ const AuthCard: React.FC = () => {
       } finally {
         let cartData = await new CartService().getMyCart();
         let wishListData = await new WishListService().getMyWishList();
+        signIn({ wishlists: wishListData, cart: cartData });
         setCart(cartData);
         setWishlists(wishListData);
         // TODO: orders

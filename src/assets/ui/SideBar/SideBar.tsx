@@ -264,6 +264,7 @@ export const Sidebar = ({ isCollapsed, onToggle }: any) => {
     await new LocalStorage().clearProfile();
     await new LocalStorage().clearCart();
     await new LocalStorage().clearToken();
+    await new LocalStorage().clearRefreshToken();
     // TODO: Have to change this to context api
     window.location.href = "/";
     setShowUserDropdown(false);

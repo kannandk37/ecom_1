@@ -48,7 +48,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [user, setUser] = useState<User>(null);
   const navigate = useNavigate();
   const searchWrapperRef = useRef<HTMLDivElement>(null);
-  const {totalItems} = useCart();
+  const { totalItems } = useCart();
 
   useEffect(() => {
     (async () => {
@@ -145,6 +145,7 @@ export const Header: React.FC<HeaderProps> = ({
     await new LocalStorage().clearProfile();
     await new LocalStorage().clearCart();
     await new LocalStorage().clearToken();
+    await new LocalStorage().clearRefreshToken();
     // TODO: Have to change this to context api
     window.location.href = "/";
     setShowUserDropdown(false);

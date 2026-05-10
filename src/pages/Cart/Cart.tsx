@@ -9,16 +9,16 @@ import { Button } from "../../assets/button/Button";
 import ProductCardGridSingle from "../../assets/ProductCardGridSingle/ProductCardGridSingle";
 import { useNavigate } from "react-router-dom";
 import CartItems from "../../assets/cart/CartItems";
-import { LocalStorage } from "../../storage";
-import { CartService } from "../../service/cart";
-import { Cart } from "../../entity/cart";
 import Loader2 from "../../assets/loader/Loader2";
-import { CartItem } from "../../entity/cart_item";
-import { CartItemService } from "../../service/cart_item";
-import { User } from "../../entity/user";
-import { WishListService } from "../../service/wishlist";
 import { useCart } from "../../context/cart";
 import { useWishlist } from "../../context/wishlist";
+import { CartItem } from "../../entity/cart_item";
+import { WishListService } from "../../service/wishlist";
+import { User } from "../../entity/user";
+import { CartItemService } from "../../service/cart_item";
+import { CartService } from "../../service/cart";
+import { Cart } from "../../entity/cart";
+
 export interface CartProps {
   cartTotal: CartTotalCardProps;
   productsData: any[];
@@ -30,45 +30,41 @@ const CartScreen: React.FC<CartProps> = ({
   productsData,
   onCheckout,
 }) => {
-  const navigate = useNavigate();
   const [cartData, setCartData] = useState<Cart>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [itemsData, setItemsData] = useState<CartItem[]>([]);
   const [user, setUser] = useState<User>();
   const { setCart } = useCart();
+  const navigate = useNavigate();
+
+  const {
+    cart,
+    isHydrated,
+    cartError,
+    clearCartError,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    applyPromocode,
+    removePromocode,
+    totalItems,
+    totalPrice,
+  } = useCart();
+
   const { wishlists } = useWishlist();
 
+  // ── Toast watcher — cartError from any action shows here ──────────────────
   useEffect(() => {
-    (async () => {
-      setIsLoading(true);
-      try {
-        let user = await new LocalStorage().getUser();
-        if (user?.id) {
-          setUser(user);
-          await fetchCart();
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsLoading(false);
-      }
-    })();
-  }, []);
+    if (!cartError) return;
+    // replace with your toast method e.g. toast.error(cartError.message)
+    alert(cartError.message);
+    clearCartError();
+  }, [cartError]);
 
-  const fetchCart = async () => {
-    try {
-      let cartData = await new CartService().getMyCart();
-      setCartData(cartData);
-      setItemsData(cartData.cartItems);
-      setCart(cartData);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // ── Not hydrated yet — show loader ────────────────────────────────────────
+  if (!isHydrated) return <Loader2 />;
 
-  const onContinueShopping = () => {
-    navigate("/");
-  };
+  const cartItems = cart?.cartItems ?? [];
 
   const onIncreaseQuantity = async (cartItem: CartItem) => {
     try {
@@ -127,105 +123,110 @@ const CartScreen: React.FC<CartProps> = ({
   };
 
   return (
-    <>
-      {isLoading ? (
-        <Loader2 />
-      ) : (
-        <div className="cart-fullscreen-wrapper">
-          <div className="cart-page-root">
-            <div className="cart-top-nav">
-              <div className="cart-breadcrumbs">
-                <span
-                  className="home"
-                  onClick={() => {
-                    console.log("Continue shopping");
-                    navigate("/");
-                  }}
-                >
-                  Home
-                </span>{" "}
-                &rsaquo; <span className="current">Cart</span>
-              </div>
-              <Button
-                disabled={false}
-                icon={<FiArrowLeft />}
-                name="Continue Shopping"
-                onClick={() => onContinueShopping}
-                height={"45px"}
-                fontSize={"18px"}
+    <div className="cart-fullscreen-wrapper">
+      <div className="cart-page-root">
+        <div className="cart-top-nav">
+          <div className="cart-breadcrumbs">
+            <span className="home" onClick={() => navigate("/")}>
+              Home
+            </span>
+            &rsaquo; <span className="current">Cart</span>
+          </div>
+          <Button
+            disabled={false}
+            icon={<FiArrowLeft />}
+            name="Continue Shopping"
+            onClick={() => navigate("/")}
+            height={"45px"}
+            fontSize={"18px"}
+          />
+        </div>
+
+        <div className="cart-header-wrapper">
+          <h1 className="cart-page-title">Shopping Cart</h1>
+          <span className="cart-item-count">{totalItems} items</span>
+        </div>
+
+        <div className="cart-main-layout">
+          <div className="cart-items-section">
+            {cartItems.length > 0 ? (
+              <CartItems
+                data={cartItems}
+                // ── Remove item ─────────────────────────────────────────
+                // CartItems component should call this with the cartItemId
+                // onRemove={async (cartItemId: string) => {
+                //   await removeFromCart(cartItemId);
+                // }}
+                // // ── Quantity change ──────────────────────────────────────
+                // // CartItems component should call this when +/- tapped
+                // // passing 0 auto-removes the item
+                // onIncreaseQuantity={async (cartItemId: string, newQty: number) => {
+                //   await updateQuantity(cartItemId, newQty);
+                // }}
+                // onDecreaseQuantity={async (cartItemId: string, newQty: number) => {
+                //   await updateQuantity(cartItemId, newQty);
+                // }}
+                onIncreaseQuantity={onIncreaseQuantity}
+                onRemove={onRemoveItem}
+                onSaveForLater={onSaveForLater}
               />
-            </div>
-
-            <div className="cart-header-wrapper">
-              <h1 className="cart-page-title">Shopping Cart</h1>
-              <span className="cart-item-count">{itemsData?.length} items</span>
-            </div>
-
-            <div className="cart-main-layout">
-              <div className="cart-items-section">
-                {itemsData?.length > 0 ? (
-                  <CartItems
-                    data={itemsData}
-                    onIncreaseQuantity={onIncreaseQuantity}
-                    onRemove={onRemoveItem}
-                    onSaveForLater={onSaveForLater}
-                  />
-                ) : (
-                  <div className="empty-cart-message">
-                    <p>Your cart is currently empty.</p>
-                    <Button
-                      disabled={false}
-                      icon={<FiArrowLeft />}
-                      name="Continue Shopping"
-                      onClick={onContinueShopping}
-                      height={"45px"}
-                      fontSize={"18px"}
-                    />
-                  </div>
-                )}
-              </div>
-
-              <div className="cart-summary-section">
-                <CartTotalCard
-                  {...cartTotal}
-                  onCheckout={
-                    onCheckout ||
-                    (() => {
-                      console.log("Proceeding to checkout");
-                      navigate("/checkout");
-                    })
-                  }
+            ) : (
+              <div className="empty-cart-message">
+                <p>Your cart is currently empty.</p>
+                <Button
+                  disabled={false}
+                  icon={<FiArrowLeft />}
+                  name="Continue Shopping"
+                  onClick={() => navigate("/")}
+                  height={"45px"}
+                  fontSize={"18px"}
                 />
               </div>
-            </div>
-            <div className="cart-recommendations-section">
-              {/* {wishlists.map((wishlist) => wishlist.product)?.length > 0 && ( */}
-              <div className="carousel-wrapper">
-                <Carousel
-                  title="Your Wish List"
-                  data={wishlists.map((wishlist) => wishlist.product)}
-                  renderItem={(item: any) => (
-                    <ProductCardGridSingle product={item} />
-                  )}
-                />
-              </div>
-              {/* )} */}
-              {wishlists.map((wishlist) => wishlist.product)?.length}
+            )}
+          </div>
 
-              <div className="carousel-wrapper">
-                <Carousel
-                  title="You May Also Like"
-                  data={productsData}
-                  renderItem={(item: any) => (
-                    <ProductCardGridSingle product={item} />
-                  )}
-                />
-              </div>
-            </div>
+          <div className="cart-summary-section">
+            <CartTotalCard
+              {...cartTotal}
+              // Override totals with live context values
+              // totalItems={totalItems}
+              // totalPrice={totalPrice}
+              // appliedPromocode={cart?.appliedPromocode}
+              // ── Promo code ─────────────────────────────────────────────
+              // onApplyPromocode={(code: string) => applyPromocode(code)}
+              // onRemovePromocode={() => removePromocode()}
+              // ── Clear cart ─────────────────────────────────────────────
+              // onClearCart={async () => await clearCart()}
+              onCheckout={onCheckout || (() => navigate("/checkout"))}
+            />
           </div>
         </div>
-      )}
-    </>
+
+        <div className="cart-recommendations-section">
+          {wishlists.length > 0 && (
+            <div className="carousel-wrapper">
+              <Carousel
+                title="Your Wish List"
+                data={wishlists.map((w) => w.product)}
+                renderItem={(item: any) => (
+                  <ProductCardGridSingle product={item} />
+                )}
+              />
+            </div>
+          )}
+
+          <div className="carousel-wrapper">
+            <Carousel
+              title="You May Also Like"
+              data={productsData}
+              renderItem={(item: any) => (
+                <ProductCardGridSingle product={item} />
+              )}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

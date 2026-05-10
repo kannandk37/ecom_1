@@ -23,10 +23,10 @@ import { Wishlist } from "../../entity/wishlist";
 const ls = new LocalStorage();
 
 interface SignInPayload {
-  token: string;
-  user: User;
-  role: Role;
-  profile: Profile;
+  token?: string;
+  user?: User;
+  role?: Role;
+  profile?: Profile;
   cart?: Cart | null;
   wishlists?: Wishlist[] | null;
 }
@@ -61,7 +61,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       try {
         const [token, user, role, profile, cart, wishlists] = await Promise.all(
           [
-            ls.getToken("token"),
+            ls.getToken(),
             ls.getUser(),
             ls.getRole(),
             ls.getProfile(),
@@ -99,12 +99,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       try {
         // Persist to localStorage first so rehydration works on refresh
         await Promise.all([
-          ls.storeToken(token),
-          ls.storeUser(user),
-          ls.storeRole(role),
-          ls.storeProfile(profile),
-          ...(cart ? [ls.storeCart(cart)] : []),
-          ...(wishlists ? [ls.storeWishlists(wishlists)] : []),
+          token && ls.storeToken(token),
+          user && ls.storeUser(user),
+          role && ls.storeRole(role),
+          profile && ls.storeProfile(profile),
+          cart && ls.storeCart(cart),
+          wishlists && ls.storeWishlists(wishlists),
         ]);
 
         // Then populate all contexts
@@ -126,12 +126,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const signOut = useCallback(async () => {
     try {
       await Promise.all([
-        localStorage.removeItem("token"),
-        localStorage.removeItem("user"),
-        localStorage.removeItem("role"),
-        localStorage.removeItem("profile"),
-        localStorage.removeItem("cart"),
-        localStorage.removeItem("wishlist"),
+        ls.clearToken(),
+        ls.clearUser(),
+        ls.clearRole(),
+        ls.clearProfile(),
+        ls.clearCart(),
+        ls.clearWishlists(),
       ]);
     } catch (err) {
       console.warn("Sign out cleanup failed:", err);

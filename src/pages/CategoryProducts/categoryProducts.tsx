@@ -170,12 +170,12 @@ const CategoryProducts = ({}) => {
   }, [categoryId]);
 
   const fetchProductsOfCategory = async (id: string) => {
-    console.log(id);
+    // console.log(id);
     // setProducts()
   };
 
   const fetchCategory = async (id: string) => {
-    console.log(id);
+    // console.log(id);
     // setCategory()
   };
 

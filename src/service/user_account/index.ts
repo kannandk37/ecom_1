@@ -26,9 +26,11 @@ export class UserAccountService {
             let profile = await profileResponseDatumToProfileEntity(response.data.profile);
 
             let token = response.data.token;
+            let refreshToken = response.data.refreshToken;
 
             let storagePersistor = new LocalStorage();
             await storagePersistor.storeToken(token);
+            await storagePersistor.storeRefreshToken(refreshToken);
             await storagePersistor.storeUser(user);
             await storagePersistor.storeRole(role);
             await storagePersistor.storeProfile(profile);
@@ -53,9 +55,40 @@ export class UserAccountService {
             let profile = await profileResponseDatumToProfileEntity(response.data.profile);
 
             let token = response.data.token;
+            let refreshToken = response.data.refreshToken;
 
             let storagePersistor = new LocalStorage();
             await storagePersistor.storeToken(token);
+            await storagePersistor.storeRefreshToken(refreshToken);
+            await storagePersistor.storeUser(user);
+            await storagePersistor.storeRole(role);
+            await storagePersistor.storeProfile(profile);
+
+            response.user = user;
+            response.role = role;
+            response.profile = profile;
+
+            return response;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
+    async enterpriseLoginIn(email: string, password: string): Promise<AxiosResponse<any>> {
+        try {
+            let response: any = await this.axiosInstance.post('/enterpriselogin', { email: email, password: password });
+
+            let user = await userResponseDatumToUserEntity(response.data.user);
+            let role = await roleResponseDatumToRoleEntity(response.data.role);
+            let profile = await profileResponseDatumToProfileEntity(response.data.profile);
+
+            let token = response.data.token;
+            let refreshToken = response.data.refreshToken;
+
+            let storagePersistor = new LocalStorage();
+            await storagePersistor.storeToken(token);
+            await storagePersistor.storeRefreshToken(refreshToken);
             await storagePersistor.storeUser(user);
             await storagePersistor.storeRole(role);
             await storagePersistor.storeProfile(profile);
