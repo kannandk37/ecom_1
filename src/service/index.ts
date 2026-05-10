@@ -1,5 +1,6 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import { LocalStorage } from "../storage";
+import { EmailAccountService } from "./email_account";
 
 const axiosinstance = axios.create({
     baseURL: 'https://ecom-api-orcin-beta.vercel.app/api',
@@ -19,10 +20,15 @@ const axiosinstance = axios.create({
 
 axiosinstance.interceptors.request.use(
     async (config) => {
-        const token = await new LocalStorage().getToken('token');
+        const path = config.url;
+        const urlData = path.split('/').pop();
+
+        const token = urlData == 'refreshtoken' ? await new LocalStorage().getRefreshToken() : await new LocalStorage().getToken();
+
         if (token) {
             config.headers['Authorization'] = 'Bearer ' + token
         }
+
         return config;
     },
     (error) => {
@@ -33,25 +39,30 @@ axiosinstance.interceptors.request.use(
 axiosinstance.interceptors.response.use(
     (response) => {
         if (response.data?.statusCode === 201) {
-            // Emitter.dispatch('success', response.data.message);
         }
         if (response.data?.statusCode === 202) {
-            // Emitter.dispatch('success', response.data.message);
         }
         if (response.data?.statusCode == 409) {
-            // Emitter.dispatch('already exists', response.data.message);
         }
         return response.data;
     },
-    (error) => {
+    async (error) => {
         if (error.response?.data?.statusCode === 401) {
-            // Emitter.dispatch('errorStatus401', error.response);
+            if (error.response.data.error == 'Not authorized, token failed') {
+                const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
+
+                let response = await new EmailAccountService().refreshToken(await new LocalStorage().getRefreshToken() || '');
+                originalRequest.headers = {
+                    ...originalRequest.headers,
+                    Authorization: 'Bearer ' + response.data.token,
+                };
+                return axiosinstance(originalRequest);
+            }
         }
-        if (error.response?.data?.statusCode === 401) {
+        if (error.response?.data?.statusCode === 403) {
 
         }
         if (error.response) {
-            // Emitter.dispatch('error', error.response.data.error);
         }
         return Promise.reject(error);
     }
