@@ -15,14 +15,48 @@ import DashBoardInput from "../../assets/ui/DashBoardInput/DashBoardInput";
 import Dropdown from "../../assets/dropdown/DropDown";
 import "./CreateOrEditWareHouse.css";
 import { ProfileService } from "../../service/profile";
-import { Address } from "../../entity/address";
+import { Address, AddressType } from "../../entity/address";
 import {
   CapacityUnit,
+  Warehouse,
+  WarehouseBin,
   WarehouseStatus,
   WarehouseType,
 } from "../../entity/warehouse";
 import { INDIAN_STATES } from "../../utils/utils";
 import { Profile } from "../../entity/profile";
+import { User } from "../../entity/user";
+
+const typeOptions = [
+  {
+    id: WarehouseType.OWN,
+    label: WarehouseType.OWN,
+    value: WarehouseType.OWN,
+  },
+  {
+    id: WarehouseType.RENTED,
+    label: WarehouseType.RENTED,
+    value: WarehouseType.RENTED,
+  },
+];
+const statusOptions = [
+  {
+    id: WarehouseStatus.ACTIVE,
+    label: WarehouseStatus.ACTIVE,
+    value: WarehouseStatus.ACTIVE,
+  },
+  {
+    id: WarehouseStatus.INACTIVE,
+    label: WarehouseStatus.INACTIVE,
+    value: WarehouseStatus.INACTIVE,
+  },
+  {
+    id: WarehouseStatus.MAINTENANCE,
+    label: WarehouseStatus.MAINTENANCE,
+    value: WarehouseStatus.MAINTENANCE,
+  },
+];
+const unitOptions = [{ id: "", label: "Units", value: CapacityUnit.UNITS }];
 
 const CreateOrEditWareHouse: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -36,7 +70,6 @@ const CreateOrEditWareHouse: React.FC = () => {
     label: string;
     value: string;
   }>({ id: "1", label: "tester", value: "tester" }); // The user select field mentioned
-  // const [code, setCode] = useState("");
   const [type, setType] = useState<{
     id: WarehouseType;
     label: WarehouseType;
@@ -47,7 +80,6 @@ const CreateOrEditWareHouse: React.FC = () => {
     label: WarehouseStatus;
     value: WarehouseStatus;
   }>(null);
-  const [address, setAddress] = useState<Address>(); // kept for backward compat
 
   // Expanded Address States
   const [addressLine1, setAddressLine1] = useState<string>("");
@@ -100,43 +132,11 @@ const CreateOrEditWareHouse: React.FC = () => {
 
   // UI States
   const [isLoading, setIsLoading] = useState(false);
-  // const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   // Dropdown Options
   const [userOptions, setUserOptions] = useState<
     { id: string; label: string; value: string }[]
   >([]);
-
-  const typeOptions = [
-    {
-      id: WarehouseType.OWN,
-      label: WarehouseType.OWN,
-      value: WarehouseType.OWN,
-    },
-    {
-      id: WarehouseType.RENTED,
-      label: WarehouseType.RENTED,
-      value: WarehouseType.RENTED,
-    },
-  ];
-  const statusOptions = [
-    {
-      id: WarehouseStatus.ACTIVE,
-      label: WarehouseStatus.ACTIVE,
-      value: WarehouseStatus.ACTIVE,
-    },
-    {
-      id: WarehouseStatus.INACTIVE,
-      label: WarehouseStatus.INACTIVE,
-      value: WarehouseStatus.INACTIVE,
-    },
-    {
-      id: WarehouseStatus.MAINTENANCE,
-      label: WarehouseStatus.MAINTENANCE,
-      value: WarehouseStatus.MAINTENANCE,
-    },
-  ];
-  const unitOptions = [{ id: "", label: "Units", value: CapacityUnit.UNITS }];
 
   // State dropdown options derived from INDIAN_STATES
   const stateOptions = INDIAN_STATES.map((s: string) => ({
@@ -169,43 +169,30 @@ const CreateOrEditWareHouse: React.FC = () => {
 
   useEffect(() => {
     // Fetch users for the manager/user select dropdown
+    (async () => {
 
-    if (isEditMode) {
-      setIsLoading(true);
-      // axios
-      //   .get(`/api/warehouses/${id}`)
-      //   .then((res) => {
-      // const wh: Warehouse = res.data;
-      // setName(wh.name || "");
-      // setCode(wh.code || "");
-      // setType(wh.type || "");
-      // setStatus(wh.status || "");
-      // setAddress(wh.address || "");
-      // setAddressLine1(wh.addressLine1 || "");
-      // setAddressLine2(wh.addressLine2 || "");
-      // setCity(wh.city || "");
-      // setState(
-      //   wh.state
-      //     ? { id: wh.state, label: wh.state, value: wh.state }
-      //     : null,
-      // );
-      // setPincode(wh.pincode || "");
-      // setMobile(wh.mobile || "");
-      // setTotalCapacity(wh.totalCapacity?.toString() || "");
-      // setCapacityUnit(wh.capacityUnit || "");
-      // setImagePreview(wh.image || null);
+      if (isEditMode) {
+        setIsLoading(true);
+        let warehouseResponse = await axios.get('/api/warehouses') as Warehouse;
+        let warehouseBinResponse = await axios.get(`/api/warehousebins/${id}/warehouse`);
 
-      // Assuming the API returns the initial bin setup for edit
-      //   if (res.data.initialBin) {
-      //     setAisle(res.data.initialBin.aisle || "");
-      //     setRack(res.data.initialBin.rack || "");
-      //     setLevel(res.data.initialBin.level || "");
-      //     setMaxUnits(res.data.initialBin.maxUnits?.toString() || "");
-      //   }
-      // })
-      // .catch((err) => console.error(err))
-      // .finally(() => setIsLoading(false));
-    }
+        setAddressLine1(warehouseResponse.address.line1);
+        setAddressLine2(warehouseResponse.address.line2);
+        setCity(warehouseResponse.address.city);
+        setState({ id: warehouseResponse.address.state, label: warehouseResponse.address.state, value: warehouseResponse.address.state });
+        setMobile(warehouseResponse.address.mobile);
+
+        setName(warehouseResponse.name);
+        setType({ id: warehouseResponse.type, label: warehouseResponse.type, value: warehouseResponse.type });
+        setUserId({ id: warehouseResponse.operator.id, label: warehouseResponse.operator.id, value: warehouseResponse.operator.id });
+        setStatus({id: warehouseResponse.status, label: warehouseResponse.status, value: warehouseResponse.status});
+        setTotalCapacity(warehouseResponse.totalCapacity?.toString());
+        setCapacityUnit({id: warehouseResponse.capacityUnit, label: warehouseResponse.capacityUnit, value: warehouseResponse.capacityUnit});
+        // setImagePreview();
+
+        // TODO: need to prefill warehouse bin deat 
+      }
+    })()
   }, [id, isEditMode]);
 
   // Image Handling
@@ -229,77 +216,108 @@ const CreateOrEditWareHouse: React.FC = () => {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  // const isValid = () => {}
+  const isValid = () => {
+    if (!name) {
+      setNameError('This is required');
+    } else if (!userId) {
+      setUserIdError('This is required');
+    } else if (!type) {
+      setTypeError('This is required');
+    } else if (!status) {
+      setStatusError('This is required');
+    } else if (!addressLine1) {
+      setAddressLine1('This is required');
+    } else if (!addressLine2) {
+      setAddressLine2('This is required');
+    } else if (!city) {
+      setCityError('This is required');
+    } else if (!state) {
+      setStateError('This is required');
+    } else if (!pincode) {
+      setPincodeError('This is required');
+    } else if (!mobile) {
+      setMobileError('This is required');
+    } else if (!totalCapacity) {
+      setTotalCapacityError('This is required');
+    } else if (!capacityUnit) {
+      setCapacityUnitError('This is required');
+    } else if (!aisle) {
+      setAisleError('This is required');
+    } else if (!rack) {
+      setRackError('This is required');
+    } else if (!level) {
+      setLevelError('This is required');
+    } else if (!maxUnits) {
+      setMaxUnitsError('This is required');
+    } else if (!imagePreview) {
+      setImagePreviewError('Please Provide an Image')
+    } else {
+      return true;
+    }
+    return false;
+  }
 
   // Submission
   const handleSubmit = async () => {
-    const newErrors: any = {};
-    if (!name.trim()) newErrors.name = "Required";
-    if (!userId) newErrors.userId = "Required";
-    // if (!code.trim()) newErrors.code = "Required";
-    if (!type) newErrors.type = "Required";
-    if (!status) newErrors.status = "Required";
-    if (!addressLine1.trim()) newErrors.addressLine1 = "Required";
-    if (!city.trim()) newErrors.city = "Required";
-    if (!state) newErrors.state = "Required";
-    if (!pincode.trim()) newErrors.pincode = "Required";
-    else if (!/^\d{6}$/.test(pincode))
-      newErrors.pincode = "Enter valid 6-digit pincode";
-    if (!mobile.trim()) newErrors.mobile = "Required";
-    else if (!/^\d{10}$/.test(mobile))
-      newErrors.mobile = "Enter valid 10-digit mobile number";
-    if (!totalCapacity) newErrors.totalCapacity = "Required";
-    if (!capacityUnit) newErrors.capacityUnit = "Required";
-    if (!aisle) newErrors.aisle = "Required";
-    if (!rack) newErrors.rack = "Required";
-    if (!level) newErrors.level = "Required";
-    if (!maxUnits) newErrors.maxUnits = "Required";
-    if (!imagePreview && !imageFile) newErrors.image = "Image required";
 
-    if (Object.keys(newErrors).length > 0) {
-      // setErrors(newErrors);
-      return;
-    }
+    // else if (!/^\d{6}$/.test(pincode))
+    // else if (!/^\d{10}$/.test(mobile))
+    if (isValid()) {
+      setIsLoading(true);
 
-    setIsLoading(true);
+      try {
 
-    try {
-      const formData = new FormData();
-      formData.append("name", name);
-      // formData.append("userId", userId);
-      // formData.append("code", code);
-      // formData.append("type", type);
-      // formData.append("status", status);
-      // formData.append("address", address);
-      formData.append("addressLine1", addressLine1);
-      formData.append("addressLine2", addressLine2);
-      formData.append("city", city);
-      formData.append("state", state?.value || "");
-      formData.append("pincode", pincode);
-      formData.append("mobile", mobile);
-      formData.append("totalCapacity", totalCapacity);
-      // formData.append("capacityUnit", capacityUnit);
+        let addressData = new Address();
+        addressData.line1 = addressLine1;
+        addressData.line2 = addressLine2;
+        addressData.city = city;
+        addressData.state = state.label;
+        addressData.country = 'USA'; // by default now its USA 
+        addressData.type = AddressType.OFFICE; // bu default now its Office
+        addressData.mobile = mobile;
 
-      // Bin Configuration
-      formData.append("aisle", aisle);
-      formData.append("rack", rack);
-      formData.append("level", level);
-      formData.append("maxUnits", maxUnits);
+        let warehouse = new Warehouse();
+        warehouse.address = addressData;
 
-      if (imageFile) formData.append("image", imageFile);
+        let operator = new User();
+        operator.id = userId.value;
+        warehouse.operator = operator;
 
-      if (isEditMode) {
-        await axios.put(`/api/warehouses/${id}`, formData);
-      } else {
-        await axios.post("/api/warehouses", formData);
+        warehouse.name = name;
+        
+        warehouse.type = type.value;
+        
+        warehouse.status = status.value;
+
+        warehouse.totalCapacity = Number(totalCapacity);
+
+        warehouse.capacityUnit = capacityUnit.value;
+
+        warehouse.image = imagePreview;
+
+        let warehouseBin = new WarehouseBin();
+        warehouseBin.aisle = aisle;
+        warehouseBin.rack = rack;
+        warehouseBin.level = level;
+        warehouseBin.maxUnits = Number(maxUnits);
+
+        if (isEditMode) {
+          let warehouseResponse = await axios.put(`/api/warehouses/${id}`, warehouse);
+          if (warehouseResponse) {
+            await axios.put(`/api/warehousebins/${id}`, warehouseBin);
+          }
+        } else {
+          let warehouseResponse = await axios.post("/api/warehouses", warehouse);
+          if (warehouseResponse) {
+            await axios.post("/api/warehousebins", warehouseBin);
+          }
+        }
+        navigate("/dashboard/warehouses");
+        setIsLoading(false);
+      } catch (err) {
+        console.error(err);
+        setIsLoading(false);
       }
-
-      navigate("/dashboard/warehouses"); // Assuming the list route
-    } catch (err) {
-      console.error(err);
-      // setErrors((prev) => ({ ...prev, submit: "Failed to save warehouse." }));
-    } finally {
-      setIsLoading(false);
     }
   };
 
