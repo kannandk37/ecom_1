@@ -36,8 +36,9 @@ import CreateOrEditVariant from "../pages/DashBoard/Variant/createOrEditVariant"
 import CreateOrEditUser from "../pages/User/CreateOrEditUser";
 import UsersList from "../pages/DashBoard/User/Users";
 import CreateOrEditWareHouse from "../pages/WareHouse/CreateOrEditWareHouse";
-import { LuWarehouse } from "react-icons/lu";
+import { LuPackageSearch, LuWarehouse } from "react-icons/lu";
 import { CiBoxes } from "react-icons/ci";
+import ManageStock from "../pages/Inventory/ManageStock/ManageStock";
 export interface NavItem {
   id: string;
   name: string;
@@ -131,6 +132,13 @@ export const NAV_OPTIONS: NavItem[] = [
     icon: <LuWarehouse />,
     path: "/dashboard/warehouses",
     component: <CreateOrEditWareHouse />,
+  },
+  {
+    id: "manage-stock",
+    name: "Manage Stock",
+    icon: <LuPackageSearch />,
+    path: "/dashboard/manage-stock",
+    component: <ManageStock />,
   },
 ];
 
