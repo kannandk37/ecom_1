@@ -32,14 +32,3 @@ export class Warehouse {
     updatedAt?: Date;
     operator?: User;
 }
-
-export class WarehouseBin {
-    id?: string;
-    warehouse?: Warehouse;
-    binCode?: string;
-    aisle?: string;
-    rack?: string;
-    level?: string;
-    maxUnits?: number;
-    isActive?: boolean;
-}

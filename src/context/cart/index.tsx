@@ -156,6 +156,8 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
       try {
         const token = await ls.getToken();
         if (!token) return; // ✅ skip re-validate if not logged in
+        // TODO: to call cart only logged in user is customer
+      
         const fresh = await cartService.getMyCart();
         if (fresh && !cancelled) {
           setCartState(fresh);
