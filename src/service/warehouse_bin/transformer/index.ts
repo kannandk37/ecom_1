@@ -44,10 +44,22 @@ export function warehouseBinResponseDatumToWarehouseBinEntity(raw: any): Warehou
         warehouseBin.isActive = raw.isActive;
     }
 
+    if (raw.minThreshold !== undefined) {
+        warehouseBin.minThreshold = Number(raw.minThreshold);
+    }
+
+    if (raw.currentStock !== undefined) {
+        warehouseBin.currentStock = Number(raw.currentStock);
+    }
+
+    if (raw.isOccupied !== undefined) {
+        warehouseBin.isOccupied = raw.isOccupied;
+    }
+
     return warehouseBin;
 }
 
-export function warehouseBinResponseDataToWarehouseBinEntities(raws: any[]): WarehouseBin[] {
+export function warehousesBinResponseDataToWarehousesBinEntities(raws: any[]): WarehouseBin[] {
     if (!raws || raws.length === 0) {
         return [];
     }

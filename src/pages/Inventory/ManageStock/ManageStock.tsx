@@ -6,10 +6,22 @@ import DashBoardButton from "../../../assets/ui/DashBoardButton/DashBoardButton"
 import DashBoardInput from "../../../assets/ui/DashBoardInput/DashBoardInput";
 import Dropdown from "../../../assets/dropdown/DropDown";
 import "./ManageStock.css";
+import { WarehouseService } from "../../../service/warehouse";
+import { Warehouse } from "../../../entity/warehouse";
+import { ProductService } from "../../../service/product";
+import { Product } from "../../../entity/product";
+import { Variant } from "../../../entity/variant";
+import { VariantService } from "../../../service/variant";
+import { WarehouseBinService } from "../../../service/warehouse_bin";
+import { WarehouseBin } from "../../../entity/warehouse_bin";
+import { DateTime } from "luxon";
+import { Inventory } from "../../../entity/inventory";
+import { StockLedger } from "../../../entity/stock_ledger";
+import { BinStock } from "../../../entity/bin_stock";
 
 export enum InventoryAction {
-  ADJUST = "adjust",
-  WASTE = "waste",
+  ADJUST = "adjust stock",
+  WASTE = "manage waste",
 }
 
 export enum AdjustmentType {
@@ -25,68 +37,148 @@ const ManageStock: React.FC = () => {
     id: string;
     label: string;
     value: string;
-  }>({ id: "", label: "Adjust Stock", value: InventoryAction.ADJUST });
+  }>({ id: null, label: "Adjust Stock", value: InventoryAction.ADJUST });
 
   // Current Status States
   const [warehouseId, setWarehouseId] = useState<{
     id: string;
     label: string;
     value: string;
-  }>({ id: "", label: "Select Warehouse", value: "" });
+  }>({ id: null, label: "Select Warehouse", value: "" });
   const [binId, setBinId] = useState<{
     id: string;
     label: string;
     value: string;
-  }>({ id: "", label: "Select Warehouse", value: "" });
+  }>({ id: null, label: "Select Warehouse", value: "" });
   const [productId, setProductId] = useState<{
     id: string;
     label: string;
     value: string;
-  }>({ id: "", label: "Select Warehouse", value: "" });
+  }>({ id: null, label: "Select Warehouse", value: "" });
   const [variantId, setVariantId] = useState<{
     id: string;
     label: string;
     value: string;
-  }>({ id: "", label: "Select Warehouse", value: "" });
+  }>({ id: null, label: "Select Warehouse", value: "" });
 
   // Details States
   const [adjustmentType, setAdjustmentType] = useState<AdjustmentType>(
     AdjustmentType.ADD,
   );
-  const [quantity, setQuantity] = useState("");
-  const [reason, setReason] = useState("");
+  const [quantity, setQuantity] = useState<number>(0);
+  const [expiryDate, setExpiryDate] = useState<DateTime>();
+  const [reason, setReason] = useState<string>(null);
 
   // UI States
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   // Mock Data (Would typically come from API)
-  const currentStockMock = 450;
+  const [currentStockMock, setCurrentStockMock] = useState<number>(0);
 
   const actionOptions = [
-    { id: "", label: "Adjust Stock", value: InventoryAction.ADJUST },
-    { id: "", label: "Manage Waste", value: InventoryAction.WASTE },
+    { id: '', label: InventoryAction.ADJUST, value: InventoryAction.ADJUST },
+    { id: '', label: InventoryAction.WASTE, value: InventoryAction.WASTE },
   ];
 
-  const mockWarehouses = [
-    { id: "", label: "Main Distribution Center (CA)", value: "wh_1" },
-  ];
-  const mockBins = [
-    { id: "", label: "Aisle 4, Shelf B (Dry Goods)", value: "bin_1" },
-  ];
-  const mockProducts = [
-    { id: "", label: "Organic Raw Almonds", value: "prod_1" },
-  ];
-  const mockVariants = [
-    { id: "", label: "1kg Bag (SKU: ORG-ALM-1KG)", value: "var_1" },
-  ];
+  const [warehouses, setWarehouses] = useState<{
+    id: string;
+    label: string;
+    value: string;
+  }[]>([]);
 
-  // Side-effect: Force 'Reduce' if switching to Waste management
+  const [products, setProducts] = useState<{
+    id: string;
+    label: string;
+    value: string;
+  }[]>([]);
+
+  const [warehouseBins, setWarehouseBins] = useState<{
+    id: string;
+    label: string;
+    value: string;
+  }[]>([]);
+
+  const [variants, setVariants] = useState<{
+    id: string;
+    label: string;
+    value: string;
+  }[]>([]);
+
+  const [isWarehouseLoading, setIsWarehouseLoading] = useState<boolean>(true);
+  const [isBinLoading, setIsBinLoading] = useState<boolean>(false);
+  const [isProductLoading, setIsProductLoading] = useState<boolean>(false);
+  const [isVariantLoading, setIsVariantLoading] = useState<boolean>(false);
+
   useEffect(() => {
-    if (actionType.label === InventoryAction.WASTE) {
+    if (actionType.value === InventoryAction.WASTE) {
       setAdjustmentType(AdjustmentType.REDUCE);
     }
   }, [actionType]);
+
+  useEffect(() => {
+    (async () => {
+      setIsWarehouseLoading(true);
+      try {
+        let warehousesData = await new WarehouseService().getAllWarehouses();
+        let warehousesOptions = warehousesData.map((warehouse: Warehouse) => { return { id: warehouse.id, label: warehouse.name, value: warehouse.name } })
+        setWarehouses(warehousesOptions);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsWarehouseLoading(false);
+      }
+    })()
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      setIsProductLoading(true);
+      try {
+        let productsData = await new ProductService().get();
+        let productsOptions = productsData.map((product: Product) => { return { id: product.id, label: product.name, value: product.name } })
+        setProducts(productsOptions);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsProductLoading(false);
+      }
+    })()
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      if (productId.id) {
+        setIsVariantLoading(true);
+        try {
+          let variantsData = await new VariantService().getByProductId(productId.id);
+          let variantsOptions = variantsData.map((variant: Variant) => { return { id: variant.id, label: variant.name, value: variant.name } })
+          setVariants(variantsOptions);
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setIsVariantLoading(false);
+        }
+      }
+    })()
+  }, [productId]);
+
+  useEffect(() => {
+    (async () => {
+      if (warehouseId.id) {
+        setIsBinLoading(true);
+        try {
+          let warehouseBinsData = await new WarehouseBinService().getWarehouseBinsByWareHouseId(warehouseId.id);
+          let warehouseBinOptions = warehouseBinsData.map((warehouseBin: WarehouseBin) => { return { id: warehouseBin.id, label: warehouseBin.binCode, value: warehouseBin.binCode } })
+          setWarehouseBins(warehouseBinOptions);
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setIsBinLoading(false);
+        }
+      }
+    })()
+  }, [warehouseId]);
 
   const handleSubmit = async () => {
     const newErrors: any = {};
@@ -117,11 +209,43 @@ const ManageStock: React.FC = () => {
         reason,
       };
 
+      let warehouseInfo = new Warehouse();
+      warehouseInfo.id = warehouseId.id;
+
+      let binInfo = new WarehouseBin();
+      binInfo.id = binId.id;
+
+      let productInfo = new Product();
+      productInfo.id = productId.id;
+
+      let variantInfo = new Variant();
+      variantInfo.id = variantId?.id;
+
+
+      let inventory = new Inventory();
+      inventory.warehouse = warehouseInfo;
+      inventory.product = productInfo;
+      inventory.variant = variantInfo;
+      inventory.qtyOnHand = quantity;
+      inventory.maxStockLevel // need data for max stock for this product in this variant in this warehouse
+      inventory.reorderPoint  // quantity where reorder is triggered
+
+
+      let stockLedger = new StockLedger();
+      stockLedger.notes = reason;
+      stockLedger.quantityDelta = quantity;
+
+      let binStock = new BinStock();
+      binStock.product = productInfo;
+      binStock.variant = variantInfo;
+      binStock.bin = binInfo;
+      binStock.expiryDate = expiryDate;
+      
       console.log("Submitting Inventory Update:", payload);
       // Simulate API call
       // await axios.post('/api/inventory/adjust', payload);
 
-      navigate("/dashboard/inventory");
+      navigate("/dashboard/manage-stock");
     } catch (err) {
       console.error(err);
       setErrors((prev) => ({ ...prev, submit: "Failed to update stock." }));
@@ -141,7 +265,7 @@ const ManageStock: React.FC = () => {
           <FiArrowLeft /> Back to Inventory
         </button>
         <h1 className="create-Inventory-stock-title">
-          {(actionType.label as any) === InventoryAction.ADJUST
+          {(actionType.value as any) === InventoryAction.ADJUST
             ? "Adjust Stock"
             : "Manage Waste"}
         </h1>
@@ -154,7 +278,7 @@ const ManageStock: React.FC = () => {
           <Dropdown
             options={actionOptions}
             label={actionType.label || ""}
-            onSelect={(val) => setActionType(val as any)}
+            onSelect={(val) => { console.log(val); setActionType(val as any) }}
           />
         </div>
       </div>
@@ -170,9 +294,11 @@ const ManageStock: React.FC = () => {
                 Warehouse <span className="create-Inventory-stock-req">*</span>
               </label>
               <Dropdown
-                options={mockWarehouses}
+                isLoading={isWarehouseLoading}
+                options={warehouses}
                 label={warehouseId.label || "Select Warehouse"}
-                onSelect={(val: any) => setWarehouseId}
+                noData={warehouses?.length == 0}
+                onSelect={(val: any) => setWarehouseId(val as any)}
               />
               {errors.warehouseId && (
                 <span className="create-Inventory-stock-error">
@@ -187,9 +313,11 @@ const ManageStock: React.FC = () => {
                 <span className="create-Inventory-stock-req">*</span>
               </label>
               <Dropdown
-                options={mockBins}
+                isLoading={isBinLoading}
+                options={warehouseBins}
                 label={binId.label || "Select Bin"}
-                onSelect={(val: any) => setBinId}
+                noData={warehouseBins?.length == 0}
+                onSelect={(val: any) => setBinId(val as any)}
               />
               {errors.binId && (
                 <span className="create-Inventory-stock-error">
@@ -203,9 +331,11 @@ const ManageStock: React.FC = () => {
                 Product <span className="create-Inventory-stock-req">*</span>
               </label>
               <Dropdown
-                options={mockProducts}
+                isLoading={isProductLoading}
+                options={products}
                 label={productId.label || "Select Product"}
-                onSelect={(val: any) => setProductId}
+                noData={products?.length == 0}
+                onSelect={(val: any) => setProductId(val as any)}
               />
               {errors.productId && (
                 <span className="create-Inventory-stock-error">
@@ -220,9 +350,11 @@ const ManageStock: React.FC = () => {
                 <span className="create-Inventory-stock-req">*</span>
               </label>
               <Dropdown
-                options={mockVariants}
+                isLoading={isVariantLoading}
+                options={variants}
                 label={variantId.label || "Select Variant"}
-                onSelect={(val: any) => setVariantId}
+                noData={variants?.length == 0}
+                onSelect={(val: any) => setVariantId(val as any)}
               />
               {errors.variantId && (
                 <span className="create-Inventory-stock-error">
@@ -250,7 +382,7 @@ const ManageStock: React.FC = () => {
         {/* RIGHT COLUMN: Adjustment Details */}
         <div className="create-Inventory-stock-card">
           <h2 className="create-Inventory-stock-card-title">
-            {actionType.label === InventoryAction.ADJUST
+            {actionType.value === InventoryAction.ADJUST
               ? "Adjustment Details"
               : "Manage Waste Details"}
           </h2>
@@ -259,13 +391,13 @@ const ManageStock: React.FC = () => {
             <div className="create-Inventory-stock-row-split">
               <div className="create-Inventory-stock-field">
                 <label>
-                  {actionType.label === InventoryAction.ADJUST
+                  {actionType.value === InventoryAction.ADJUST
                     ? "Adjustment Type"
                     : "Waste Type"}{" "}
                   <span className="create-Inventory-stock-req">*</span>
                 </label>
                 <div className="create-Inventory-stock-radio-group">
-                  {actionType.label === InventoryAction.ADJUST && (
+                  {actionType.value === InventoryAction.ADJUST && (
                     <label className="create-Inventory-stock-radio-label">
                       <input
                         type="radio"
@@ -297,12 +429,29 @@ const ManageStock: React.FC = () => {
                 <DashBoardInput
                   placeholder="0"
                   type="number"
-                  value={quantity}
-                  onChange={(e: any) => setQuantity(e.target.value)}
+                  value={quantity?.toString()}
+                  onChange={(e: any) => setQuantity(e)}
                 />
                 {errors.quantity && (
                   <span className="create-Inventory-stock-error">
                     {errors.quantity}
+                  </span>
+                )}
+              </div>
+
+              <div className="create-Inventory-stock-field">
+                <label>
+                  Expiry Date <span className="create-Inventory-stock-req">*</span>
+                </label>
+                <DashBoardInput
+                  placeholder="dd-mm-yyyy"
+                  type="date"
+                  value={expiryDate ? expiryDate?.toFormat('dd-mm-yyyy') : ''}
+                  onChange={(e: string) => { console.log(e); setExpiryDate(DateTime.fromJSDate(new Date(e)));}}
+                />
+                {errors.expiryDate && (
+                  <span className="create-Inventory-stock-error">
+                    {errors.expiryDate}
                   </span>
                 )}
               </div>

@@ -41,10 +41,10 @@ export class VariantService {
         }
     }
 
-    async getByProductId(productId: string): Promise<Variant> {
+    async getByProductId(productId: string): Promise<Variant[]> {
         try {
             let response = await this.axiosInstance.get(`/variants/product/${productId}`);
-            return variantResponseDatumToVariantEntity(response.data as any);
+            return variantsResponseDataToVariantsEntities(response.data as any);
         } catch (error) {
             console.log(error);
             throw error;

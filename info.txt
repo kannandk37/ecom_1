@@ -1,0 +1,5 @@
+ $m = "user"; @(
+   "src\context\$m"
+ ) | ForEach-Object { New-Item -ItemType Directory -Force -Path $_ }; @(
+   "src\context\$m\index.ts"
+ ) | ForEach-Object { New-Item -ItemType File -Force -Path $_ }

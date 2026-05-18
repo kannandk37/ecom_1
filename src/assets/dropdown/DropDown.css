@@ -133,3 +133,8 @@ border-color: #bc9a5c;
   color: #bc9a5c;
 
 }
+
+.ds-dropdown-spinner {
+  animation: spin 1s linear infinite;
+  color: var(--color-primary);
+}

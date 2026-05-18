@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
 import {
   FiArrowLeft,
   FiX,
@@ -34,6 +33,8 @@ import { Profile } from "../../entity/profile";
 import { User } from "../../entity/user";
 import { WarehouseBinService } from "../../service/warehouse_bin";
 import { WarehouseService } from "../../service/warehouse";
+import axios from "axios";
+import Toast from "../../assets/toast/Toast";
 
 // ─── Bin tree types (edit mode only) ─────────────────────────────────────────
 
@@ -54,6 +55,7 @@ interface BinAisle {
   aisleCode: string;
   racks: BinRack[];
   collapsed: boolean;
+  maxUnits: Number
 }
 
 type ModalType = "aisle" | "rack" | "level" | null;
@@ -89,7 +91,7 @@ const unitOptions = [
 
 const EMPTY_MODAL: ModalState = {
   type: null, aisleId: "", rackId: "",
-  racks: "2", levels: "2", positions: "4", maxUnits: "200",
+  racks: "2", levels: "2", positions: "1", maxUnits: "200", // Defaulted positions to 1
   racksError: "", levelsError: "", positionsError: "", maxUnitsError: "",
 };
 
@@ -108,11 +110,47 @@ function calcTotalBins(aisles: BinAisle[]): number {
     (sum, a) =>
       sum +
       a.racks.reduce(
-        (s, r) => s + r.levels.length * (r.levels[0]?.positions ?? 0),
+        (s, r) => s + r.levels.reduce((ls, l) => ls + l.positions, 0),
         0
       ),
     0
   );
+}
+
+// ─── Deep Re-indexing Logic ───────────────────────────────────────────────────
+// This function sweeps the entire tree and forces every Aisle, Rack, and Level
+// to be perfectly sequential (e.g., L1, L2 become L1 when L1 is deleted)
+function reindexTree(aisles: BinAisle[]): BinAisle[] {
+  return aisles.map((a, aIndex) => {
+    const newAisleCode = `A${String(aIndex + 1).padStart(2, "0")}`;
+
+    const updatedRacks = a.racks.map((r, rIndex) => {
+      const newRackCode = `R${String(rIndex + 1).padStart(2, "0")}`;
+
+      const updatedLevels = r.levels.map((l, lIndex) => {
+        const newLevelCode = `L${lIndex + 1}`;
+        return {
+          ...l,
+          levelCode: newLevelCode,
+          id: `${newRackCode}-${newLevelCode}` // Update Level ID based on new Rack Code
+        };
+      });
+
+      return {
+        ...r,
+        rackCode: newRackCode,
+        id: newRackCode,
+        levels: updatedLevels
+      };
+    });
+
+    return {
+      ...a,
+      aisleCode: newAisleCode,
+      id: newAisleCode,
+      racks: updatedRacks
+    };
+  });
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -125,20 +163,20 @@ const CreateOrEditWareHouse: React.FC = () => {
   // General
   const [name, setName] = useState<string>("");
   const [userId, setUserId] = useState<{ id: string; label: string; value: string }>({ id: "1", label: "tester", value: "tester" });
-  const [type, setType] = useState<{ id: WarehouseType; label: WarehouseType; value: WarehouseType }>(null);
-  const [status, setStatus] = useState<{ id: WarehouseStatus; label: WarehouseStatus; value: WarehouseStatus }>(null);
+  const [type, setType] = useState<{ id: WarehouseType; label: WarehouseType; value: WarehouseType }>(null as any);
+  const [status, setStatus] = useState<{ id: WarehouseStatus; label: WarehouseStatus; value: WarehouseStatus }>(null as any);
 
   // Address
   const [addressLine1, setAddressLine1] = useState<string>("");
   const [addressLine2, setAddressLine2] = useState<string>("");
   const [city, setCity] = useState<string>("");
-  const [state, setState] = useState<{ id: string; label: string; value: string }>(null);
+  const [state, setState] = useState<{ id: string; label: string; value: string }>(null as any);
   const [pincode, setPincode] = useState<string>("");
   const [mobile, setMobile] = useState<string>("");
 
   // Capacity
   const [totalCapacity, setTotalCapacity] = useState("");
-  const [capacityUnit, setCapacityUnit] = useState<{ id: CapacityUnit; label: CapacityUnit; value: CapacityUnit }>(null);
+  const [capacityUnit, setCapacityUnit] = useState<{ id: CapacityUnit; label: CapacityUnit; value: CapacityUnit }>(null as any);
 
   // Create-mode bin inputs
   const [aisle, setAisle] = useState<string>("");
@@ -160,26 +198,27 @@ const CreateOrEditWareHouse: React.FC = () => {
   const [userOptions, setUserOptions] = useState<{ id: string; label: string; value: string }[]>([]);
 
   // Errors
-  const [nameError, setNameError] = useState<string>(null);
-  const [userIdError, setUserIdError] = useState<string>(null);
-  const [typeError, setTypeError] = useState<string>(null);
-  const [statusError, setStatusError] = useState<string>(null);
+  const [nameError, setNameError] = useState<string | null>(null);
+  const [userIdError, setUserIdError] = useState<string | null>(null);
+  const [typeError, setTypeError] = useState<string | null>(null);
+  const [statusError, setStatusError] = useState<string | null>(null);
   const [addressLine1Error, setAddressLine1Error] = useState<string>("");
   const [addressLine2Error, setAddressLine2Error] = useState<string>("");
-  const [cityError, setCityError] = useState<string>(null);
-  const [stateError, setStateError] = useState<string>(null);
-  const [pincodeError, setPincodeError] = useState<string>(null);
-  const [mobileError, setMobileError] = useState<string>(null);
-  const [totalCapacityError, setTotalCapacityError] = useState<string>(null);
-  const [capacityUnitError, setCapacityUnitError] = useState<string>(null);
-  const [imagePreviewError, setImagePreviewError] = useState<string>(null);
-  const [aisleError, setAisleError] = useState<string>(null);
-  const [rackError, setRackError] = useState<string>(null);
-  const [levelError, setLevelError] = useState<string>(null);
-  const [maxUnitsError, setMaxUnitsError] = useState<string>(null);
+  const [cityError, setCityError] = useState<string | null>(null);
+  const [stateError, setStateError] = useState<string | null>(null);
+  const [pincodeError, setPincodeError] = useState<string | null>(null);
+  const [mobileError, setMobileError] = useState<string | null>(null);
+  const [totalCapacityError, setTotalCapacityError] = useState<string | null>(null);
+  const [capacityUnitError, setCapacityUnitError] = useState<string | null>(null);
+  const [imagePreviewError, setImagePreviewError] = useState<string | null>(null);
+  const [aisleError, setAisleError] = useState<string | null>(null);
+  const [rackError, setRackError] = useState<string | null>(null);
+  const [levelError, setLevelError] = useState<string | null>(null);
+  const [maxUnitsError, setMaxUnitsError] = useState<string | null>(null);
 
   const stateOptions = INDIAN_STATES.map((s: string) => ({ id: s, label: s, value: s }));
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [toastError, setToastError] = useState<string>(null);
 
   // ── Fetch profiles ──────────────────────────────────────────────────────────
 
@@ -215,17 +254,15 @@ const CreateOrEditWareHouse: React.FC = () => {
           setAddressLine1(warehouseResponse.address?.line1 ?? "");
           setAddressLine2(warehouseResponse.address?.line2 ?? "");
           setCity(warehouseResponse.address?.city ?? "");
-          setState(warehouseResponse.address?.state ? { id: warehouseResponse.address.state, label: warehouseResponse.address.state, value: warehouseResponse.address.state } : null);
+          setState(warehouseResponse.address?.state ? { id: warehouseResponse.address.state, label: warehouseResponse.address.state, value: warehouseResponse.address.state } : null as any);
           setMobile(warehouseResponse.address?.mobile ?? "");
           setName(warehouseResponse.name ?? "");
-          setType(warehouseResponse.type ? { id: warehouseResponse.type, label: warehouseResponse.type, value: warehouseResponse.type } : null);
-          setUserId(warehouseResponse.operator?.id ? { id: warehouseResponse.operator.id, label: warehouseResponse.operator.id, value: warehouseResponse.operator.id } : null);
-          setStatus(warehouseResponse.status ? { id: warehouseResponse.status, label: warehouseResponse.status, value: warehouseResponse.status } : null);
+          setType(warehouseResponse.type ? { id: warehouseResponse.type, label: warehouseResponse.type, value: warehouseResponse.type } : null as any);
+          setUserId(warehouseResponse.operator?.id ? { id: warehouseResponse.operator.id, label: warehouseResponse.operator.id, value: warehouseResponse.operator.id } : null as any);
+          setStatus(warehouseResponse.status ? { id: warehouseResponse.status, label: warehouseResponse.status, value: warehouseResponse.status } : null as any);
           setTotalCapacity(warehouseResponse.totalCapacity?.toString() ?? "");
-          setCapacityUnit(warehouseResponse.capacityUnit ? { id: warehouseResponse.capacityUnit, label: warehouseResponse.capacityUnit, value: warehouseResponse.capacityUnit } : null);
-          // setImagePreview(wh.image ?? null);
+          setCapacityUnit(warehouseResponse.capacityUnit ? { id: warehouseResponse.capacityUnit, label: warehouseResponse.capacityUnit, value: warehouseResponse.capacityUnit } : null as any);
 
-          // Fetch bins and build tree
           const binResponse = await new WarehouseBinService().getWarehouseBinsByWareHouseId(`/api/warehousebins/${id}/warehouse`);
           setBinAisles(buildAisleTree(binResponse));
         } catch (err) {
@@ -239,15 +276,17 @@ const CreateOrEditWareHouse: React.FC = () => {
 
   // ── Build aisle → rack → level tree from flat bins array ───────────────────
 
-  const buildAisleTree = (bins: WarehouseBin[]): BinAisle[] => {
+  const buildAisleTree = (bins: any[]): BinAisle[] => {
     const aisleMap = new Map<string, BinAisle>();
+
     bins.forEach((bin) => {
       const aisleCode = bin.aisle ?? "";
       const rackCode = bin.rack ?? "";
       const levelCode = bin.level ?? "";
+      const maxUnits = bin.maxUnits ?? "";
 
       if (!aisleMap.has(aisleCode)) {
-        aisleMap.set(aisleCode, { id: aisleCode, aisleCode, racks: [], collapsed: false });
+        aisleMap.set(aisleCode, { id: aisleCode, aisleCode, racks: [], collapsed: false, maxUnits: maxUnits });
       }
       const aisleEntry = aisleMap.get(aisleCode)!;
 
@@ -256,12 +295,106 @@ const CreateOrEditWareHouse: React.FC = () => {
         rackEntry = { id: rackCode, rackCode, levels: [] };
         aisleEntry.racks.push(rackEntry);
       }
-      if (!rackEntry.levels.find((l) => l.levelCode === levelCode)) {
-        rackEntry.levels.push({ id: levelCode, levelCode, positions: bin.maxUnits ?? 4 });
+
+      let levelEntry = rackEntry.levels.find((l) => l.levelCode === levelCode);
+      if (!levelEntry) {
+        levelEntry = { id: `${rackCode}-${levelCode}`, levelCode, positions: 0 };
+        rackEntry.levels.push(levelEntry);
       }
+
+      levelEntry.positions += 1;
     });
+
     return Array.from(aisleMap.values()).sort((a, b) => a.aisleCode.localeCompare(b.aisleCode));
   };
+
+
+  // ── Auto-Reindexing Remove Handlers ──────────────────────────────────────────
+
+  const handleRemoveAisle = (aisleId: string) => {
+    setBinAisles((prev) => reindexTree(prev.filter((a) => a.id !== aisleId)));
+  };
+
+  const handleRemoveRack = (aisleId: string, rackId: string) => {
+    setBinAisles((prev) =>
+      reindexTree(
+        prev.map((a) =>
+          a.id === aisleId
+            ? { ...a, racks: a.racks.filter((r) => r.id !== rackId) }
+            : a
+        )
+      )
+    );
+  };
+
+  const handleRemoveLevel = (aisleId: string, rackId: string, levelId: string) => {
+    setBinAisles((prev) =>
+      reindexTree(
+        prev.map((a) =>
+          a.id === aisleId
+            ? {
+              ...a,
+              racks: a.racks.map((r) =>
+                r.id === rackId
+                  ? { ...r, levels: r.levels.filter((l) => l.id !== levelId) }
+                  : r
+              ),
+            }
+            : a
+        )
+      )
+    );
+  };
+
+  /*
+  // ── Position Add/Remove Handlers (Commented out for future use) ──────────────
+
+  const handleAddPosition = (aisleId: string, rackId: string, levelId: string) => {
+    setBinAisles((prev) =>
+      prev.map((a) =>
+        a.id === aisleId
+          ? {
+              ...a,
+              racks: a.racks.map((r) =>
+                r.id === rackId
+                  ? {
+                      ...r,
+                      levels: r.levels.map((l) =>
+                        l.id === levelId ? { ...l, positions: l.positions + 1 } : l
+                      ),
+                    }
+                  : r
+              ),
+            }
+          : a
+      )
+    );
+  };
+
+  const handleRemovePosition = (aisleId: string, rackId: string, levelId: string) => {
+    setBinAisles((prev) =>
+      prev.map((a) =>
+        a.id === aisleId
+          ? {
+              ...a,
+              racks: a.racks.map((r) =>
+                r.id === rackId
+                  ? {
+                      ...r,
+                      levels: r.levels.map((l) =>
+                        l.id === levelId && l.positions > 1
+                          ? { ...l, positions: l.positions - 1 }
+                          : l
+                      ),
+                    }
+                  : r
+              ),
+            }
+          : a
+      )
+    );
+  };
+  */
 
   // ── Collapse toggle ──────────────────────────────────────────────────────────
 
@@ -281,16 +414,12 @@ const CreateOrEditWareHouse: React.FC = () => {
   const openAddRackModal = (aisleId: string) => {
     const aisleEntry = binAisles.find((a) => a.id === aisleId);
     const existingLevels = aisleEntry?.racks[0]?.levels.length.toString() ?? "2";
-    const existingPositions = aisleEntry?.racks[0]?.levels[0]?.positions.toString() ?? "4";
-    setModal({ ...EMPTY_MODAL, type: "rack", aisleId, levels: existingLevels, positions: existingPositions });
+    setModal({ ...EMPTY_MODAL, type: "rack", aisleId, levels: existingLevels });
     setIsModalOpen(true);
   };
 
   const openAddLevelModal = (aisleId: string, rackId: string) => {
-    const aisleEntry = binAisles.find((a) => a.id === aisleId);
-    const rackEntry = aisleEntry?.racks.find((r) => r.id === rackId);
-    const existingPositions = rackEntry?.levels[0]?.positions.toString() ?? "4";
-    setModal({ ...EMPTY_MODAL, type: "level", aisleId, rackId, positions: existingPositions });
+    setModal({ ...EMPTY_MODAL, type: "level", aisleId, rackId });
     setIsModalOpen(true);
   };
 
@@ -304,10 +433,12 @@ const CreateOrEditWareHouse: React.FC = () => {
   const getModalBinPreview = (): number => {
     const r = parseInt(modal.racks, 10) || 0;
     const l = parseInt(modal.levels, 10) || 0;
-    const p = parseInt(modal.positions, 10) || 0;
+    const p = parseInt(modal.positions, 10) || 1; // Always 1
+    const mu = parseInt(modal.maxUnits, 10) || 0; // Always 1
     if (modal.type === "aisle") return r * l * p;
     if (modal.type === "rack") return l * p;
     if (modal.type === "level") return p;
+    if (modal.type === "maxUnits") return mu;
     return 0;
   };
 
@@ -323,6 +454,7 @@ const CreateOrEditWareHouse: React.FC = () => {
     if (modal.type === "rack") {
       if (!modal.levels || parseInt(modal.levels) < 1) { updated.levelsError = "Min 1 level required"; valid = false; }
     }
+    // Validation for positions commented out, but kept logic default to pass
     if (!modal.positions || parseInt(modal.positions) < 1) { updated.positionsError = "Min 1 position required"; valid = false; }
     if (!modal.maxUnits || parseInt(modal.maxUnits) < 1) { updated.maxUnitsError = "Min 1 unit required"; valid = false; }
     if (!valid) setModal(updated);
@@ -333,7 +465,7 @@ const CreateOrEditWareHouse: React.FC = () => {
     if (!isModalValid()) return;
     const r = parseInt(modal.racks, 10) || 1;
     const l = parseInt(modal.levels, 10) || 1;
-    const p = parseInt(modal.positions, 10) || 4;
+    const p = parseInt(modal.positions, 10) || 1; // Forced to 1
     const mu = parseInt(modal.maxUnits, 10) || 200;
 
     try {
@@ -350,9 +482,9 @@ const CreateOrEditWareHouse: React.FC = () => {
         });
         setBinAisles((prev) => [
           ...prev,
-          { id: nextAisleCode, aisleCode: nextAisleCode, racks: newRacks, collapsed: false },
+          { id: nextAisleCode, aisleCode: nextAisleCode, racks: newRacks, collapsed: false, maxUnits: mu },
         ]);
-        await axios.post(`/api/warehousebins/aisle`, { warehouseId: id, racks: r, levels: l, positions: p, maxUnitsPerBin: mu });
+        // await axios.post(`/api/warehousebins/aisle`, { warehouseId: id, racks: r, levels: l, positions: p, maxUnitsPerBin: mu });
 
       } else if (modal.type === "rack") {
         const aisleEntry = binAisles.find((a) => a.id === modal.aisleId)!;
@@ -364,9 +496,9 @@ const CreateOrEditWareHouse: React.FC = () => {
           })),
         };
         setBinAisles((prev) =>
-          prev.map((a) => a.id === modal.aisleId ? { ...a, racks: [...a.racks, newRack] } : a)
+          prev.map((a) => a.id === modal.aisleId ? { ...a, racks: [...a.racks, newRack], maxUnits: mu } : a)
         );
-        await axios.post(`/api/warehousebins/rack`, { warehouseId: id, aisle: modal.aisleId, levels: l, positions: p, maxUnitsPerBin: mu });
+        // await axios.post(`/api/warehousebins/rack`, { warehouseId: id, aisle: modal.aisleId, levels: l, positions: p, maxUnitsPerBin: mu });
 
       } else if (modal.type === "level") {
         const aisleEntry = binAisles.find((a) => a.id === modal.aisleId)!;
@@ -376,11 +508,11 @@ const CreateOrEditWareHouse: React.FC = () => {
         setBinAisles((prev) =>
           prev.map((a) =>
             a.id === modal.aisleId
-              ? { ...a, racks: a.racks.map((r) => r.id === modal.rackId ? { ...r, levels: [...r.levels, newLevel] } : r) }
+              ? { ...a, racks: a.racks.map((r) => r.id === modal.rackId ? { ...r, levels: [...r.levels, newLevel] } : r), maxUnits: mu }
               : a
           )
         );
-        await axios.post(`/api/warehousebins/level`, { warehouseId: id, aisle: modal.aisleId, rack: modal.rackId, positions: p, maxUnitsPerBin: mu });
+        // await axios.post(`/api/warehousebins/level`, { warehouseId: id, aisle: modal.aisleId, rack: modal.rackId, positions: p, maxUnitsPerBin: mu });
       }
       closeModal();
     } catch (err) {
@@ -417,13 +549,6 @@ const CreateOrEditWareHouse: React.FC = () => {
     if (!mobile) { setMobileError("This is required"); return false; }
     if (!totalCapacity) { setTotalCapacityError("This is required"); return false; }
     if (!capacityUnit) { setCapacityUnitError("This is required"); return false; }
-    // if (!isEditMode) {
-    //   if (!aisle) { setAisleError("This is required"); return false; }
-    //   if (!rack) { setRackError("This is required"); return false; }
-    //   if (!level) { setLevelError("This is required"); return false; }
-    //   if (!maxUnits) { setMaxUnitsError("This is required"); return false; }
-    // }
-    // if (!imagePreview) { setImagePreviewError("Please provide an image"); return false; }
     return true;
   };
 
@@ -443,13 +568,12 @@ const CreateOrEditWareHouse: React.FC = () => {
 
         const warehouse = new Warehouse();
         warehouse.address = addressData;
-        warehouse.operator = Object.assign(new User(), { id: userId.value });
+        warehouse.operator = Object.assign(new User(), { id: userId.id });
         warehouse.name = name;
         warehouse.type = type.value;
         warehouse.status = status.value;
         warehouse.totalCapacity = Number(totalCapacity);
         warehouse.capacityUnit = capacityUnit.value;
-        // warehouse.image = imagePreview;
 
         const warehouseBin = new WarehouseBin();
         warehouseBin.aisle = aisle;
@@ -457,18 +581,40 @@ const CreateOrEditWareHouse: React.FC = () => {
         warehouseBin.level = level;
         warehouseBin.maxUnits = Number(maxUnits);
 
+        // Transform the nested UI binAisles tree back to the flat array layout
         let warehouseBins: WarehouseBin[] = [];
-        warehouseBins = binAisles
+        binAisles.forEach((a) => {
+          console.log(a, 'a')
+          a.racks.forEach((r) => {
+            r.levels.forEach((l) => {
+              for (let p = 1; p <= l.positions; p++) {
+                warehouseBins.push({
+                  warehouse: warehouse,
+                  binCode: `${a.aisleCode}-${r.rackCode}-${l.levelCode}-P${p}`,
+                  aisle: a.aisleCode,
+                  rack: r.rackCode,
+                  level: l.levelCode,
+                  position: `P${p}`,
+                  maxUnits: Number(a.maxUnits) || 200,
+                  isActive: true
+                });
+              }
+            });
+          });
+        });
 
         if (isEditMode) {
           await new WarehouseService().updateWarehouseAndEssentialsById(id, warehouse, warehouseBin);
         } else {
-          console.log({warehouse, warehouseBin})
-          // await new WarehouseService().createWarehouseAndEssentials(warehouse, warehouseBin);
+          await new WarehouseService().createWarehouseAndEssentials(warehouse, warehouseBins);
         }
         navigate("/dashboard/warehouses");
-      } catch (err) {
-        console.error(err);
+      } catch (error: any) {
+        console.error(error);
+        if (axios.isAxiosError(error) && error.response?.data?.statusCode) {
+          console.log(error.response?.data)
+          setToastError(error.response?.data?.error);
+        }
       } finally {
         setIsLoading(false);
       }
@@ -486,7 +632,7 @@ const CreateOrEditWareHouse: React.FC = () => {
   const onChangeRack = (v: string) => { if (!v) { setRackError("Please provide rack count"); } else { setRack(v); setRackError(null); } };
   const onChangeLevel = (v: string) => { if (!v) { setLevelError("Please provide level count"); } else { setLevel(v); setLevelError(null); } };
   const onChangeMaxUnits = (v: string) => { if (!v) { setMaxUnitsError("Please provide max units"); } else { setMaxUnits(v); setMaxUnitsError(null); } };
-  const onChangeUserId = (v: { id: string; label: string; value: string }) => { if (!v) { setUserIdError("Please select manager"); } else { setUserId(v); setUserIdError(null); } };
+  const onChangeUserId = (v: { id: string; label: string; value: string }) => { if (!v) { setUserIdError("Please select manager"); } else { console.log(v); setUserId(v); setUserIdError(null); } };
   const onChangeType = (v: { id: WarehouseType; label: WarehouseType; value: WarehouseType }) => { if (!v) { setTypeError("Please select type"); } else { setType(v); setTypeError(null); } };
   const onChangeStatus = (v: { id: WarehouseStatus; label: WarehouseStatus; value: WarehouseStatus }) => { if (!v) { setStatusError("Please select status"); } else { setStatus(v); setStatusError(null); } };
   const onChangeState = (v: { id: string; label: string; value: string }) => { if (!v) { setStateError("Please select state"); } else { setState(v); setStateError(null); } };
@@ -507,153 +653,131 @@ const CreateOrEditWareHouse: React.FC = () => {
   };
 
   return (
-    <div className="create-warehouse-container">
+    <>
+      {
+        toastError && (
+          <Toast
+            title={'WareHouse Creation Error'}
+            description={toastError}
+            isError={true}
+            duration={5000}
+            onClose={() => setToastError(null)}
+          />
+        )
+      }
+      <div className="create-warehouse-container">
 
-      {/* Header */}
-      <div className="create-warehouse-header-wrapper">
-        <div className="create-warehouse-title-area">
-          <button className="create-warehouse-back-btn" onClick={() => navigate("/dashboard/warehouses")}>
-            <FiArrowLeft /> Back to Warehouses
-          </button>
-          <h1 className="create-warehouse-title">
-            {isEditMode ? "Edit Warehouse" : "Add New Warehouse123"}
-          </h1>
-          <p className="create-warehouse-subtitle">
-            Configure storage locations and initial bin infrastructure.
-          </p>
-        </div>
-      </div>
-
-      <div className="create-warehouse-sections-wrapper">
-
-        {/* ── Warehouse Details ──────────────────────────────────────────── */}
-        <div className="create-warehouse-card">
-          <div className="create-warehouse-card-header">
-            <FiBox className="create-warehouse-header-icon" />
-            <h2>Warehouse Details</h2>
-          </div>
-          <div className="create-warehouse-card-body">
-            <div className="create-warehouse-field-group">
-              <label>Warehouse Name <span className="req">*</span></label>
-              <DashBoardInput placeholder="e.g. Central Hub Chennai" value={name} onChange={(e: any) => onChangeName(e)} error={nameError ? true : false} errorMessage={nameError} />
-            </div>
-            <div className="create-warehouse-row-split-dropdowns">
-              {/* <div className="create-warehouse-field-group">
-                <label>Warehouse Code <span className="req">*</span></label>
-                <DashBoardInput placeholder="e.g. WH-CHN-01" value={code} onChange={(e: any) => setCode(e)} />
-              </div> */}
-              <div className="create-warehouse-field-group">
-                <label>Warehouse Manager <span className="req">*</span></label>
-                <Dropdown options={userOptions} label={userId?.label || "Select User"} onSelect={(val: any) => onChangeUserId(val)} width="220px" error={userIdError ? true : false} errorMessage={userIdError} />
-              </div>
-              <div className="create-warehouse-field-group">
-                <label>Ownership Type <span className="req">*</span></label>
-                <Dropdown options={typeOptions} label={type?.label || "Select Ownership Type"} onSelect={(val: any) => onChangeType(val)} width="230px" error={typeError ? true : false} errorMessage={typeError} />
-              </div>
-              <div className="create-warehouse-field-group">
-                <label>Operational Status <span className="req">*</span></label>
-                <Dropdown options={statusOptions} label={status?.label || "Select Operational Status"} onSelect={(val: any) => onChangeStatus(val)} width="250px" error={statusError ? true : false} errorMessage={statusError} />
-              </div>
-            </div>
+        {/* Header */}
+        <div className="create-warehouse-header-wrapper">
+          <div className="create-warehouse-title-area">
+            <button className="create-warehouse-back-btn" onClick={() => navigate("/dashboard/warehouses")}>
+              <FiArrowLeft /> Back to Warehouses
+            </button>
+            <h1 className="create-warehouse-title">
+              {isEditMode ? "Edit Warehouse" : "Add New Warehouse"}
+            </h1>
+            <p className="create-warehouse-subtitle">
+              Configure storage locations and initial bin infrastructure.
+            </p>
           </div>
         </div>
 
-        {/* ── Location & Capacity ────────────────────────────────────────── */}
-        <div className="create-warehouse-card">
-          <div className="create-warehouse-card-header">
-            <FiMapPin className="create-warehouse-header-icon" />
-            <h2>Location & Capacity</h2>
-          </div>
-          <div className="create-warehouse-card-body">
-            <div className="create-warehouse-field-group">
-              <label>Address Line 1 <span className="req">*</span></label>
-              <DashBoardInput placeholder="Flat, House no., Building, Company, Apart" value={addressLine1} onChange={(e: any) => onChangeAddressLine1(e)} error={addressLine1Error ? true : false} errorMessage={addressLine1Error} />
-              <div className="create-warehouse-field-group">
-                <label>Address Line 2</label>
-                <DashBoardInput placeholder="Area, Street, Sector, Village" value={addressLine2} onChange={(e: any) => onChangeAddressLine2(e)} error={addressLine2Error ? true : false} errorMessage={addressLine2Error} />
-              </div>
-              <div className="create-warehouse-row-three">
-                <div className="create-warehouse-field-group">
-                  <label>City <span className="req">*</span></label>
-                  <DashBoardInput placeholder="Town / City" value={city} onChange={(e: any) => onChangeCity(e)} error={cityError ? true : false} errorMessage={cityError} />
-                </div>
-                <div className="create-warehouse-field-group">
-                  <label>State <span className="req">*</span></label>
-                  <Dropdown options={stateOptions} label={state?.label || "Select State"} onSelect={(val: any) => onChangeState(val)} error={stateError ? true : false} errorMessage={stateError} />
-                </div>
-                <div className="create-warehouse-field-group">
-                  <label>Pincode <span className="req">*</span></label>
-                  <DashBoardInput placeholder="6-digit Pincode" value={pincode} onChange={(e: any) => onChangePincode(e)} type="number" error={pincodeError ? true : false} errorMessage={pincodeError} />
-                </div>
-                <div className="create-warehouse-field-group">
-                  <label>Mobile Number <span className="req">*</span></label>
-                  <DashBoardInput placeholder="10-digit Mobile Number" value={mobile} onChange={(e: any) => onChangeMobile(e)} error={mobileError ? true : false} errorMessage={mobileError} />
-                </div>
-              </div>
-            </div>
-            <div className="create-warehouse-row-address">
-              <div className="create-warehouse-row-split-address">
-                <div className="create-warehouse-field-group">
-                  <label>Total Capacity <span className="req">*</span></label>
-                  <DashBoardInput placeholder="0" value={totalCapacity} onChange={(e: any) => onChangeTotalCapacity(e)} type="number" error={totalCapacityError ? true : false} errorMessage={totalCapacityError} />
-                </div>
-                <div className="create-warehouse-field-group">
-                  <label>Capacity Unit <span className="req">*</span></label>
-                  <Dropdown options={unitOptions} label={capacityUnit?.label || "Select Capacity Unit"} onSelect={(val: any) => onChangeCapacityUnit(val)} error={capacityUnitError ? true : false} errorMessage={capacityUnitError} />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div className="create-warehouse-sections-wrapper">
 
-        {/* ── Bin Infrastructure ────────────────────────────────────────────
-            CREATE: simple number inputs (aisle count, rack count, level count)
-            EDIT:   aisle tree with add aisle / rack / level modals
-        ──────────────────────────────────────────────────────────────── */}
-        <div className="create-warehouse-card">
-          <div className="create-warehouse-card-header">
-            <FiLayers className="create-warehouse-header-icon" />
-            <h2>{isEditMode ? "Bin Infrastructure" : "Initial Bin Infrastructure"}</h2>
-            {/* {isEditMode && ( */}
+          {/* ── Warehouse Details ──────────────────────────────────────────── */}
+          <div className="create-warehouse-card">
+            <div className="create-warehouse-card-header">
+              <FiBox className="create-warehouse-header-icon" />
+              <h2>Warehouse Details</h2>
+            </div>
+            <div className="create-warehouse-card-body">
+              <div className="create-warehouse-field-group">
+                <label>Warehouse Name <span className="req">*</span></label>
+                <DashBoardInput placeholder="e.g. Central Hub Chennai" value={name} onChange={(e: any) => onChangeName(e)} error={nameError ? true : false} errorMessage={nameError} />
+              </div>
+              <div className="create-warehouse-row-split-dropdowns">
+                <div className="create-warehouse-field-group">
+                  <label>Warehouse Manager <span className="req">*</span></label>
+                  <Dropdown options={userOptions} label={userId?.label || "Select User"} onSelect={(val: any) => onChangeUserId(val)} width="220px" error={userIdError ? true : false} errorMessage={userIdError} />
+                </div>
+                <div className="create-warehouse-field-group">
+                  <label>Ownership Type <span className="req">*</span></label>
+                  <Dropdown options={typeOptions} label={type?.label || "Select Ownership Type"} onSelect={(val: any) => onChangeType(val)} width="230px" error={typeError ? true : false} errorMessage={typeError} />
+                </div>
+                <div className="create-warehouse-field-group">
+                  <label>Operational Status <span className="req">*</span></label>
+                  <Dropdown options={statusOptions} label={status?.label || "Select Operational Status"} onSelect={(val: any) => onChangeStatus(val)} width="250px" error={statusError ? true : false} errorMessage={statusError} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Location & Capacity ────────────────────────────────────────── */}
+          <div className="create-warehouse-card">
+            <div className="create-warehouse-card-header">
+              <FiMapPin className="create-warehouse-header-icon" />
+              <h2>Location & Capacity</h2>
+            </div>
+            <div className="create-warehouse-card-body">
+              <div className="create-warehouse-field-group">
+                <label>Address Line 1 <span className="req">*</span></label>
+                <DashBoardInput placeholder="Flat, House no., Building, Company, Apart" value={addressLine1} onChange={(e: any) => onChangeAddressLine1(e)} error={addressLine1Error ? true : false} errorMessage={addressLine1Error} />
+                <div className="create-warehouse-field-group">
+                  <label>Address Line 2</label>
+                  <DashBoardInput placeholder="Area, Street, Sector, Village" value={addressLine2} onChange={(e: any) => onChangeAddressLine2(e)} error={addressLine2Error ? true : false} errorMessage={addressLine2Error} />
+                </div>
+                <div className="create-warehouse-row-three">
+                  <div className="create-warehouse-field-group">
+                    <label>City <span className="req">*</span></label>
+                    <DashBoardInput placeholder="Town / City" value={city} onChange={(e: any) => onChangeCity(e)} error={cityError ? true : false} errorMessage={cityError} />
+                  </div>
+                  <div className="create-warehouse-field-group">
+                    <label>State <span className="req">*</span></label>
+                    <Dropdown options={stateOptions} label={state?.label || "Select State"} onSelect={(val: any) => onChangeState(val)} error={stateError ? true : false} errorMessage={stateError} />
+                  </div>
+                  <div className="create-warehouse-field-group">
+                    <label>Pincode <span className="req">*</span></label>
+                    <DashBoardInput placeholder="6-digit Pincode" value={pincode} onChange={(e: any) => onChangePincode(e)} type="number" error={pincodeError ? true : false} errorMessage={pincodeError} />
+                  </div>
+                  <div className="create-warehouse-field-group">
+                    <label>Mobile Number <span className="req">*</span></label>
+                    <DashBoardInput placeholder="10-digit Mobile Number" value={mobile} onChange={(e: any) => onChangeMobile(e)} error={mobileError ? true : false} errorMessage={mobileError} />
+                  </div>
+                </div>
+              </div>
+              <div className="create-warehouse-row-address">
+                <div className="create-warehouse-row-split-address">
+                  <div className="create-warehouse-field-group">
+                    <label>Total Capacity <span className="req">*</span></label>
+                    <DashBoardInput placeholder="0" value={totalCapacity} onChange={(e: any) => onChangeTotalCapacity(e)} type="number" error={totalCapacityError ? true : false} errorMessage={totalCapacityError} />
+                  </div>
+                  <div className="create-warehouse-field-group">
+                    <label>Capacity Unit <span className="req">*</span></label>
+                    <Dropdown options={unitOptions} label={capacityUnit?.label || "Select Capacity Unit"} onSelect={(val: any) => onChangeCapacityUnit(val)} error={capacityUnitError ? true : false} errorMessage={capacityUnitError} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Bin Infrastructure ──────────────────────────────────────────── */}
+          <div className="create-warehouse-card">
+            <div className="create-warehouse-card-header">
+              <FiLayers className="create-warehouse-header-icon" />
+              <h2>{isEditMode ? "Bin Infrastructure" : "Initial Bin Infrastructure"}</h2>
               <span className="bin-summary-badge">
                 {binAisles.length} aisle{binAisles.length !== 1 ? "s" : ""} · {calcTotalBins(binAisles)} bins
               </span>
-            {/* )} */}
-          </div>
-
-          {/* CREATE mode */}
-          {/* {!isEditMode && (
-            <div className="create-warehouse-card-body-bin">
-              <div className="create-warehouse-field-group-bin">
-                <label>Aisle <span className="req">*</span></label>
-                <DashBoardInput placeholder="e.g. 2" value={aisle} onChange={(e: any) => onChangeAisle(e)} error={aisleError ? true : false} errorMessage={aisleError} />
-              </div>
-              <div className="create-warehouse-field-group-bin">
-                <label>Rack <span className="req">*</span></label>
-                <DashBoardInput placeholder="e.g. 3" value={rack} onChange={(e: any) => onChangeRack(e)} error={rackError ? true : false} errorMessage={rackError} />
-              </div>
-              <div className="create-warehouse-field-group-bin">
-                <label>Level <span className="req">*</span></label>
-                <DashBoardInput placeholder="e.g. 2" value={level} onChange={(e: any) => onChangeLevel(e)} error={levelError ? true : false} errorMessage={levelError} />
-              </div>
-              <div className="create-warehouse-field-group-bin">
-                <label>Max Units (per Bin) <span className="req">*</span></label>
-                <DashBoardInput placeholder="0" value={maxUnits} onChange={(e: any) => onChangeMaxUnits(e)} error={maxUnitsError ? true : false} errorMessage={maxUnitsError} type="number" />
-              </div>
             </div>
-          )} */}
 
-          {/* EDIT mode */}
-          {/* {isEditMode && ( */}
             <div className="bin-edit-container">
-
               <div className="bin-edit-note">
-                Existing bins with stock cannot be deleted. You can add new aisles, racks, or levels at any time.
+                Manage your storage hierarchy. You can add or remove aisles, racks, and levels manually.
               </div>
 
               {binAisles.map((aisleEntry) => {
                 const binCount = aisleEntry.racks.reduce(
-                  (s, r) => s + r.levels.length * (r.levels[0]?.positions ?? 0), 0
+                  (s, r) => s + r.levels.reduce((ls, l) => ls + l.positions, 0), 0
                 );
                 return (
                   <div key={aisleEntry.id} className="bin-aisle-block">
@@ -667,6 +791,10 @@ const CreateOrEditWareHouse: React.FC = () => {
                         </span>
                       </div>
                       <div className="bin-aisle-header-right">
+                        {/* Remove Aisle Button */}
+                        <button className="bin-action-btn" style={{ color: '#dc3545' }} onClick={() => handleRemoveAisle(aisleEntry.id)}>
+                          <FiX size={12} /> Remove aisle
+                        </button>
                         <button className="bin-action-btn" onClick={() => openAddRackModal(aisleEntry.id)}>
                           <FiPlus size={12} /> Add rack
                         </button>
@@ -682,24 +810,48 @@ const CreateOrEditWareHouse: React.FC = () => {
                       <>
                         <div className="bin-rack-col-header">
                           <span className="bin-col-rack">Rack</span>
-                          <span className="bin-col-levels">Levels & positions</span>
+                          <span className="bin-col-levels">Levels</span>
                           <span className="bin-col-action"></span>
                         </div>
                         {aisleEntry.racks.map((rackEntry) => (
                           <div key={rackEntry.id} className="bin-rack-row">
                             <span className="bin-col-rack">{rackEntry.rackCode}</span>
                             <div className="bin-col-levels">
-                              <div className="bin-level-pills">
+                              <div className="bin-level-pills" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                                 {rackEntry.levels.map((lvl) => (
-                                  <span key={lvl.id} className="bin-level-pill">
-                                    {lvl.levelCode} · P1–P{lvl.positions}
+                                  <span key={lvl.id} className="bin-level-pill" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    {lvl.levelCode}
+
+                                    {/* Commented out position UI for future use */}
+                                    {/* · P1–P{lvl.positions} */}
+
+                                    {/* Remove Level Button */}
+                                    <button
+                                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#dc3545', padding: '0', display: 'flex', alignItems: 'center' }}
+                                      onClick={() => handleRemoveLevel(aisleEntry.id, rackEntry.id, lvl.id)}
+                                      title="Remove Level"
+                                    >
+                                      <FiX size={14} />
+                                    </button>
+
+                                    {/* Add/Remove Position Buttons (Commented out) */}
+                                    {/* <div style={{ display: 'flex', gap: '4px', marginLeft: '4px', borderLeft: '1px solid #ccc', paddingLeft: '6px' }}>
+                                    <button onClick={() => handleAddPosition(aisleEntry.id, rackEntry.id, lvl.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#28a745', padding: '0', display: 'flex' }} title="Add Position"><FiPlus size={12}/></button>
+                                    <button onClick={() => handleRemovePosition(aisleEntry.id, rackEntry.id, lvl.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#dc3545', padding: '0', display: 'flex' }} title="Remove Position"><FiX size={12}/></button>
+                                  </div>
+                                  */}
+
                                   </span>
                                 ))}
                               </div>
                             </div>
-                            <div className="bin-col-action">
+                            <div className="bin-col-action" style={{ display: 'flex', gap: '8px' }}>
                               <button className="bin-add-level-btn" onClick={() => openAddLevelModal(aisleEntry.id, rackEntry.id)}>
                                 <FiPlus size={11} /> level
+                              </button>
+                              {/* Remove Rack Button */}
+                              <button className="bin-add-level-btn" style={{ color: '#dc3545', backgroundColor: 'transparent' }} onClick={() => handleRemoveRack(aisleEntry.id, rackEntry.id)}>
+                                <FiX size={12} /> rack
                               </button>
                             </div>
                           </div>
@@ -751,10 +903,14 @@ const CreateOrEditWareHouse: React.FC = () => {
                         </div>
                       )}
                       <div className="bin-modal-grid-2 bin-modal-grid-gap">
-                        <div className="create-warehouse-field-group">
-                          <label>Positions / level <span className="req">*</span></label>
-                          <DashBoardInput type="number" placeholder="e.g. 4" value={modal.positions} onChange={(v: string) => setModal((m) => ({ ...m, positions: v, positionsError: "" }))} error={!!modal.positionsError} errorMessage={modal.positionsError} />
-                        </div>
+
+                        {/* Positions input commented out for future use */}
+                        {/* <div className="create-warehouse-field-group">
+                        <label>Positions / level <span className="req">*</span></label>
+                        <DashBoardInput type="number" placeholder="e.g. 4" value={modal.positions} onChange={(v: string) => setModal((m) => ({ ...m, positions: v, positionsError: "" }))} error={!!modal.positionsError} errorMessage={modal.positionsError} />
+                      </div> 
+                      */}
+
                         <div className="create-warehouse-field-group">
                           <label>Max units / bin</label>
                           <DashBoardInput type="number" placeholder="200" value={modal.maxUnits} onChange={(v: string) => setModal((m) => ({ ...m, maxUnits: v, maxUnitsError: "" }))} error={!!modal.maxUnitsError} errorMessage={modal.maxUnitsError} />
@@ -776,49 +932,49 @@ const CreateOrEditWareHouse: React.FC = () => {
                 </div>
               )}
             </div>
-          {/* )} */}
-        </div>
-
-        {/* ── Facility Image ────────────────────────────────────────────── */}
-        <div className="create-warehouse-card">
-          <div className="create-warehouse-card-header">
-            <FiUploadCloud className="create-warehouse-header-icon" />
-            <h2>Facility Image</h2>
           </div>
-          <div className="create-warehouse-card-body">
-            <div
-              className={`create-warehouse-upload-area ${imagePreviewError ? "error-border" : ""}`}
-              onClick={() => fileInputRef.current?.click()}
-            >
-              {imagePreview ? (
-                <div className="create-warehouse-preview-wrapper">
-                  <img src={imagePreview} alt="Facility Preview" />
-                  <button className="create-warehouse-remove-img" onClick={removeImage}><FiX /></button>
-                </div>
-              ) : (
-                <div className="create-warehouse-upload-placeholder">
-                  <div className="create-warehouse-upload-icon-wrapper">
-                    <FiUploadCloud className="create-warehouse-upload-icon" />
-                  </div>
-                  <span className="create-warehouse-upload-title">Click to upload warehouse photo</span>
-                  <span className="create-warehouse-upload-subtitle">JPG or PNG up to 2MB</span>
-                </div>
-              )}
-              <input type="file" ref={fileInputRef} onChange={handleImageChange} accept="image/*" style={{ display: "none" }} />
+
+          {/* ── Facility Image ────────────────────────────────────────────── */}
+          <div className="create-warehouse-card">
+            <div className="create-warehouse-card-header">
+              <FiUploadCloud className="create-warehouse-header-icon" />
+              <h2>Facility Image</h2>
             </div>
-            {imagePreviewError && <span className="create-warehouse-error">{imagePreviewError}</span>}
+            <div className="create-warehouse-card-body">
+              <div
+                className={`create-warehouse-upload-area ${imagePreviewError ? "error-border" : ""}`}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                {imagePreview ? (
+                  <div className="create-warehouse-preview-wrapper">
+                    <img src={imagePreview} alt="Facility Preview" />
+                    <button className="create-warehouse-remove-img" onClick={removeImage}><FiX /></button>
+                  </div>
+                ) : (
+                  <div className="create-warehouse-upload-placeholder">
+                    <div className="create-warehouse-upload-icon-wrapper">
+                      <FiUploadCloud className="create-warehouse-upload-icon" />
+                    </div>
+                    <span className="create-warehouse-upload-title">Click to upload warehouse photo</span>
+                    <span className="create-warehouse-upload-subtitle">JPG or PNG up to 2MB</span>
+                  </div>
+                )}
+                <input type="file" ref={fileInputRef} onChange={handleImageChange} accept="image/*" style={{ display: "none" }} />
+              </div>
+              {imagePreviewError && <span className="create-warehouse-error">{imagePreviewError}</span>}
+            </div>
           </div>
+
+        </div>
+
+        {/* Footer */}
+        <div className="create-warehouse-footer">
+          <DashBoardButton name="Cancel" variant="secondary" onClick={() => navigate("/dashboard/warehouses")} />
+          <DashBoardButton name={isEditMode ? "Save Changes" : "Create Warehouse"} variant="primary" onClick={handleSubmit} disabled={isLoading} />
         </div>
 
       </div>
-
-      {/* Footer */}
-      <div className="create-warehouse-footer">
-        <DashBoardButton name="Cancel" variant="secondary" onClick={() => navigate("/dashboard/warehouses")} />
-        <DashBoardButton name={isEditMode ? "Save Changes" : "Create Warehouse"} variant="primary" onClick={handleSubmit} disabled={isLoading} />
-      </div>
-
-    </div>
+    </>
   );
 };
 

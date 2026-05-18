@@ -52,7 +52,7 @@ export function warehouseResponseDatumToWarehouseEntity(response: any): Warehous
     return warehouse;
 }
 
-export function warehouseResponseDataToWarehouseEntity(responses: any[]): Warehouse[] {
+export function warehousesResponseDataToWarehousesEntities(responses: any[]): Warehouse[] {
     if (!responses || responses.length === 0) {
         return [];
     }

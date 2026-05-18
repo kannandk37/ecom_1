@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./DropDown.css";
 import { FiChevronDown, FiX } from "react-icons/fi"; // Added FiX import
+import { FaSpinner } from "react-icons/fa";
 
 interface DropdownOption {
   id: string | number;
@@ -16,6 +17,8 @@ interface DropdownProps {
   onSelect?: (option: DropdownOption | null) => void; // Updated type to accept null
   error?: boolean;
   errorMessage?: string;
+  isLoading?: boolean;
+  noData?: boolean;
 }
 
 export const Dropdown: React.FC<DropdownProps> = ({
@@ -26,6 +29,8 @@ export const Dropdown: React.FC<DropdownProps> = ({
   onSelect,
   error,
   errorMessage,
+  isLoading,
+  noData
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
@@ -71,17 +76,30 @@ export const Dropdown: React.FC<DropdownProps> = ({
         type="button"
         aria-haspopup="listbox"
         aria-expanded={isOpen}
+        disabled={isLoading || noData}
       >
         <span className="ds-dropdown-label">
-          {selectedValue
-            ? selectedValue.charAt(0).toLocaleUpperCase() + selectedValue.slice(1)
-            : label?.charAt(0).toLocaleUpperCase() + label?.slice(1)}
+          {isLoading ? (
+            <FaSpinner className="ds-dropdown-spinner" size="1.5em" />
+          ) : (
+            <>
+              {
+                noData ? (
+                  'No Data'
+                ) : (
+                  selectedValue
+                    ? selectedValue.charAt(0).toLocaleUpperCase() + selectedValue.slice(1)
+                    : label?.charAt(0).toLocaleUpperCase() + label?.slice(1)
+                )
+              }
+            </>
+          )}
         </span>
-        
+
         <div className="ds-dropdown-icons">
           {selectedValue && (
-            <div 
-              className="ds-dropdown-clear-btn" 
+            <div
+              className="ds-dropdown-clear-btn"
               onClick={handleClear}
               title="Clear selection"
             >
@@ -110,9 +128,11 @@ export const Dropdown: React.FC<DropdownProps> = ({
           ))}
         </ul>
       )}
+
       {error && errorMessage && (
         <span className="ds-error-message">{errorMessage}</span>
       )}
+
     </div>
   );
 };
