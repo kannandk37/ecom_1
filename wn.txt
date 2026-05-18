@@ -1,0 +1,756 @@
+// ============================================================
+// EXISTING ENTITIES — unchanged, kept for reference
+// ============================================================
+
+// ── warehouse/entity.ts ──────────────────────────────────────
+import { Address } from "../../address/entity";
+import { User } from "../../user/entity";
+
+export enum WarehouseType {
+    OWN = 'own',
+    RENTED = 'rented'
+}
+
+export enum WarehouseStatus {
+    ACTIVE = 'active',
+    INACTIVE = 'inactive',
+    MAINTENANCE = 'maintenance'
+}
+
+export enum CapacityUnit {
+    UNITS = 'units',
+}
+
+export class Warehouse {
+    id?: string;
+    code?: string;
+    name?: string;
+    type?: WarehouseType;
+    status?: WarehouseStatus;
+    address?: Address;
+    totalCapacity?: number;
+    capacityUnit?: CapacityUnit;
+    image?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+    operator?: User;
+}
+
+
+// ── warehouse_bin/entity.ts ──────────────────────────────────
+import { Warehouse } from "../../warehouse/entity";
+
+export class WarehouseBin {
+    id?: string;
+    warehouse?: Warehouse;
+    binCode?: string;
+    aisle?: string;
+    rack?: string;
+    level?: string;
+    position?: string;
+    maxUnits?: number;
+    isActive?: boolean;
+
+    // ✅ ADDED — needed for consolidation suggestions, overflow checks, and reorder logic
+    minThreshold?: number;       // bin-level low stock alert (used to suggest internal transfer)
+    currentStock?: number;       // live total across all batches in this bin
+    isOccupied?: boolean;        // false = bin is free for any new product
+}
+
+
+// ── bin_stock/entity.ts ──────────────────────────────────────
+import { WarehouseBin } from "../../warehouse_bin/entity";
+import { Inventory } from "../../inventory/entity";
+import { Product } from "../../product/entity";
+import { Variant } from "../../variant/entity";
+
+export class BinStock {
+    id?: string;
+    bin?: WarehouseBin;
+    product?: Product;
+    variant?: Variant;
+    inventory?: Inventory;
+    qtyOnHand?: number;
+    batchNumber?: string;
+    expiryDate?: Date;
+    lastCountedAt?: Date;
+
+    // ✅ ADDED — needed for order reservation, consolidation, and quarantine flows
+    qtyReserved?: number;        // units held for pending/confirmed orders (prevents overselling)
+    qtyDamaged?: number;         // units flagged as damaged/quarantined within this bin
+    manufacturedDate?: Date;     // for shelf life calculation and audit
+    purchaseOrderId?: string;    // which PO brought this batch into this bin
+    receivedDate?: Date;         // when this batch physically arrived
+    isActive?: boolean;          // false = batch fully consumed, expired, or written off
+    createdAt?: Date;
+}
+
+
+// ── inventory/entity.ts ──────────────────────────────────────
+import { Product } from "../../product/entity";
+import { Variant } from "../../variant/entity";
+import { Warehouse } from "../../warehouse/entity";
+
+export enum ReorderStatus {
+    NONE = 'none',
+    TRIGGERED = 'triggered',
+    RECEIVED = 'received'
+}
+
+export class Inventory {
+    id?: string;
+    product?: Product;
+    variant?: Variant;
+    warehouse?: Warehouse;
+    qtyOnHand?: number;
+    qtyReserved?: number;
+    qtyCommitted?: number;
+    reorderPoint?: number;
+    reorderQty?: number;
+    reorderOrderedQty?: number;
+    maxStockLevel?: number;
+    reorderStatus?: ReorderStatus;
+    lastMovementAt?: Date;
+    updatedAt?: Date;
+
+    // ✅ ADDED — needed for multi-bin fulfillment and bin-level tracking
+    bins?: string[];             // array of WarehouseBin IDs carrying this product in this warehouse
+}
+
+
+// ── stock_ledger/entity.ts ───────────────────────────────────
+import { Inventory } from "../../inventory/entity";
+import { Warehouse } from "../../warehouse/entity";
+import { WarehouseBin } from "../../warehouse_bin/entity";
+import { BinStock } from "../../bin_stock/entity";
+
+export enum MovementType {
+    INBOUND_RECEIVE = 'inbound_receive',
+    PICK = 'pick',
+    PUTAWAY = 'putaway',
+    RETURN_RECEIVE = 'return_receive',
+    ADJUSTMENT = 'adjustment',
+    TRANSFER_OUT = 'transfer_out',
+    TRANSFER_IN = 'transfer_in',
+    DAMAGE_WRITE_OFF = 'damage_write_off',
+    CYCLE_COUNT_ADJUST = 'cycle_count_adjust',
+
+    // ✅ ADDED — new movement types for flows we added
+    RESERVATION = 'reservation',                  // units held for an order
+    RESERVATION_RELEASED = 'reservation_released',// order cancelled, units freed
+    EXPIRED_WRITE_OFF = 'expired_write_off',      // daily expiry sweep removes stock
+    QUARANTINE = 'quarantine',                    // units moved to damaged/quarantine state
+    CONSOLIDATION_OUT = 'consolidation_out',      // bin merge — source bin loses stock
+    CONSOLIDATION_IN = 'consolidation_in',        // bin merge — destination bin gains stock
+    SUPPLIER_RETURN = 'supplier_return',          // defective stock sent back to supplier
+}
+
+export enum ReferenceType {
+    CART_ITEM = 'cart_item',
+    ORDER_ITEM = 'order_item',
+    PURCHASE_ORDER = 'purchase_order',
+    TRANSFER_ORDER = 'transfer_order',
+    RETURN = 'return',
+    MANUAL_ADJUST = 'manual_adjustment',
+
+    // ✅ ADDED
+    CONSOLIDATION = 'consolidation',              // bin merge operation
+    STOCK_AUDIT = 'stock_audit',                  // physical count adjustment
+    SUPPLIER_RETURN = 'supplier_return',          // return to supplier
+    EXPIRY_SWEEP = 'expiry_sweep',                // automated daily expiry job
+}
+
+export class StockLedger {
+    id?: string;
+    inventory?: Inventory;
+    warehouse?: Warehouse;
+    bin?: WarehouseBin;
+    binStock?: BinStock;
+    product?: any;
+    variant?: any;
+    movementType?: MovementType;
+    quantityDelta?: number;
+    qtyBefore?: number;
+    qtyAfter?: number;
+    referenceType?: ReferenceType;
+    referenceId?: string;
+    notes?: string;
+    performedBy?: string;
+    createdAt?: Date;
+}
+
+
+// ── order/entity.ts ──────────────────────────────────────────
+// No changes needed — existing entity is sufficient
+
+
+// ── order_item/entity.ts ─────────────────────────────────────
+// No changes needed — existing entity is sufficient
+
+
+// ============================================================
+// NEW ENTITIES
+// ============================================================
+
+
+// ── product_shelf_life_config/entity.ts ──────────────────────
+// Flow 16 — drives ALL expiry validation across onboarding,
+// order fulfillment, PIN check, and inbound rejection
+import { Product } from "../../product/entity";
+import { Variant } from "../../variant/entity";
+
+export class ProductShelfLifeConfig {
+    id?: string;
+    product?: Product;
+    variant?: Variant;                   // optional — overrides product-level if set
+
+    // minimum shelf life remaining (in days) for a unit to be sold
+    // e.g. 90 → reject sale if expiry is within 90 days from today
+    minShelfLifeToSell?: number;
+
+    // minimum shelf life remaining (in days) when receiving inbound stock
+    // e.g. 180 → reject supplier batch if it expires within 6 months
+    minShelfLifeToReceive?: number;
+
+    // how many days before expiry to alert the warehouse manager
+    // e.g. 60 → manager gets notified 60 days before a batch expires
+    expiryAlertDays?: number;
+
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+
+
+// ── stock_transfer/entity.ts ─────────────────────────────────
+// Flow 6 (internal replenishment) + Flow 19 (bin consolidation)
+// Tracks every bin-to-bin movement inside a warehouse
+import { Warehouse } from "../../warehouse/entity";
+import { WarehouseBin } from "../../warehouse_bin/entity";
+import { BinStock } from "../../bin_stock/entity";
+import { Product } from "../../product/entity";
+import { Variant } from "../../variant/entity";
+import { User } from "../../user/entity";
+
+export enum StockTransferType {
+    REPLENISHMENT = 'replenishment',   // move stock from surplus bin to low bin
+    CONSOLIDATION = 'consolidation'    // merge two same-batch bins into one, freeing a bin
+}
+
+export enum StockTransferStatus {
+    PENDING = 'pending',
+    COMPLETED = 'completed',
+    CANCELLED = 'cancelled'
+}
+
+export class StockTransfer {
+    id?: string;
+    transferType?: StockTransferType;
+    warehouse?: Warehouse;
+    product?: Product;
+    variant?: Variant;
+    batchNumber?: string;
+    fromBin?: WarehouseBin;
+    toBin?: WarehouseBin;
+    fromBinStock?: BinStock;
+    toBinStock?: BinStock;
+    quantity?: number;
+    status?: StockTransferStatus;
+    initiatedBy?: User;
+    completedAt?: Date;
+    createdAt?: Date;
+}
+
+
+// ── quarantine_record/entity.ts ──────────────────────────────
+// Flow 10 (damaged stock) + Flow 8 (expired sweep) + Flow 7 (customer return)
+// Any unit that leaves sellable stock goes through here before disposal/restocking
+import { BinStock } from "../../bin_stock/entity";
+import { Product } from "../../product/entity";
+import { Variant } from "../../variant/entity";
+import { User } from "../../user/entity";
+
+export enum QuarantineReason {
+    DAMAGED = 'damaged',
+    EXPIRED = 'expired',
+    CUSTOMER_RETURN = 'customer_return',
+    SUPPLIER_DEFECT = 'supplier_defect'
+}
+
+export enum QuarantineStatus {
+    QUARANTINED = 'quarantined',        // sitting in quarantine, awaiting decision
+    DISPOSED = 'disposed',              // written off permanently
+    RETURNED_TO_SUPPLIER = 'returned_to_supplier',
+    RESTOCKED = 'restocked'             // re-enters sellable BinStock
+}
+
+export class QuarantineRecord {
+    id?: string;
+    binStock?: BinStock;                // which batch/bin this came from
+    product?: Product;
+    variant?: Variant;
+    batchNumber?: string;
+    quantity?: number;
+    reason?: QuarantineReason;
+    status?: QuarantineStatus;
+    reportedBy?: User;
+    resolvedAt?: Date;
+    createdAt?: Date;
+}
+
+
+// ── stock_audit/entity.ts ────────────────────────────────────
+// Flow 9 — physical count vs system count reconciliation
+import { Warehouse } from "../../warehouse/entity";
+import { WarehouseBin } from "../../warehouse_bin/entity";
+import { BinStock } from "../../bin_stock/entity";
+import { Product } from "../../product/entity";
+import { Variant } from "../../variant/entity";
+import { User } from "../../user/entity";
+
+export class StockAudit {
+    id?: string;
+    warehouse?: Warehouse;
+    bin?: WarehouseBin;
+    binStock?: BinStock;               // specific batch being audited
+    product?: Product;
+    variant?: Variant;
+    batchNumber?: string;
+    systemCount?: number;              // what the system had before the count
+    physicalCount?: number;            // what the manager physically counted
+    discrepancy?: number;              // physicalCount - systemCount (can be negative)
+    reason?: string;                   // manager's explanation for the gap
+    adjustmentLedgerId?: string;       // ref to the StockLedger ADJUSTMENT entry created
+    auditedBy?: User;
+    auditedAt?: Date;
+    createdAt?: Date;
+}
+
+
+// ── consolidation_suggestion/entity.ts ──────────────────────
+// Flow 19 — system-generated suggestions to merge two same-batch bins
+// Background job creates these; warehouse manager approves/rejects
+import { Product } from "../../product/entity";
+import { Variant } from "../../variant/entity";
+import { WarehouseBin } from "../../warehouse_bin/entity";
+import { Warehouse } from "../../warehouse/entity";
+import { User } from "../../user/entity";
+
+export enum ConsolidationSuggestionStatus {
+    SUGGESTED = 'suggested',
+    APPROVED = 'approved',
+    REJECTED = 'rejected',
+    COMPLETED = 'completed'
+}
+
+export class ConsolidationSuggestion {
+    id?: string;
+    warehouse?: Warehouse;
+    product?: Product;
+    variant?: Variant;
+    batchNumber?: string;
+    expiryDate?: Date;
+    fromBin?: WarehouseBin;           // bin to be emptied
+    toBin?: WarehouseBin;             // bin to consolidate into
+    quantity?: number;                // units to be moved (fromBin's entire stock)
+    status?: ConsolidationSuggestionStatus;
+    suggestedAt?: Date;
+    reviewedBy?: User;
+    reviewedAt?: Date;
+}
+
+
+// ── purchase_order/entity.ts ─────────────────────────────────
+// Flow 2 (reorder trigger) + Flow 1 (inbound receiving) + Flow 11 (supplier return)
+import { Product } from "../../product/entity";
+import { Variant } from "../../variant/entity";
+import { Warehouse } from "../../warehouse/entity";
+import { WarehouseBin } from "../../warehouse_bin/entity";
+import { User } from "../../user/entity";
+
+export enum PurchaseOrderStatus {
+    PENDING = 'pending',
+    PARTIALLY_RECEIVED = 'partially_received',
+    RECEIVED = 'received',
+    CANCELLED = 'cancelled'
+}
+
+export enum PurchaseOrderTrigger {
+    MANUAL = 'manual',
+    AUTO_REORDER = 'auto_reorder'      // triggered by threshold check
+}
+
+export class PurchaseOrder {
+    id?: string;
+    product?: Product;
+    variant?: Variant;
+    warehouse?: Warehouse;
+    targetBin?: WarehouseBin;          // where the stock will be placed on arrival
+    supplierId?: string;               // ref to your Supplier entity (to be created)
+    qtyOrdered?: number;
+    qtyReceived?: number;              // updated progressively on partial deliveries
+    status?: PurchaseOrderStatus;
+    triggeredBy?: PurchaseOrderTrigger;
+    expectedDeliveryDate?: Date;
+    createdBy?: User;
+    createdAt?: Date;
+    receivedAt?: Date;
+}
+
+
+// ── supplier_return/entity.ts ────────────────────────────────
+// Flow 11 — defective or near-expiry stock returned to supplier
+// Also triggered from Flow 17 (inbound rejection) and Flow 10 (quarantine resolution)
+import { Product } from "../../product/entity";
+import { Variant } from "../../variant/entity";
+import { BinStock } from "../../bin_stock/entity";
+import { User } from "../../user/entity";
+
+export enum SupplierReturnReason {
+    DEFECTIVE = 'defective',
+    NEAR_EXPIRY = 'near_expiry',
+    WRONG_PRODUCT = 'wrong_product'
+}
+
+export enum SupplierReturnStatus {
+    RAISED = 'raised',
+    ACKNOWLEDGED = 'acknowledged',
+    CREDIT_RECEIVED = 'credit_received',
+    REPLACED = 'replaced'
+}
+
+export class SupplierReturn {
+    id?: string;
+    purchaseOrderId?: string;          // which PO this return is against
+    supplierId?: string;               // ref to Supplier entity
+    product?: Product;
+    variant?: Variant;
+    binStock?: BinStock;               // the exact batch being returned
+    batchNumber?: string;
+    quantity?: number;
+    reason?: SupplierReturnReason;
+    status?: SupplierReturnStatus;
+    raisedBy?: User;
+    createdAt?: Date;
+    resolvedAt?: Date;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+All 19 Flows — User Walkthrough Stories
+Think of this as a day in the life of your warehouse system. Real people, real actions, real decisions.
+
+Flow 1: Product Onboarding into a Bin
+"The truck just arrived"
+It's 9am. Ravi, the warehouse manager at Warehouse A in Chennai, gets a call — the supplier truck has arrived with a fresh shipment of Vitamin C Tablets, 500mg.
+He opens the warehouse app on his tablet. He goes to Inbound Receiving and selects the Purchase Order that was raised earlier. He walks to Aisle 2, Rack 3, Level 1 — that's where Vitamin C is stored. He scans the bin — it reads A2R3L1.
+He enters:
+
+Batch Number: BATCH-2025-001
+Expiry Date: June 2027
+Quantity: 180 units
+Manufactured Date: January 2025
+
+Before accepting, the system silently checks — "Does this batch have at least 180 days of shelf life remaining?" June 2027 is 25 months away. ✅ Passes.
+The system then checks — "Does this bin have enough room?" A2R3L1 has a max of 200 units and currently has 10 units sitting there. 10 + 180 = 190. ✅ Fits.
+Stock is accepted. A BinStock record is created — 180 units, BATCH-2025-001, expiry June 2027, sitting in A2R3L1. The Inventory record for Vitamin C updates — total stock goes up by 180. The StockLedger logs an INBOUND_RECEIVE entry.
+Ravi walks away. The product is now in the system.
+
+Flow 2: Threshold Check & Reorder
+"We're running low — but are we really?"
+Three months later. Orders have been flowing. The Vitamin C stock in A2R3L1 has dropped from 180 to 18 units.
+The moment the 19th unit was picked for an order, the system checked automatically — "Is bin A2R3L1 below its minimum threshold of 20?" Yes. It is.
+But before raising any alarm, the system asks a smarter question — "What's the total Vitamin C stock across ALL bins in this warehouse?"
+It finds:
+
+A2R3L1 → 18 units
+A2R4L2 → 95 units
+A3R1L1 → 60 units
+
+Total: 173 units. The warehouse-level reorder point is 50 units. 173 is well above 50.
+No purchase order is raised. Instead, the system notes that A2R3L1 is individually low and flags it for an internal stock transfer suggestion — pull some stock from A2R4L2 to replenish A2R3L1.
+Now imagine a different scenario — all three bins are nearly empty. Total stock drops to 45 units, below the reorder point of 50. Now the system fires. It checks — "Is there already a pending Purchase Order for Vitamin C?" No. So it automatically creates one and sends Ravi a notification: "Vitamin C stock is critically low. A reorder of 200 units has been triggered. Please review and confirm."
+Ravi opens the app, reviews the PO, and confirms it. The supplier is notified.
+
+Flow 3: Customer Order — Batch Selection
+"Which batch do we ship?"
+Priya in Bangalore orders 10 units of Vitamin C Tablets. She's 2 days away by courier.
+The system kicks into action. It calculates — "Priya is 2 days away. Our minimum shelf life buffer is 90 days. So the batch we pick must expire no earlier than today + 2 + 90 = 92 days from now."
+It queries all BinStocks for Vitamin C and finds:
+
+BATCH-2025-001 → 18 units → Expires June 2026 → Only 30 days away ❌ FAILS
+BATCH-2025-002 → 95 units → Expires March 2027 → 10 months away ✅ PASSES
+
+The system picks 10 units from BATCH-2025-002. It marks them as reserved — qtyReserved goes up by 10, qtyOnHand goes down by 10 in that BinStock. The StockLedger logs a RESERVATION entry.
+A pick list is generated for the warehouse staff — "Go to A2R4L2, pick 10 units of BATCH-2025-002 for Order #ORD-5521."
+The staff picks the items, packs them, and marks the order as dispatched. The system logs an OUTBOUND entry. Stock is permanently deducted. Threshold check runs again automatically.
+
+Flow 4: PIN Code Delivery Eligibility
+"Can we even deliver this to you?"
+Karthik in the Andaman Islands opens the product page for Vitamin C Tablets. He types his PIN code 744101 before adding to cart.
+The system checks with the courier API — "Is 744101 serviceable?" Yes, but delivery takes 18 days.
+Now the system calculates — "18 days delivery + 90 days buffer = batch must expire after 108 days from today."
+It scans all BinStocks for Vitamin C:
+
+BATCH-2025-001 → Expires in 30 days ❌
+BATCH-2025-002 → Expires in 10 months ✅ and has 85 units available
+
+The page shows — "Delivery available by [date 18 days from now]" and Karthik can add to cart.
+Now imagine a different customer — Suresh in a remote Himalayan village, 30 days delivery. Buffer needed: 120 days. Only BATCH-2025-001 is left with 30 days — fails. No other batch. The page shows — "Sorry, this product cannot be delivered to your location before its expiry date." Suresh cannot order. No exception, no workaround.
+
+Flow 5: Multi-Bin Fulfillment
+"One bin isn't enough"
+A hospital in Mumbai places a bulk order — 120 units of Vitamin C Tablets. Delivery is 3 days away. Buffer needed: 93 days.
+The system checks all valid BinStocks sorted by expiry (earliest first, but must pass the 93-day cutoff):
+
+A2R4L2 → BATCH-2025-002 → 85 units ✅
+A3R1L1 → BATCH-2025-002 → 60 units ✅
+
+85 units covers the first chunk. Still need 35 more. System moves to A3R1L1 and takes 35 from there.
+Total: 85 + 35 = 120 units. ✅ Order fulfilled across two bins.
+Two separate RESERVATION ledger entries are created. Two separate lines on the pick list — warehouse staff goes to A2R4L2 first, picks 85, then walks to A3R1L1, picks 35, packs together as one order.
+
+Flow 6: Internal Stock Transfer (Replenishment)
+"Move stock, don't order new"
+Back to the earlier scenario. A2R3L1 has only 18 units. The total warehouse stock is 173 units — no need to reorder. But A2R3L1 is running dry and it's a frequently picked bin.
+Ravi gets a suggestion notification — "Bin A2R3L1 is low. Bin A2R4L2 has 95 units of the same product. Consider transferring 50 units."
+Ravi approves. The system creates a StockTransfer record. A warehouse staff member walks to A2R4L2, picks 50 units of BATCH-2025-002, carries them to A2R3L1, and scans the destination bin to confirm.
+The system:
+
+Deducts 50 from A2R4L2's BinStock → logs TRANSFER_OUT
+Adds 50 to A2R3L1's BinStock → logs TRANSFER_IN
+Updates both bins' currentStock
+
+A2R3L1 is replenished. No supplier involved. No money spent. Just smart internal movement.
+
+Flow 7: Customer Return
+"Priya sent it back"
+Priya received her Vitamin C but changed her mind. She initiates a return on the app for 3 units.
+The system traces back to her original order. It knows she was shipped from BATCH-2025-002, which expires March 2027. Today the remaining shelf life of that batch is 9 months.
+The system checks — "Is 9 months >= the 90-day minimum buffer to restock?" Yes. ✅
+The 3 units are cleared for restocking. Ravi's team receives the returned package, inspects it, confirms packaging is intact, and scans it back into bin A2R3L1.
+The system:
+
+Adds 3 units back to BATCH-2025-002's BinStock in A2R3L1
+Logs RETURN_RECEIVE in the StockLedger
+Updates bin currentStock and Inventory totalStock
+
+Now imagine the return was from a batch expiring in 20 days. The system flags it — "Shelf life too low to restock." The units go directly to quarantine instead. Flow 10 takes over.
+
+Flow 8: Expired Stock Sweep
+"The midnight cleanup"
+Every night at midnight, a background job quietly runs across the entire system.
+Tonight it finds — BATCH-2025-001 in bin A2R3L1 has 18 units remaining and its expiry date was yesterday. It's officially expired.
+The system:
+
+Creates a QuarantineRecord for those 18 units, reason: EXPIRED
+Sets BinStock isActive = false
+Deducts 18 from bin.currentStock
+Deducts 18 from Inventory.totalStock
+Logs EXPIRED_WRITE_OFF in StockLedger
+
+Ravi gets a morning notification — "18 units of Vitamin C, BATCH-2025-001 in bin A2R3L1 have expired and been written off."
+Then the system immediately runs a warehouse-level reorder check. Total stock is now 155 units. Still above reorder point of 50. No PO triggered.
+But Ravi now has a decision to make on those 18 expired units — dispose them physically and close the QuarantineRecord.
+
+Flow 9: Physical Stock Audit
+"The numbers don't match"
+Every month, Ravi does a physical count. He walks to A2R4L2 with a clipboard. He counts BATCH-2025-002 — he physically sees 79 units. But the system says 85 units.
+Discrepancy: -6 units.
+He opens the Stock Audit screen in the app, selects the bin and batch, enters 79 as physical count. The system shows him the gap — "System: 85 | Physical: 79 | Discrepancy: -6."
+Ravi enters a reason — "6 units found damaged during count, moved to quarantine."
+The system:
+
+Creates a StockAudit record
+Adjusts BinStock qtyOnHand to 79
+Logs CYCLE_COUNT_ADJUST in StockLedger with -6
+Triggers threshold check — total stock is now 167, still above reorder point
+
+Those 6 damaged units flow into Flow 10.
+
+Flow 10: Damaged Stock / Quarantine
+"These can't be sold"
+During receiving or handling, a staff member drops a box. 4 units of BATCH-2025-002 are visibly damaged — torn packaging, broken tablets.
+He opens the app and flags those 4 units as damaged in the BinStock record.
+The system:
+
+Deducts 4 from qtyOnHand, adds 4 to qtyDamaged in that BinStock
+Creates a QuarantineRecord — reason: DAMAGED
+Logs QUARANTINE in StockLedger
+
+The QuarantineRecord sits with status QUARANTINED. Now Ravi has three options:
+Option A — Dispose: Units are physically destroyed. Ravi marks as DISPOSED in the app. StockLedger logs DAMAGE_WRITE_OFF. Done.
+Option B — Return to Supplier: These were defective from the factory. Ravi raises a Supplier Return. Flow 11 kicks in. QuarantineRecord status → RETURNED_TO_SUPPLIER.
+Option C — Repackage and Restock: Sometimes it's just a torn box — tablets are fine. Ravi's team repackages and scans back into bin. qtyDamaged decreases, qtyOnHand increases. QuarantineRecord status → RESTOCKED.
+
+Flow 11: Supplier Return
+"This batch was bad from day one"
+During receiving, Ravi notices 30 units of a new batch of Vitamin C have clearly defective packaging — swollen tablets, wrong colour. The whole sub-lot is suspect.
+He rejects those 30 units during inbound. The system does NOT create a BinStock record for them.
+Instead it creates a SupplierReturn record:
+
+PO reference: PO-00456
+Reason: DEFECTIVE
+Quantity: 30 units
+Status: RAISED
+
+The supplier is notified. They acknowledge — status moves to ACKNOWLEDGED. Two weeks later they send a credit note — status moves to CREDIT_RECEIVED. Or they send a replacement batch — status moves to REPLACED and Flow 1 runs again for the replacement.
+
+Flow 12: Order Cancellation — Stock Release
+"Priya changed her mind before we picked"
+Priya placed an order — 10 units were reserved from BATCH-2025-002. Twenty minutes later, before the pick list was even acted on, she cancels.
+The system immediately:
+
+Finds the BinStock records that had reservations for her order
+Releases the 10 units — qtyReserved goes down by 10, qtyOnHand goes back up by 10
+Logs RESERVATION_RELEASED in StockLedger
+Those units are immediately available for the next customer
+
+No warehouse staff had to do anything. No physical movement happened. Just a number adjustment.
+
+Flow 13: Partial Fulfillment
+"We can only send part of your order"
+A pharmacy chain orders 200 units of Vitamin C. The system runs batch selection. After checking all valid BinStocks across the warehouse, it can only find 155 expiry-valid units.
+The system has a configuration for Vitamin C — allowPartial = true.
+So it:
+
+Reserves all 155 available units
+Marks the order as PARTIALLY_FULFILLED
+Sends the pharmacy a notification — "We can fulfill 155 of your 200 units now. Remaining 45 will be fulfilled when new stock arrives."
+
+The pharmacy accepts. 155 units are shipped. A backorder is created for 45 units — it will be auto-fulfilled the moment the next PO is received and stocked.
+
+Flow 14: Multi-Warehouse Fulfillment
+"Chennai is out, but Pune has it"
+A customer in Hyderabad orders Vitamin C. The system checks the nearest warehouse — Warehouse A, Chennai. After running the expiry check, Chennai only has 5 valid units. Customer ordered 20.
+System checks the next nearest warehouse — Warehouse B, Pune. Pune has 80 valid units of BATCH-2025-003, expiry well within safe range.
+Pune is 2 days from Hyderabad. Buffer check passes. ✅
+The system:
+
+Reserves 5 units from Chennai's BinStock
+Reserves 15 units from Pune's BinStock
+Generates two pick lists — one for each warehouse
+Customer sees one order, one delivery, doesn't know it came from two places
+
+Or if Pune can cover all 20 — system simply routes the entire order to Pune to avoid complexity.
+
+Flow 15: Bin Overflow During Receiving
+"There's no room in this bin"
+A new shipment arrives — 150 units of BATCH-2025-003. Ravi scans bin A2R3L1. The system checks — A2R3L1 currently has 60 units, max is 200. Free space: 140 units.
+But 150 > 140. ❌ Overflow.
+The system warns Ravi — "A2R3L1 can only take 140 more units. 10 units will overflow. Please select an overflow bin."
+Ravi looks at the suggestions — A2R3L2 is empty, max 200 units. He selects it.
+The system:
+
+Creates BinStock record in A2R3L1 for 140 units (fills it to max)
+Creates a second BinStock record in A2R3L2 for the remaining 10 units
+Same batch, same expiry, two different bins
+Both bins are added to Inventory.bins for this product
+Both bins get INBOUND_RECEIVE ledger entries
+
+
+Flow 16: Product Shelf Life Configuration
+"Setting the rules before anything else"
+Before Vitamin C Tablets can even be received into the warehouse, a product manager sets up the shelf life rules in the system.
+She opens Product Configuration → Shelf Life and fills in:
+
+Minimum shelf life to sell: 90 days (if less than 90 days remaining, don't sell it)
+Minimum shelf life to receive: 180 days (reject supplier batch if expiring within 6 months)
+Expiry alert days: 60 days (warn Ravi 60 days before a batch is about to expire)
+
+These three numbers silently power every expiry decision across the entire system — inbound rejection, order selection, PIN code check, expiry sweep alerts. Without this setup, none of those flows can run correctly.
+She can also set different rules for a specific variant — for example, the 1000mg variant might have a longer minimum buffer because it's slower moving.
+
+Flow 17: Inbound Stock Rejection
+"We can't accept this batch"
+A supplier delivers a batch of Vitamin C. Ravi scans the batch details during receiving. Expiry date on the batch: August 2025. Today is May 2026. Remaining shelf life: 3 months = 90 days.
+The system checks against ProductShelfLifeConfig — minimum shelf life to receive is 180 days.
+90 < 180. ❌ Rejected.
+The system refuses to create a BinStock record. It automatically raises a SupplierReturn with reason NEAR_EXPIRY. The supplier's truck is still at the loading bay. Ravi tells the driver — "We can't accept this batch. It'll be returned."
+The supplier is notified through the system. Flow 11 takes over for resolution.
+
+Flow 18: Reports & Stock Visibility
+"Ravi needs to see everything"
+It's Monday morning. Ravi opens his dashboard. He doesn't go bin-hunting manually — the system surfaces everything he needs.
+Expiry Report — "3 batches expiring within 60 days across 5 bins. Review and act."
+Ravi sees BATCH-2025-001 in two bins with 18 + 12 units expiring in 28 days. He decides to discount them on the storefront to push sales before they expire.
+Low Stock Report — "Vitamin D is below reorder point warehouse-wide."
+He reviews and confirms the auto-generated PO.
+Dead Stock Report — "Omega-3 capsules have had zero outbound movement in 90 days."
+He flags it for a promotional campaign.
+Bin Utilisation Report — "12 bins are under 20% capacity."
+He identifies consolidation opportunities.
+Stock Value Report — Total inventory value across all warehouses, broken down by product category.
+All of these are read-only queries. No stock moves. Just visibility.
+
+Flow 19: Bin Consolidation
+"Free up a bin by merging"
+Ravi's dashboard shows a suggestion — "Bin A2R3L1 has 15 units of BATCH-2025-002. Bin A2R4L2 has 60 units of the same batch. A2R4L2 has max 200 units (140 free). You can consolidate A2R3L1 into A2R4L2 and free up bin A2R3L1 for a new product."
+Ravi checks — is A2R3L1's stock reserved for any pending order? No. ✅ Safe to move.
+He taps Approve Consolidation.
+The system:
+
+Moves 15 units from A2R3L1's BinStock to A2R4L2's BinStock (same batch, same expiry — clean merge)
+A2R3L1's BinStock → qtyOnHand = 0, isActive = false
+A2R3L1 bin → currentStock = 0, isOccupied = false
+A2R4L2's BinStock → qtyOnHand = 75
+Logs CONSOLIDATION_OUT for A2R3L1 and CONSOLIDATION_IN for A2R4L2
+Removes A2R3L1 from Inventory.bins
+Creates a StockTransfer record with type CONSOLIDATION
+
+A2R3L1 is now completely empty. Ravi can assign it to an entirely different product tomorrow — maybe a new product line that just got onboarded.
+No product was wasted. No order was disrupted. One bin was efficiently recycled.
+
+The Big Picture
+Every single day in your warehouse, all 19 flows run in some combination:
+
+Trucks arrive → Flow 1, 15, 17
+Orders come in → Flow 3, 4, 5, 13, 14
+Stock moves inside → Flow 6, 19
+Things go wrong → Flow 7, 10, 11, 12
+Midnight runs silently → Flow 8
+Manager checks the numbers → Flow 9, 18
+System watches thresholds → Flow 2
+Rules drive everything → Flow 16
+
+That's your complete warehouse system — not as code, but as a living operation.
+
+Where do you want to go next — API endpoints for each flow, or start building the first flow end to end with service logic?Sonnet 4.6
