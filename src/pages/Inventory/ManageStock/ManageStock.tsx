@@ -18,6 +18,7 @@ import { DateTime } from "luxon";
 import { Inventory } from "../../../entity/inventory";
 import { StockLedger } from "../../../entity/stock_ledger";
 import { BinStock } from "../../../entity/bin_stock";
+import { InventoryService } from "../../../service/inventory";
 
 export enum InventoryAction {
   ADJUST = "adjust stock",
@@ -484,7 +485,8 @@ const ManageStock: React.FC = () => {
               <DashBoardButton
                 name="Submit Adjustment"
                 variant="primary"
-                onClick={handleSubmit}
+                // onClick={handleSubmit}
+                onClick={async () => {await new InventoryService().createInventory()}}
                 disabled={isLoading}
               />
             </div>
