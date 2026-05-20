@@ -13,5 +13,5 @@ export class BinStock {
     qtyOnHand?: number;
     batchNumber?: string;
     expiryDate?: DateTime;
-    lastCountedAt?: Date;
+    lastCountedAt?: DateTime;
 }

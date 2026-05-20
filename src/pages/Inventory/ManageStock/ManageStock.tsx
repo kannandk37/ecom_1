@@ -19,13 +19,17 @@ import { Inventory } from "../../../entity/inventory";
 import { StockLedger } from "../../../entity/stock_ledger";
 import { BinStock } from "../../../entity/bin_stock";
 import { InventoryService } from "../../../service/inventory";
+import { BinStockService } from "../../../service/bin_stock";
+import Toast from "../../../assets/toast/Toast";
+import axios from "axios";
+import Loader2 from "../../../assets/loader/Loader2";
 
 export enum InventoryAction {
   ADJUST = "adjust stock",
   WASTE = "manage waste",
 }
 
-export enum AdjustmentType {
+enum AdjustmentType {
   ADD = "add",
   REDUCE = "reduce",
 }
@@ -38,7 +42,7 @@ const ManageStock: React.FC = () => {
     id: string;
     label: string;
     value: string;
-  }>({ id: null, label: "Adjust Stock", value: InventoryAction.ADJUST });
+  }>({ id: null, label: InventoryAction.ADJUST, value: InventoryAction.ADJUST });
 
   // Current Status States
   const [warehouseId, setWarehouseId] = useState<{
@@ -50,25 +54,25 @@ const ManageStock: React.FC = () => {
     id: string;
     label: string;
     value: string;
-  }>({ id: null, label: "Select Warehouse", value: "" });
+  }>({ id: null, label: "Select Warehouse Bin", value: "" });
   const [productId, setProductId] = useState<{
     id: string;
     label: string;
     value: string;
-  }>({ id: null, label: "Select Warehouse", value: "" });
+  }>({ id: null, label: "Select Product", value: "" });
   const [variantId, setVariantId] = useState<{
     id: string;
     label: string;
     value: string;
-  }>({ id: null, label: "Select Warehouse", value: "" });
+  }>({ id: null, label: "Select Variant", value: "" });
 
   // Details States
   const [adjustmentType, setAdjustmentType] = useState<AdjustmentType>(
     AdjustmentType.ADD,
   );
-  const [quantity, setQuantity] = useState<number>(0);
+  const [quantity, setQuantity] = useState<string>('');
   const [expiryDate, setExpiryDate] = useState<DateTime>();
-  const [reason, setReason] = useState<string>(null);
+  const [reason, setReason] = useState<string>('');
 
   // UI States
   const [isLoading, setIsLoading] = useState(false);
@@ -110,6 +114,20 @@ const ManageStock: React.FC = () => {
   const [isBinLoading, setIsBinLoading] = useState<boolean>(false);
   const [isProductLoading, setIsProductLoading] = useState<boolean>(false);
   const [isVariantLoading, setIsVariantLoading] = useState<boolean>(false);
+  const [inventory, setInventory] = useState<Inventory>(null);
+  const [binStocks, setBinStocks] = useState<BinStock[]>([]);
+  const [binStockId, setBinStockId] = useState<{
+    id: string;
+    label: string;
+    value: string;
+  }>({ id: null, label: "Select Batch", value: "" });
+  const [binStocksOptions, setBinStocksOptions] = useState<{
+    id: string;
+    label: string;
+    value: string;
+  }[]>([]);
+  const [isBatchLoading, setIsBatchLoading] = useState<boolean>(false);
+  const [toast, setToast] = useState<string>('');
 
   useEffect(() => {
     if (actionType.value === InventoryAction.WASTE) {
@@ -149,7 +167,7 @@ const ManageStock: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      if (productId.id) {
+      if (productId?.id) {
         setIsVariantLoading(true);
         try {
           let variantsData = await new VariantService().getByProductId(productId.id);
@@ -160,13 +178,16 @@ const ManageStock: React.FC = () => {
         } finally {
           setIsVariantLoading(false);
         }
+      } else {
+        setVariants([]);
+        setVariantId({ id: null, label: "Select Variant", value: "" });
       }
     })()
   }, [productId]);
 
   useEffect(() => {
     (async () => {
-      if (warehouseId.id) {
+      if (warehouseId?.id) {
         setIsBinLoading(true);
         try {
           let warehouseBinsData = await new WarehouseBinService().getWarehouseBinsByWareHouseId(warehouseId.id);
@@ -177,16 +198,66 @@ const ManageStock: React.FC = () => {
         } finally {
           setIsBinLoading(false);
         }
+      } else {
+        setWarehouseBins([]);
+        setBinId({ id: null, label: "Select Warehouse Bin", value: "" });
       }
     })()
   }, [warehouseId]);
+
+  useEffect(() => {
+    (async () => {
+      if (warehouseId?.id && productId?.id) {
+        try {
+          let inventoryData = await new InventoryService().inventoryByWarehouseAndProduct(warehouseId.id, productId.id);
+          setInventory(inventoryData);
+        } catch (error: any) {
+          console.log(error)
+        } finally {
+
+        }
+      } else {
+        setInventory(null);
+      }
+    })()
+  }, [warehouseId, productId]);
+
+  useEffect(() => {
+    (async () => {
+      if (binId?.id && productId?.id) {
+        setIsBatchLoading(true);
+        try {
+          let binStockData = await new BinStockService().binStocksByWarehouseBinAndProduct(binId.id, productId.id);
+          setBinStocks(binStockData);
+          let options = binStockData.map((binStock: BinStock) => { return { id: binStock.id, label: binStock.batchNumber, value: binStock.batchNumber } })
+          setBinStocksOptions(options);
+          if (binStockData.length === 1) {
+            setBinStockId({
+              id: binStockData[0].id,
+              label: binStockData[0].batchNumber,
+              value: binStockData[0].batchNumber
+            });
+          } else {
+            setBinStockId({ id: null, label: "Select Batch", value: "" });
+          }
+        } catch (error: any) {
+          console.log(error)
+        } finally {
+          setIsBatchLoading(false);
+        }
+      } else {
+        setBinStocks([]);
+        setBinStocksOptions([]);
+        setBinStockId({ id: null, label: "Select Batch", value: "" })
+      }
+    })()
+  }, [binId, productId]);
 
   const handleSubmit = async () => {
     const newErrors: any = {};
     if (!warehouseId) newErrors.warehouseId = "Required";
     if (!binId) newErrors.binId = "Required";
     if (!productId) newErrors.productId = "Required";
-    if (!variantId) newErrors.variantId = "Required";
     if (!quantity || isNaN(Number(quantity)) || Number(quantity) <= 0)
       newErrors.quantity = "Valid quantity required";
     if (!reason.trim()) newErrors.reason = "Reason is required";
@@ -199,301 +270,412 @@ const ManageStock: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const payload = {
-        action: actionType,
-        warehouseId,
-        binId,
-        productId,
-        variantId,
-        adjustmentType,
-        quantity: Number(quantity),
-        reason,
-      };
+      let inventoryData = new Inventory();
+      inventoryData.id = inventory?.id;
 
-      let warehouseInfo = new Warehouse();
-      warehouseInfo.id = warehouseId.id;
+      let binStockData = new BinStock();
+      binStockData.id = binStockId.id
 
-      let binInfo = new WarehouseBin();
-      binInfo.id = binId.id;
+      let warehouseBin = new WarehouseBin();
+      warehouseBin.id = binId.id;
 
-      let productInfo = new Product();
-      productInfo.id = productId.id;
+      binStockData.bin = warehouseBin;
 
-      let variantInfo = new Variant();
-      variantInfo.id = variantId?.id;
+      let product = new Product();
+      product.id = productId.id;
+      binStockData.product = product;
 
-
-      let inventory = new Inventory();
-      inventory.warehouse = warehouseInfo;
-      inventory.product = productInfo;
-      inventory.variant = variantInfo;
-      inventory.qtyOnHand = quantity;
-      inventory.maxStockLevel // need data for max stock for this product in this variant in this warehouse
-      inventory.reorderPoint  // quantity where reorder is triggered
-
+      if (variantId?.id) {
+        let variant = new Variant();
+        variant.id = variantId?.id;
+        binStockData.variant = variant;
+      }
 
       let stockLedger = new StockLedger();
       stockLedger.notes = reason;
-      stockLedger.quantityDelta = quantity;
 
-      let binStock = new BinStock();
-      binStock.product = productInfo;
-      binStock.variant = variantInfo;
-      binStock.bin = binInfo;
-      binStock.expiryDate = expiryDate;
-      
-      console.log("Submitting Inventory Update:", payload);
-      // Simulate API call
-      // await axios.post('/api/inventory/adjust', payload);
+      if (actionType.label == InventoryAction.WASTE) {
+        binStockData.qtyOnHand = Number(quantity);
+        await new InventoryService().wasteStock(inventory, binStockData, stockLedger);
+      }
 
-      navigate("/dashboard/manage-stock");
-    } catch (err) {
-      console.error(err);
-      setErrors((prev) => ({ ...prev, submit: "Failed to update stock." }));
-    } finally {
+      if (actionType.label == InventoryAction.ADJUST) {
+
+        if (adjustmentType == AdjustmentType.ADD) {
+
+          binStockData.qtyOnHand = Number(quantity);
+          binStockData.expiryDate = expiryDate;
+        } else if (adjustmentType == AdjustmentType.REDUCE) {
+          binStockData.qtyOnHand = -Number(quantity);
+        }
+
+        await new InventoryService().adjustStock(inventory, binStockData, stockLedger);
+      }
       setIsLoading(false);
+    } catch (error: any) {
+      setIsLoading(false);
+      console.log(error);
+      if (axios.isAxiosError(error) && error.response?.data?.isCommunicable) {
+        setToast(error.response?.data?.error);
+      }
+    } finally {
+      // setQuantity(`0`);
+      // setReason('');
+      // setWarehouseId({ id: null, label: "Select Warehouse", value: "" });
+      // setBinId({ id: null, label: "Select Warehouse Bin", value: "" });
+      // setProductId({ id: null, label: "Select Product", value: "" });
+      // setVariantId({ id: null, label: "Select Variant", value: "" });
+      // setExpiryDate('');
     }
   };
 
   return (
-    <div className="create-Inventory-stock-container">
-      {/* Header Area */}
-      <div className="create-Inventory-stock-header">
-        <button
-          className="create-Inventory-stock-back-btn"
-          onClick={() => navigate("/dashboard/inventory")}
-        >
-          <FiArrowLeft /> Back to Inventory
-        </button>
-        <h1 className="create-Inventory-stock-title">
-          {(actionType.value as any) === InventoryAction.ADJUST
-            ? "Adjust Stock"
-            : "Manage Waste"}
-        </h1>
-      </div>
-
-      {/* Global Action Selector */}
-      <div className="create-Inventory-stock-action-selector">
-        <label>Inventory Action</label>
-        <div className="create-Inventory-stock-action-dropdown">
-          <Dropdown
-            options={actionOptions}
-            label={actionType.label || ""}
-            onSelect={(val) => { console.log(val); setActionType(val as any) }}
-          />
-        </div>
-      </div>
-
-      <div className="create-Inventory-stock-content-grid">
-        {/* LEFT COLUMN: Current Status */}
-        <div className="create-Inventory-stock-card">
-          <h2 className="create-Inventory-stock-card-title">Current Status</h2>
-
-          <div className="create-Inventory-stock-form-col">
-            <div className="create-Inventory-stock-field">
-              <label>
-                Warehouse <span className="create-Inventory-stock-req">*</span>
-              </label>
-              <Dropdown
-                isLoading={isWarehouseLoading}
-                options={warehouses}
-                label={warehouseId.label || "Select Warehouse"}
-                noData={warehouses?.length == 0}
-                onSelect={(val: any) => setWarehouseId(val as any)}
-              />
-              {errors.warehouseId && (
-                <span className="create-Inventory-stock-error">
-                  {errors.warehouseId}
-                </span>
-              )}
-            </div>
-
-            <div className="create-Inventory-stock-field">
-              <label>
-                Bin / Location{" "}
-                <span className="create-Inventory-stock-req">*</span>
-              </label>
-              <Dropdown
-                isLoading={isBinLoading}
-                options={warehouseBins}
-                label={binId.label || "Select Bin"}
-                noData={warehouseBins?.length == 0}
-                onSelect={(val: any) => setBinId(val as any)}
-              />
-              {errors.binId && (
-                <span className="create-Inventory-stock-error">
-                  {errors.binId}
-                </span>
-              )}
-            </div>
-
-            <div className="create-Inventory-stock-field">
-              <label>
-                Product <span className="create-Inventory-stock-req">*</span>
-              </label>
-              <Dropdown
-                isLoading={isProductLoading}
-                options={products}
-                label={productId.label || "Select Product"}
-                noData={products?.length == 0}
-                onSelect={(val: any) => setProductId(val as any)}
-              />
-              {errors.productId && (
-                <span className="create-Inventory-stock-error">
-                  {errors.productId}
-                </span>
-              )}
-            </div>
-
-            <div className="create-Inventory-stock-field">
-              <label>
-                Variant / SKU{" "}
-                <span className="create-Inventory-stock-req">*</span>
-              </label>
-              <Dropdown
-                isLoading={isVariantLoading}
-                options={variants}
-                label={variantId.label || "Select Variant"}
-                noData={variants?.length == 0}
-                onSelect={(val: any) => setVariantId(val as any)}
-              />
-              {errors.variantId && (
-                <span className="create-Inventory-stock-error">
-                  {errors.variantId}
-                </span>
-              )}
-            </div>
-
-            <div className="create-Inventory-stock-info-box">
-              <div className="create-Inventory-stock-info-icon">
-                <FiClipboard />
+    <>
+      {
+        isLoading ? (
+          <Loader2 />
+        ) : (
+          <>
+            {
+              toast && (
+                <Toast
+                  title={'Manage Stock'}
+                  description={toast}
+                  isError={true}
+                  duration={5000}
+                  onClose={() => setToast(null)}
+                />
+              )
+            }
+            <div className="create-Inventory-stock-container">
+              {/* Header Area */}
+              <div className="create-Inventory-stock-header">
+                <button
+                  className="create-Inventory-stock-back-btn"
+                  onClick={() => navigate("/dashboard/inventory")}
+                >
+                  <FiArrowLeft /> Back to Inventory
+                </button>
+                <h1 className="create-Inventory-stock-title">
+                  {(actionType.value as any) === InventoryAction.ADJUST
+                    ? "Adjust Stock"
+                    : "Manage Waste"}
+                </h1>
               </div>
-              <div className="create-Inventory-stock-info-text">
-                <span className="create-Inventory-stock-info-label">
-                  Current Stock in Selected Bin
-                </span>
-                <span className="create-Inventory-stock-info-value">
-                  {currentStockMock} Units
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        {/* RIGHT COLUMN: Adjustment Details */}
-        <div className="create-Inventory-stock-card">
-          <h2 className="create-Inventory-stock-card-title">
-            {actionType.value === InventoryAction.ADJUST
-              ? "Adjustment Details"
-              : "Manage Waste Details"}
-          </h2>
-
-          <div className="create-Inventory-stock-form-col">
-            <div className="create-Inventory-stock-row-split">
-              <div className="create-Inventory-stock-field">
-                <label>
-                  {actionType.value === InventoryAction.ADJUST
-                    ? "Adjustment Type"
-                    : "Waste Type"}{" "}
-                  <span className="create-Inventory-stock-req">*</span>
-                </label>
-                <div className="create-Inventory-stock-radio-group">
-                  {actionType.value === InventoryAction.ADJUST && (
-                    <label className="create-Inventory-stock-radio-label">
-                      <input
-                        type="radio"
-                        name="adjustmentType"
-                        value={AdjustmentType.ADD}
-                        checked={adjustmentType === AdjustmentType.ADD}
-                        onChange={() => setAdjustmentType(AdjustmentType.ADD)}
-                      />
-                      Add (+)
-                    </label>
-                  )}
-                  <label className="create-Inventory-stock-radio-label">
-                    <input
-                      type="radio"
-                      name="adjustmentType"
-                      value={AdjustmentType.REDUCE}
-                      checked={adjustmentType === AdjustmentType.REDUCE}
-                      onChange={() => setAdjustmentType(AdjustmentType.REDUCE)}
-                    />
-                    Reduce (-)
-                  </label>
+              {/* Global Action Selector */}
+              <div className="create-Inventory-stock-action-selector">
+                <label>Inventory Action</label>
+                <div className="create-Inventory-stock-action-dropdown">
+                  <Dropdown
+                    options={actionOptions}
+                    label={actionType.label || ""}
+                    selected={actionType}
+                    onSelect={(val) => { setActionType(val as any) }}
+                  />
                 </div>
               </div>
 
-              <div className="create-Inventory-stock-field">
-                <label>
-                  Quantity <span className="create-Inventory-stock-req">*</span>
-                </label>
-                <DashBoardInput
-                  placeholder="0"
-                  type="number"
-                  value={quantity?.toString()}
-                  onChange={(e: any) => setQuantity(e)}
-                />
-                {errors.quantity && (
-                  <span className="create-Inventory-stock-error">
-                    {errors.quantity}
-                  </span>
-                )}
+              <div className="create-Inventory-stock-content-grid">
+                {/* LEFT COLUMN: Current Status */}
+                <div className="create-Inventory-stock-card">
+                  <h2 className="create-Inventory-stock-card-title">Current Status</h2>
+
+                  <div className="create-Inventory-stock-form-col">
+                    <div className="create-Inventory-stock-field">
+                      <label>
+                        Warehouse <span className="create-Inventory-stock-req">*</span>
+                      </label>
+                      <Dropdown
+                        isLoading={isWarehouseLoading}
+                        options={warehouses}
+                        label={warehouseId.label || "Select Warehouse"}
+                        noData={warehouses?.length == 0}
+                        selected={warehouseId}
+                        onSelect={(val: any) => {
+                          if (val) {
+                            setWarehouseId(val as any)
+                          } else {
+                            setWarehouseId({ id: null, label: "Select Warehouse", value: "" });
+                          }
+                        }} />
+                      {errors.warehouseId && (
+                        <span className="create-Inventory-stock-error">
+                          {errors.warehouseId}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="create-Inventory-stock-field">
+                      <label>
+                        Bin / Location{" "}
+                        <span className="create-Inventory-stock-req">*</span>
+                      </label>
+                      <Dropdown
+                        isLoading={isBinLoading}
+                        options={warehouseBins}
+                        label={binId.label || "Select Warehouse Bin"}
+                        noData={warehouseBins?.length == 0}
+                        selected={binId}
+                        onSelect={(val: any) => {
+                          if (val) {
+                            setBinId(val as any)
+                          } else {
+                            setBinId({ id: null, label: "Select Warehouse Bin", value: "" });
+                          }
+                        }} />
+                      {errors.binId && (
+                        <span className="create-Inventory-stock-error">
+                          {errors.binId}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="create-Inventory-stock-field">
+                      <label>
+                        Product <span className="create-Inventory-stock-req">*</span>
+                      </label>
+                      <Dropdown
+                        isLoading={isProductLoading}
+                        options={products}
+                        label={productId.label || "Select Product"}
+                        noData={products?.length == 0}
+                        selected={productId}
+                        onSelect={(val: any) => {
+                          if (val) {
+                            setProductId(val as any)
+                          } else {
+                            setProductId({ id: null, label: "Select Product", value: "" });
+                          }
+                        }}
+                      />
+                      {errors.productId && (
+                        <span className="create-Inventory-stock-error">
+                          {errors.productId}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="create-Inventory-stock-field">
+                      <label>
+                        Variant / SKU{" "}
+                        <span className="create-Inventory-stock-req">*</span>
+                      </label>
+                      <Dropdown
+                        isLoading={isVariantLoading}
+                        options={variants}
+                        label={variantId.label || "Select Variant"}
+                        noData={variants?.length == 0}
+                        selected={variantId}
+                        onSelect={(val: any) => {
+                          if (val) {
+                            setVariantId(val as any)
+                          } else {
+                            setVariantId({ id: null, label: "Select Variant", value: "" });
+                          }
+                        }} />
+                      {errors.variantId && (
+                        <span className="create-Inventory-stock-error">
+                          {errors.variantId}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="create-Inventory-stock-info-box">
+                      <div className="create-Inventory-stock-info-icon">
+                        <FiClipboard />
+                      </div>
+                      <div className="create-Inventory-stock-info-text">
+                        <span className="create-Inventory-stock-info-label">
+                          Current Stock in {binStocks?.length > 0 && binStocks[0]?.bin?.binCode ? binStocks[0]?.bin?.binCode : 'Selected Bin'}
+                        </span>
+                        <span className="create-Inventory-stock-info-value">
+                          {binStocks?.length > 0 ? binStocks?.reduce((sum: number, a: BinStock) => a.qtyOnHand + sum, 0) : 0} Units
+                        </span>
+                      </div>
+                    </div>
+
+                    {
+                      binStockId?.id &&
+                      <div className="create-Inventory-stock-info-box">
+                        <div className="create-Inventory-stock-info-icon">
+                          <FiClipboard />
+                        </div>
+                        <div className="create-Inventory-stock-info-text">
+                          <span className="create-Inventory-stock-info-label">
+                            Current Stock Selected Batch - {binStockId?.label}
+                          </span>
+                          <span className="create-Inventory-stock-info-value">
+                            {binStocks?.length > 0 ? binStocks?.find((el: BinStock) => el.id == binStockId.id).qtyOnHand : 0} Units - Expires in {binStocks?.length > 0 ? binStocks?.find((el: BinStock) => el.id == binStockId.id).expiryDate?.toFormat('dd-MM-yyyy') : ''}
+                          </span>
+                        </div>
+                      </div>
+                    }
+
+                    <div className="create-Inventory-stock-info-box">
+                      <div className="create-Inventory-stock-info-icon">
+                        <FiClipboard />
+                      </div>
+                      <div className="create-Inventory-stock-info-text">
+                        <span className="create-Inventory-stock-info-label">
+                          Total Stock in {warehouseId.value ? `${warehouseId.value}` : 'Select Warehouse'}
+                        </span>
+                        <span className="create-Inventory-stock-info-value">
+                          {inventory?.qtyOnHand ? inventory?.qtyOnHand : 0} Units
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* RIGHT COLUMN: Adjustment Details */}
+                <div className="create-Inventory-stock-card">
+                  <h2 className="create-Inventory-stock-card-title">
+                    {actionType.value === InventoryAction.ADJUST
+                      ? "Adjustment Details"
+                      : "Manage Waste Details"}
+                  </h2>
+
+                  <div className="create-Inventory-stock-form-col">
+                    <div className="create-Inventory-stock-row-split">
+                      <div className="create-Inventory-stock-field">
+                        <label>
+                          {actionType.value === InventoryAction.ADJUST
+                            ? "Adjustment Type"
+                            : "Waste Type"}{" "}
+                          <span className="create-Inventory-stock-req">*</span>
+                        </label>
+                        <div className="create-Inventory-stock-radio-group">
+                          {actionType.value === InventoryAction.ADJUST && (
+                            <label className="create-Inventory-stock-radio-label">
+                              <input
+                                type="radio"
+                                name="adjustmentType"
+                                value={AdjustmentType.ADD}
+                                checked={adjustmentType === AdjustmentType.ADD}
+                                onChange={() => setAdjustmentType(AdjustmentType.ADD)}
+                              />
+                              Add (+)
+                            </label>
+                          )}
+                          <label className="create-Inventory-stock-radio-label">
+                            <input
+                              type="radio"
+                              name="adjustmentType"
+                              value={AdjustmentType.REDUCE}
+                              checked={adjustmentType === AdjustmentType.REDUCE}
+                              onChange={() => setAdjustmentType(AdjustmentType.REDUCE)}
+                            />
+                            Reduce (-)
+                          </label>
+                        </div>
+                      </div>
+
+                      <div className="create-Inventory-stock-field">
+                        <label>
+                          Quantity <span className="create-Inventory-stock-req">*</span>
+                        </label>
+                        <DashBoardInput
+                          placeholder="0"
+                          type="text"
+                          value={quantity ?? ''}
+                          onChange={(e: any) => setQuantity(e)}
+                        />
+                        {errors.quantity && (
+                          <span className="create-Inventory-stock-error">
+                            {errors.quantity}
+                          </span>
+                        )}
+                      </div>
+
+                      {
+                        actionType.label != InventoryAction.WASTE && adjustmentType == AdjustmentType.ADD &&
+                        <div className="create-Inventory-stock-field">
+                          <label>
+                            Expiry Date <span className="create-Inventory-stock-req">*</span>
+                          </label>
+                          <DashBoardInput
+                            placeholder="dd-mm-yyyy"
+                            type="date"
+                            value={expiryDate ? expiryDate?.toFormat('yyyy-MM-dd') : ''}
+                            onChange={(e: string) => { setExpiryDate(DateTime.fromJSDate(new Date(e))); }}
+                          />
+                          {errors.expiryDate && (
+                            <span className="create-Inventory-stock-error">
+                              {errors.expiryDate}
+                            </span>
+                          )}
+                        </div>
+                      }
+
+                      <div className="create-Inventory-stock-field">
+                        <label>
+                          Batch <span className="create-Inventory-stock-req">*</span>
+                        </label>
+                        <Dropdown
+                          isLoading={isBatchLoading}
+                          options={binStocksOptions}
+                          label={binStockId.label || "Select Batch"}
+                          noData={binStocks?.length == 0}
+                          selected={binStockId}
+                          onSelect={(val: any) => {
+                            if (val) {
+                              setBinStockId(val as any)
+                            } else {
+                              setBinStockId({ id: null, label: "Select Batch", value: "" });
+                            }
+                          }}
+                          width="240px"
+                        />
+                        {errors.binStockId && (
+                          <span className="create-Inventory-stock-error">
+                            {errors.binStockId}
+                          </span>
+                        )}
+                      </div>
+
+                    </div>
+
+                    <div className="create-Inventory-stock-field create-Inventory-stock-flex-grow">
+                      <label>
+                        Reason / Notes{" "}
+                        <span className="create-Inventory-stock-req">*</span>
+                      </label>
+                      <textarea
+                        className={`create-Inventory-stock-textarea ${errors.reason ? "error-border" : ""}`}
+                        placeholder="E.g., Inventory recount, received partial shipment..."
+                        value={reason ?? ""}
+                        onChange={(e) => setReason(e.target.value)}
+                      />
+                      {errors.reason && (
+                        <span className="create-Inventory-stock-error">
+                          {errors.reason}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="create-Inventory-stock-footer-actions">
+                      <DashBoardButton
+                        name="Cancel"
+                        variant="secondary"
+                        onClick={() => navigate("/dashboard/inventory")}
+                      />
+                      <DashBoardButton
+                        name="Submit Adjustment"
+                        variant="primary"
+                        onClick={handleSubmit}
+                        // onClick={async () => { await new InventoryService().createInventory() }}
+                        disabled={isLoading}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
-
-              <div className="create-Inventory-stock-field">
-                <label>
-                  Expiry Date <span className="create-Inventory-stock-req">*</span>
-                </label>
-                <DashBoardInput
-                  placeholder="dd-mm-yyyy"
-                  type="date"
-                  value={expiryDate ? expiryDate?.toFormat('dd-mm-yyyy') : ''}
-                  onChange={(e: string) => { console.log(e); setExpiryDate(DateTime.fromJSDate(new Date(e)));}}
-                />
-                {errors.expiryDate && (
-                  <span className="create-Inventory-stock-error">
-                    {errors.expiryDate}
-                  </span>
-                )}
-              </div>
             </div>
-
-            <div className="create-Inventory-stock-field create-Inventory-stock-flex-grow">
-              <label>
-                Reason / Notes{" "}
-                <span className="create-Inventory-stock-req">*</span>
-              </label>
-              <textarea
-                className={`create-Inventory-stock-textarea ${errors.reason ? "error-border" : ""}`}
-                placeholder="E.g., Inventory recount, received partial shipment..."
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-              />
-              {errors.reason && (
-                <span className="create-Inventory-stock-error">
-                  {errors.reason}
-                </span>
-              )}
-            </div>
-
-            <div className="create-Inventory-stock-footer-actions">
-              <DashBoardButton
-                name="Cancel"
-                variant="secondary"
-                onClick={() => navigate("/dashboard/inventory")}
-              />
-              <DashBoardButton
-                name="Submit Adjustment"
-                variant="primary"
-                // onClick={handleSubmit}
-                onClick={async () => {await new InventoryService().createInventory()}}
-                disabled={isLoading}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+          </>
+        )
+      }
+    </>
   );
 };
 
