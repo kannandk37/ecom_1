@@ -365,6 +365,7 @@ const CreateOrEditVariant: React.FC = () => {
                     width="250px"
                     options={productOptions}
                     onSelect={(val: any) => onSelectProductId(val)}
+                    selected={productId}
                     label={
                       productId?.label ? productId.label : "Select Product"
                     }
@@ -382,6 +383,7 @@ const CreateOrEditVariant: React.FC = () => {
                       width="250px"
                       options={typeOptions}
                       onSelect={(val: any) => onSelectType(val)}
+                      selected={type}
                       label={type?.label ? type?.label : "Select Type"}
                       error={typeError ? true : false}
                       errorMessage={typeError}
@@ -395,6 +397,7 @@ const CreateOrEditVariant: React.FC = () => {
                       width="250px"
                       options={gradeOptions}
                       onSelect={(val: any) => onSelectGrade(val)}
+                      selected={grade}
                       label={grade?.label ? grade.label : "Select Grade"}
                       error={gradeError ? true : false}
                       errorMessage={gradeError}

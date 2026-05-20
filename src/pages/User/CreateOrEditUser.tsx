@@ -329,6 +329,7 @@ const CreateOrEditUser: React.FC = () => {
                     options={roleOptions}
                     label={roleId?.label || "Select Role"}
                     onSelect={(val: any) => { setRoleId(val); console.log(val) }}
+                    selected={roleId}
                     error={roleIdError ? true : false}
                     errorMessage={roleIdError}
                   />

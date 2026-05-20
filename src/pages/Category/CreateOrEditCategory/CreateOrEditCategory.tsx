@@ -289,6 +289,7 @@ const CreateOrEditCategory: React.FC = () => {
                   <Dropdown
                     options={parentOptions}
                     label={parentId ? parentId.label : "Select Parent Category"}
+                    selected={parentId}
                     onSelect={(val: any) => setParentId(val)}
                     // placeholder="Select Parent (Optional)"
                     width="250px"

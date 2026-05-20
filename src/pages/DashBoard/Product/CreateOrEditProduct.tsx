@@ -681,6 +681,7 @@ const CreateOrEditProduct: React.FC = () => {
                       width="250px"
                       options={categoryOptions}
                       onSelect={(val: any) => onSelectCategoryId(val)}
+                      selected={categoryId}
                       label={categoryId ? categoryId.label : "Select category"}
                       error={categoryIdError ? true : false}
                       errorMessage={categoryIdError}
@@ -694,6 +695,7 @@ const CreateOrEditProduct: React.FC = () => {
                       width="250px"
                       options={brandOptions}
                       onSelect={(val: any) => onSelectBrandId(val)}
+                      selected={brandId}
                       label={brandId ? brandId.label : "Select brand"}
                       error={brandIdError ? true : false}
                       errorMessage={brandIdError}
@@ -866,6 +868,7 @@ const CreateOrEditProduct: React.FC = () => {
                         <Dropdown
                           options={unitOptions}
                           onSelect={(val: any) => onSelectUnit(val)}
+                          selected={unit}
                           label={unit?.label ? unit.label : "Select Unit"}
                           width="250px"
                           error={unitError ? true : false}
@@ -902,6 +905,7 @@ const CreateOrEditProduct: React.FC = () => {
                           onSelect={(val: any) =>
                             onSelectShelfLifeDuration(val)
                           }
+                          selected={shelfLifeDuration}
                           label={
                             shelfLifeDuration?.label
                               ? shelfLifeDuration.label
@@ -925,6 +929,7 @@ const CreateOrEditProduct: React.FC = () => {
                       width="250px"
                       options={storageOptions}
                       onSelect={(val: any) => onSelectStorage(val)}
+                      selected={storage}
                       label={
                         storage?.label
                           ? storage.label

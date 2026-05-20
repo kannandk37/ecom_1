@@ -19,6 +19,7 @@ interface DropdownProps {
   errorMessage?: string;
   isLoading?: boolean;
   noData?: boolean;
+  selected?: DropdownOption
 }
 
 export const Dropdown: React.FC<DropdownProps> = ({
@@ -30,7 +31,8 @@ export const Dropdown: React.FC<DropdownProps> = ({
   error,
   errorMessage,
   isLoading,
-  noData
+  noData,
+  selected
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
@@ -51,8 +53,15 @@ export const Dropdown: React.FC<DropdownProps> = ({
 
   const toggleDropdown = () => setIsOpen(!isOpen);
 
+  useEffect(() => {
+    if(selected?.id) {
+      setSelectedValue(selected.value);
+    } else {
+      setSelectedValue(null);
+    }
+  }, [selected])
+
   const handleOptionClick = (option: DropdownOption) => {
-    setSelectedValue(option.value);
     setIsOpen(false);
     if (onSelect) onSelect(option);
   };

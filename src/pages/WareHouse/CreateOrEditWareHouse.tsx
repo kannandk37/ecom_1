@@ -218,7 +218,7 @@ const CreateOrEditWareHouse: React.FC = () => {
 
   const stateOptions = INDIAN_STATES.map((s: string) => ({ id: s, label: s, value: s }));
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [toastError, setToastError] = useState<string>(null);
+  const [toast, setToast] = useState<string>(null);
 
   // ── Fetch profiles ──────────────────────────────────────────────────────────
 
@@ -613,7 +613,7 @@ const CreateOrEditWareHouse: React.FC = () => {
         console.error(error);
         if (axios.isAxiosError(error) && error.response?.data?.statusCode) {
           console.log(error.response?.data)
-          setToastError(error.response?.data?.error);
+          setToast(error.response?.data?.error);
         }
       } finally {
         setIsLoading(false);
@@ -655,13 +655,13 @@ const CreateOrEditWareHouse: React.FC = () => {
   return (
     <>
       {
-        toastError && (
+        toast && (
           <Toast
             title={'WareHouse Creation Error'}
-            description={toastError}
+            description={toast}
             isError={true}
             duration={5000}
-            onClose={() => setToastError(null)}
+            onClose={() => setToast(null)}
           />
         )
       }
@@ -698,15 +698,15 @@ const CreateOrEditWareHouse: React.FC = () => {
               <div className="create-warehouse-row-split-dropdowns">
                 <div className="create-warehouse-field-group">
                   <label>Warehouse Manager <span className="req">*</span></label>
-                  <Dropdown options={userOptions} label={userId?.label || "Select User"} onSelect={(val: any) => onChangeUserId(val)} width="220px" error={userIdError ? true : false} errorMessage={userIdError} />
+                  <Dropdown options={userOptions} label={userId?.label || "Select User"} selected={userId} onSelect={(val: any) => onChangeUserId(val)} width="220px" error={userIdError ? true : false} errorMessage={userIdError} />
                 </div>
                 <div className="create-warehouse-field-group">
                   <label>Ownership Type <span className="req">*</span></label>
-                  <Dropdown options={typeOptions} label={type?.label || "Select Ownership Type"} onSelect={(val: any) => onChangeType(val)} width="230px" error={typeError ? true : false} errorMessage={typeError} />
+                  <Dropdown options={typeOptions} label={type?.label || "Select Ownership Type"} selected={type} onSelect={(val: any) => onChangeType(val)} width="230px" error={typeError ? true : false} errorMessage={typeError} />
                 </div>
                 <div className="create-warehouse-field-group">
                   <label>Operational Status <span className="req">*</span></label>
-                  <Dropdown options={statusOptions} label={status?.label || "Select Operational Status"} onSelect={(val: any) => onChangeStatus(val)} width="250px" error={statusError ? true : false} errorMessage={statusError} />
+                  <Dropdown options={statusOptions} label={status?.label || "Select Operational Status"} selected={status} onSelect={(val: any) => onChangeStatus(val)} width="250px" error={statusError ? true : false} errorMessage={statusError} />
                 </div>
               </div>
             </div>
@@ -733,7 +733,7 @@ const CreateOrEditWareHouse: React.FC = () => {
                   </div>
                   <div className="create-warehouse-field-group">
                     <label>State <span className="req">*</span></label>
-                    <Dropdown options={stateOptions} label={state?.label || "Select State"} onSelect={(val: any) => onChangeState(val)} error={stateError ? true : false} errorMessage={stateError} />
+                    <Dropdown options={stateOptions} label={state?.label || "Select State"} selected={state} onSelect={(val: any) => onChangeState(val)} error={stateError ? true : false} errorMessage={stateError} />
                   </div>
                   <div className="create-warehouse-field-group">
                     <label>Pincode <span className="req">*</span></label>
@@ -753,7 +753,7 @@ const CreateOrEditWareHouse: React.FC = () => {
                   </div>
                   <div className="create-warehouse-field-group">
                     <label>Capacity Unit <span className="req">*</span></label>
-                    <Dropdown options={unitOptions} label={capacityUnit?.label || "Select Capacity Unit"} onSelect={(val: any) => onChangeCapacityUnit(val)} error={capacityUnitError ? true : false} errorMessage={capacityUnitError} />
+                    <Dropdown options={unitOptions} label={capacityUnit?.label || "Select Capacity Unit"} selected={capacityUnit} onSelect={(val: any) => onChangeCapacityUnit(val)} error={capacityUnitError ? true : false} errorMessage={capacityUnitError} />
                   </div>
                 </div>
               </div>

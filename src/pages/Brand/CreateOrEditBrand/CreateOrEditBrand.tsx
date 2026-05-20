@@ -222,6 +222,7 @@ const CreateOrEditBrand: React.FC = () => {
                       <Dropdown
                         options={categoryOptions}
                         label={categoryId ? categoryId.label : "Choose a Category"}
+                        selected={categoryId}
                         onSelect={(val: any) => { setCategoryId(val); setCategoryIdError(null) }}
                         //   placeholder="Choose a category"
                         width="250px"
