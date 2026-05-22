@@ -51,6 +51,16 @@ export class ProductService {
         }
     }
 
+    async getByWarehouseId(warehouseId: string): Promise<Product[]> {
+        try {
+            let response = await this.axiosInstance.get(`/products/warehouse/${warehouseId}`);
+            return productsResponseDataToProductsEntities(response.data as any);
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
     async getByName(search: string) {
         try {
             let url = search ? `/products?name=${search}` : `/products`

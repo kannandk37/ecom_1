@@ -40,10 +40,6 @@ export function variantResponseDatumToVariantEntity(raw: any): Variant {
         variant.sku = raw.sku;
     }
 
-    if (raw.stockQuantity) {
-        variant.stockQuantity = raw.stockQuantity;
-    }
-
     return variant;
 }
 

@@ -1,0 +1,452 @@
+.create-add-product-to-inventory-container {
+  font-family: var(--font-family, sans-serif);
+  /* padding: 30px 40px; */
+  width: 100%;
+  /* max-width: 1200px; */
+  margin: 0 auto;
+  box-sizing: border-box;
+  animation: fadeIn 0.4s ease;
+  background-color: #F9F5F1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.create-add-product-to-inventory-header-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.create-add-product-to-inventory-back-btn {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+  font-family: inherit;
+  align-self: flex-start;
+}
+
+.create-add-product-to-inventory-back-btn:hover {
+  color: #1a1a1a;
+}
+
+.create-add-product-to-inventory-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.create-add-product-to-inventory-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 30px 35px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.create-add-product-to-inventory-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+}
+
+.create-add-product-to-inventory-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: auto;
+}
+
+.create-add-product-to-inventory-field label {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #333;
+}
+
+.req {
+  color: #d93025;
+}
+
+.create-add-product-to-inventory-controls-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.create-add-product-to-inventory-radio-group {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  height: auto;
+  padding: 11px 0;
+}
+
+.create-add-product-to-inventory-radio-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  cursor: pointer;
+}
+
+.create-add-product-to-inventory-radio-label input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #8c6d3f;
+  cursor: pointer;
+}
+
+.create-add-product-to-inventory-auto-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  flex-grow: 1;
+}
+
+.create-add-product-to-inventory-auto-btn {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.create-add-product-to-inventory-manual-controls {
+  flex-grow: 1;
+  max-width: 350px;
+}
+
+.create-add-product-to-inventory-table-section {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 30px 35px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.create-add-product-to-inventory-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.create-add-product-to-inventory-table-header h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.create-add-product-to-inventory-total-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #f8f7f4;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #666;
+  border: 1px solid #f0f0ed;
+}
+
+.create-add-product-to-inventory-total-chip strong {
+  color: #1a1a1a;
+  font-size: 1rem;
+}
+
+.create-add-product-to-inventory-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid #f0f0ed;
+  border-radius: 8px;
+}
+
+.create-add-product-to-inventory-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.create-add-product-to-inventory-table th {
+  background-color: #fcfcfc;
+  padding: 16px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #f0f0ed;
+}
+
+.create-add-product-to-inventory-table td {
+  padding: 16px;
+  font-size: 0.95rem;
+  color: #333;
+  border-bottom: 1px solid #f9f9f9;
+  vertical-align: middle;
+}
+
+.create-add-product-to-inventory-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.create-add-product-to-inventory-highlight-text {
+  font-weight: 700;
+  color: #8c6d3f;
+}
+
+.create-add-product-to-inventory-empty-state {
+  text-align: center !important;
+  padding: 40px !important;
+  color: #aaa !important;
+  font-style: italic;
+}
+
+.create-add-product-to-inventory-input-cell {
+  width: 150px;
+}
+
+.create-add-product-to-inventory-table-input-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.create-add-product-to-inventory-table-input-wrapper input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.create-add-product-to-inventory-table-input-wrapper input:focus {
+  border-color: #8c6d3f;
+}
+
+.create-add-product-to-inventory-table-input-wrapper input:disabled {
+  background-color: #f5f5f5;
+  color: #888;
+  cursor: not-allowed;
+  border-color: #eee;
+}
+
+.create-add-product-to-inventory-table-input-wrapper input.error-input {
+  border-color: #d93025;
+  background-color: #fdf2f2;
+}
+
+.create-add-product-to-inventory-cell-error {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  font-size: 0.65rem;
+  color: #d93025;
+  font-weight: 700;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+.create-add-product-to-inventory-action-cell {
+  text-align: center;
+  width: 80px;
+}
+
+.create-add-product-to-inventory-remove-btn {
+  background: none;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.create-add-product-to-inventory-remove-btn:hover:not(:disabled) {
+  background-color: #fdf2f2;
+  color: #d93025;
+}
+
+.create-add-product-to-inventory-remove-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.create-add-product-to-inventory-table tfoot td {
+  background-color: #faf9f7;
+  border-top: 2px solid #f0f0ed;
+  padding: 16px;
+}
+
+.create-add-product-to-inventory-footer-label {
+  text-align: right;
+  font-weight: 800;
+  color: #1a1a1a;
+}
+
+.create-add-product-to-inventory-footer-value {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #1a1a1a;
+}
+
+.create-add-product-to-inventory-global-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #d93025;
+  background-color: #fdf2f2;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-top: 15px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 1px solid #fad2d0;
+}
+
+.create-add-product-to-inventory-footer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  padding-top: 10px;
+}
+
+@media (max-width: 1024px) {
+  .create-add-product-to-inventory-grid-3 {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 900px) {
+  .create-add-product-to-inventory-grid-3 {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .create-add-product-to-inventory-controls-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .create-add-product-to-inventory-auto-controls {
+    width: 100%;
+    flex-direction: row;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .create-add-product-to-inventory-auto-controls>.create-add-product-to-inventory-field {
+    flex: 1;
+    min-width: 160px;
+  }
+
+  .create-add-product-to-inventory-manual-controls {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .create-add-product-to-inventory-table-section {
+    padding: 20px;
+  }
+
+  .create-add-product-to-inventory-card {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .create-add-product-to-inventory-title {
+    font-size: 1.6rem;
+  }
+
+  .create-add-product-to-inventory-auto-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .create-add-product-to-inventory-auto-btn {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .create-add-product-to-inventory-auto-btn>* {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .create-add-product-to-inventory-footer-actions {
+    flex-direction: column-reverse;
+  }
+
+  .create-add-product-to-inventory-footer-actions>* {
+    width: 100%;
+  }
+
+  .create-add-product-to-inventory-table-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .create-add-product-to-inventory-total-chip {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .create-add-product-to-inventory-table th,
+  .create-add-product-to-inventory-table td {
+    padding: 10px 8px;
+    font-size: 0.8rem;
+  }
+
+  .create-add-product-to-inventory-input-cell {
+    width: 100px;
+  }
+}
+
+@media (max-width: 400px) {
+  .create-add-product-to-inventory-card {
+    padding: 16px;
+  }
+
+  .create-add-product-to-inventory-table-section {
+    padding: 16px;
+  }
+
+  .create-add-product-to-inventory-title {
+    font-size: 1.3rem;
+  }
+}

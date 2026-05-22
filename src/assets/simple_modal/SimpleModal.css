@@ -1,0 +1,107 @@
+/* Overlay behind the modal */
+.simple-model-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.45); /* Darkens the screen */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+  box-sizing: border-box;
+  /* Optional: adds a slight blur to the background */
+  backdrop-filter: blur(2px); 
+}
+
+/* The actual modal box */
+.simple-model-container {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 32px 24px;
+  width: 100%;
+  max-width: 440px; /* Optimal size for reading */
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  font-family: var(--font-family); /* Uses your global font */
+  box-sizing: border-box;
+  animation: modelPopIn 0.2s ease-out forwards;
+}
+
+/* Circular icon background (matches the light green in the image) */
+.simple-model-icon-wrapper {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 20px auto;
+  background-color: #dce5ce;
+  color: #4a5a3a;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px; /* Icon size */
+}
+
+/* Title text (matches the brownish/gold in the image) */
+.simple-model-title {
+  margin: 0 0 12px 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #7b5f2c; 
+}
+
+/* Subtitle text */
+.simple-model-subtitle {
+  margin: 0 0 28px 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #555555;
+}
+
+/* Button Layout */
+.simple-model-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Forces buttons to take equal width */
+.simple-model-btn-wrapper {
+  flex: 1;
+}
+
+/* Responsive adjustments for mobile devices */
+@media (max-width: 480px) {
+  .simple-model-container {
+    padding: 28px 20px;
+  }
+  
+  .simple-model-title {
+    font-size: 1.3rem;
+  }
+  
+  .simple-model-subtitle {
+    font-size: 0.875rem;
+  }
+
+  /* Optional: stack buttons on very small screens */
+  .simple-model-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+/* Smooth opening animation */
+@keyframes modelPopIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

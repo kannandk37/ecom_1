@@ -68,13 +68,13 @@
 //   },
 // ];
 // import { FiTrendingUp } from "react-icons/fi";
-// import StatisticCard from "@/src/assets/ui/StatisticCard/StatisticCard";
+// import StatisticCard from "../../assets/ui/StatisticCard/StatisticCard";
 // import PerformanceBar from "@/src/assets/ui/PerformanceBar/PerformanceBar";
 // import LeaderboardBar from "@/src/assets/ui/LeaderboardBar/LeaderboardBar";
 
 import React, { useState } from "react";
 import "./EnterpriseLogin.css";
-import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
+import { FiMail, FiLock, FiEye, FiEyeOff, FiTrendingUp } from "react-icons/fi";
 import DashboardButton from "../../assets/ui/DashBoardButton/DashBoardButton";
 import DashboardInput from "../../assets/ui/DashBoardInput/DashBoardInput";
 import { emailRegex } from "../../utils/utils";

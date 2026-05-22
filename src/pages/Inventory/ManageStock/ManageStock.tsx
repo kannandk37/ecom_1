@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiArrowLeft, FiClipboard } from "react-icons/fi";
-
 import DashBoardButton from "../../../assets/ui/DashBoardButton/DashBoardButton";
-import DashBoardInput from "../../../assets/ui/DashBoardInput/DashBoardInput";
+import DashBoardInput, { DashboardInput } from "../../../assets/ui/DashBoardInput/DashBoardInput";
 import Dropdown from "../../../assets/dropdown/DropDown";
 import "./ManageStock.css";
 import { WarehouseService } from "../../../service/warehouse";
@@ -23,6 +22,9 @@ import { BinStockService } from "../../../service/bin_stock";
 import Toast from "../../../assets/toast/Toast";
 import axios from "axios";
 import Loader2 from "../../../assets/loader/Loader2";
+import { PiBatteryWarningVerticalFill } from "react-icons/pi";
+import StockInfoCard from "../StockCard/StockInfoCard";
+import SimpleModal from "../../../assets/simple_modal/SimpleModal";
 
 export enum InventoryAction {
   ADJUST = "adjust stock",
@@ -110,6 +112,7 @@ const ManageStock: React.FC = () => {
     value: string;
   }[]>([]);
 
+  const [productsData, setProductsData] = useState<Product[]>([]);
   const [isWarehouseLoading, setIsWarehouseLoading] = useState<boolean>(true);
   const [isBinLoading, setIsBinLoading] = useState<boolean>(false);
   const [isProductLoading, setIsProductLoading] = useState<boolean>(false);
@@ -128,6 +131,12 @@ const ManageStock: React.FC = () => {
   }[]>([]);
   const [isBatchLoading, setIsBatchLoading] = useState<boolean>(false);
   const [toast, setToast] = useState<string>('');
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [canDelete, setCanDelete] = useState<boolean>(false);
+  const totalBinStock = useMemo(
+    () => binStocks?.reduce((sum: number, a: BinStock) => a?.qtyOnHand + sum, 0),
+    [binStocks]
+  );
 
   useEffect(() => {
     if (actionType.value === InventoryAction.WASTE) {
@@ -152,38 +161,46 @@ const ManageStock: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      setIsProductLoading(true);
-      try {
-        let productsData = await new ProductService().get();
-        let productsOptions = productsData.map((product: Product) => { return { id: product.id, label: product.name, value: product.name } })
-        setProducts(productsOptions);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsProductLoading(false);
-      }
-    })()
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      if (productId?.id) {
-        setIsVariantLoading(true);
+      if (warehouseId?.id) {
+        setIsProductLoading(true);
         try {
-          let variantsData = await new VariantService().getByProductId(productId.id);
-          let variantsOptions = variantsData.map((variant: Variant) => { return { id: variant.id, label: variant.name, value: variant.name } })
-          setVariants(variantsOptions);
+          let productsData = await new ProductService().getByWarehouseId(warehouseId?.id);
+          setProductsData(productsData);
+          let productsOptions = productsData.map((product: Product) => { return { id: product.id, label: product.name, value: product.name } })
+          setProducts(productsOptions);
         } catch (error) {
           console.log(error);
         } finally {
-          setIsVariantLoading(false);
+          setIsProductLoading(false);
         }
       } else {
-        setVariants([]);
-        setVariantId({ id: null, label: "Select Variant", value: "" });
+        setProductsData([]);
+        setProducts([]);
+        setProductId({ id: null, label: "Select Product", value: "" })
       }
     })()
-  }, [productId]);
+  }, [warehouseId]);
+
+  useEffect(() => {
+    if (!productId?.id) {
+      setVariants([]);
+      setVariantId({ id: null, label: "Select Variant", value: "" });
+      return;
+    }
+    setIsVariantLoading(true);
+
+    const selectedProduct = productsData.find((product: Product) => product.id === productId.id);
+
+    const options = selectedProduct?.variants?.map((variant: Variant) => ({
+      id: variant.id,
+      label: variant.name,
+      value: variant.name,
+    })) || [];
+
+    setVariants(options);
+    setIsVariantLoading(false);
+
+  }, [productId?.id, productsData]);
 
   useEffect(() => {
     (async () => {
@@ -253,32 +270,17 @@ const ManageStock: React.FC = () => {
     })()
   }, [binId, productId]);
 
-  const handleSubmit = async () => {
-    const newErrors: any = {};
-    if (!warehouseId) newErrors.warehouseId = "Required";
-    if (!binId) newErrors.binId = "Required";
-    if (!productId) newErrors.productId = "Required";
-    if (!quantity || isNaN(Number(quantity)) || Number(quantity) <= 0)
-      newErrors.quantity = "Valid quantity required";
-    if (!reason.trim()) newErrors.reason = "Reason is required";
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-
+  const submitAdjustment = async (deleteRecord: boolean) => {
     setIsLoading(true);
-
     try {
       let inventoryData = new Inventory();
       inventoryData.id = inventory?.id;
 
       let binStockData = new BinStock();
-      binStockData.id = binStockId.id
+      binStockData.id = binStockId.id;
 
       let warehouseBin = new WarehouseBin();
       warehouseBin.id = binId.id;
-
       binStockData.bin = warehouseBin;
 
       let product = new Product();
@@ -287,38 +289,36 @@ const ManageStock: React.FC = () => {
 
       if (variantId?.id) {
         let variant = new Variant();
-        variant.id = variantId?.id;
+        variant.id = variantId.id;
         binStockData.variant = variant;
       }
 
       let stockLedger = new StockLedger();
       stockLedger.notes = reason;
 
-      if (actionType.label == InventoryAction.WASTE) {
+      if (actionType.value === InventoryAction.WASTE) {
         binStockData.qtyOnHand = Number(quantity);
         await new InventoryService().wasteStock(inventory, binStockData, stockLedger);
       }
 
-      if (actionType.label == InventoryAction.ADJUST) {
-
-        if (adjustmentType == AdjustmentType.ADD) {
-
+      if (actionType.value === InventoryAction.ADJUST) {
+        if (adjustmentType === AdjustmentType.ADD) {
           binStockData.qtyOnHand = Number(quantity);
           binStockData.expiryDate = expiryDate;
-        } else if (adjustmentType == AdjustmentType.REDUCE) {
+        } else {
           binStockData.qtyOnHand = -Number(quantity);
         }
-
-        await new InventoryService().adjustStock(inventory, binStockData, stockLedger);
+        await new InventoryService().adjustStock(inventory, binStockData, stockLedger, deleteRecord);
       }
       setIsLoading(false);
     } catch (error: any) {
-      setIsLoading(false);
       console.log(error);
+      setIsLoading(false);
       if (axios.isAxiosError(error) && error.response?.data?.isCommunicable) {
         setToast(error.response?.data?.error);
       }
     } finally {
+      // setCanDelete(false);
       // setQuantity(`0`);
       // setReason('');
       // setWarehouseId({ id: null, label: "Select Warehouse", value: "" });
@@ -329,6 +329,35 @@ const ManageStock: React.FC = () => {
     }
   };
 
+  const handleSubmit = async () => {
+    const newErrors: any = {};
+    if (!warehouseId.id) newErrors.warehouseId = "Required";
+    if (!binId.id) newErrors.binId = "Required";
+    if (!productId.id) newErrors.productId = "Required";
+    if (!quantity || isNaN(Number(quantity)) || Number(quantity) <= 0)
+      newErrors.quantity = "Valid quantity required";
+    if (!reason.trim()) newErrors.reason = "Reason is required";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    // Check if reduce will empty the bin stock — show modal first, don't submit yet
+    if (
+      actionType.value === InventoryAction.ADJUST &&
+      adjustmentType === AdjustmentType.REDUCE
+    ) {
+      const binStockChecker = binStocks.find((el) => el.id === binStockId?.id);
+      if (binStockChecker && binStockChecker.qtyOnHand - Number(quantity) <= 0) {
+        setOpenModal(true);
+        return; // ← stop here, wait for user to confirm or cancel
+      }
+    }
+
+    await submitAdjustment(false);
+  };
+  const selectedBinStock = binStocks.find((el: BinStock) => el.id === binStockId?.id);
   return (
     <>
       {
@@ -352,36 +381,39 @@ const ManageStock: React.FC = () => {
               <div className="create-Inventory-stock-header">
                 <button
                   className="create-Inventory-stock-back-btn"
-                  onClick={() => navigate("/dashboard/inventory")}
+                  onClick={() => navigate("/dashboard/add-product-to-inventory")}
                 >
                   <FiArrowLeft /> Back to Inventory
                 </button>
-                <h1 className="create-Inventory-stock-title">
-                  {(actionType.value as any) === InventoryAction.ADJUST
-                    ? "Adjust Stock"
-                    : "Manage Waste"}
-                </h1>
+                <div className="create-Inventory-stock-title">
+                  <h1 className="create-Inventory-stock-title">
+                    {(actionType.value as any) === InventoryAction.ADJUST
+                      ? "Adjust Stock"
+                      : "Manage Waste"}
+                  </h1>
+                  <div className="create-Inventory-stock-action-selector">
+                    <label>Inventory Action </label>
+                    <div className="create-Inventory-stock-action-dropdown">
+                      <Dropdown
+                        options={actionOptions}
+                        label={actionType.label || ""}
+                        selected={actionType}
+                        onSelect={(val) => { setActionType(val as any) }}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Global Action Selector */}
-              <div className="create-Inventory-stock-action-selector">
-                <label>Inventory Action</label>
-                <div className="create-Inventory-stock-action-dropdown">
-                  <Dropdown
-                    options={actionOptions}
-                    label={actionType.label || ""}
-                    selected={actionType}
-                    onSelect={(val) => { setActionType(val as any) }}
-                  />
-                </div>
-              </div>
+
 
               <div className="create-Inventory-stock-content-grid">
                 {/* LEFT COLUMN: Current Status */}
                 <div className="create-Inventory-stock-card">
                   <h2 className="create-Inventory-stock-card-title">Current Status</h2>
 
-                  <div className="create-Inventory-stock-form-col">
+                  <div className="create-Inventory-stock-dropdown-grid">
                     <div className="create-Inventory-stock-field">
                       <label>
                         Warehouse <span className="create-Inventory-stock-req">*</span>
@@ -481,50 +513,38 @@ const ManageStock: React.FC = () => {
                       )}
                     </div>
 
-                    <div className="create-Inventory-stock-info-box">
-                      <div className="create-Inventory-stock-info-icon">
-                        <FiClipboard />
-                      </div>
-                      <div className="create-Inventory-stock-info-text">
-                        <span className="create-Inventory-stock-info-label">
-                          Current Stock in {binStocks?.length > 0 && binStocks[0]?.bin?.binCode ? binStocks[0]?.bin?.binCode : 'Selected Bin'}
-                        </span>
-                        <span className="create-Inventory-stock-info-value">
-                          {binStocks?.length > 0 ? binStocks?.reduce((sum: number, a: BinStock) => a.qtyOnHand + sum, 0) : 0} Units
-                        </span>
-                      </div>
-                    </div>
+                    <StockInfoCard
+                      // label={`Current Stock in ${binStocks?.length > 0 && binStocks[0]?.bin?.binCode ? binStocks[0].bin.binCode : 'Selected Bin'}`}
+                      label={
+                        <>
+                          Current Stock in <b style={{ color: '#1a1a1a', fontSize: '0.85rem' }}>{binStocks?.length > 0 && binStocks[0]?.bin?.binCode ? binStocks[0].bin.binCode : 'Selected Bin'}</b>
+                        </>
+                      }
+                      value={`Units - ${totalBinStock}`}
+                    />
 
                     {
-                      binStockId?.id &&
-                      <div className="create-Inventory-stock-info-box">
-                        <div className="create-Inventory-stock-info-icon">
-                          <FiClipboard />
-                        </div>
-                        <div className="create-Inventory-stock-info-text">
-                          <span className="create-Inventory-stock-info-label">
-                            Current Stock Selected Batch - {binStockId?.label}
-                          </span>
-                          <span className="create-Inventory-stock-info-value">
-                            {binStocks?.length > 0 ? binStocks?.find((el: BinStock) => el.id == binStockId.id).qtyOnHand : 0} Units - Expires in {binStocks?.length > 0 ? binStocks?.find((el: BinStock) => el.id == binStockId.id).expiryDate?.toFormat('dd-MM-yyyy') : ''}
-                          </span>
-                        </div>
-                      </div>
+                      binStockId?.id && selectedBinStock &&
+                      <StockInfoCard
+                        // label={`Current Stock Selected Batch - ${binStockId?.label}`}
+                        label={
+                          <>
+                            Current Stock Selected Batch - <b style={{ color: '#1a1a1a', fontSize: '0.85rem' }}>{binStockId?.label}</b>
+                          </>
+                        }
+                        value={`Units - ${selectedBinStock?.qtyOnHand ?? 0}\n Expires - ${selectedBinStock?.expiryDate?.toFormat('dd-MM-yyyy') ?? ''}`}
+                      />
                     }
 
-                    <div className="create-Inventory-stock-info-box">
-                      <div className="create-Inventory-stock-info-icon">
-                        <FiClipboard />
-                      </div>
-                      <div className="create-Inventory-stock-info-text">
-                        <span className="create-Inventory-stock-info-label">
-                          Total Stock in {warehouseId.value ? `${warehouseId.value}` : 'Select Warehouse'}
-                        </span>
-                        <span className="create-Inventory-stock-info-value">
-                          {inventory?.qtyOnHand ? inventory?.qtyOnHand : 0} Units
-                        </span>
-                      </div>
-                    </div>
+                    <StockInfoCard
+                      // label={`Total Stock in ${warehouseId.value || 'Select Warehouse'}`}
+                      label={
+                        <>
+                          Total Stock in <b style={{ color: '#1a1a1a', fontSize: '0.85rem' }}>{warehouseId.value || 'Select Warehouse'}</b>
+                        </>
+                      }
+                      value={`Units - ${inventory?.qtyOnHand ?? 0}`}
+                    />
                   </div>
                 </div>
 
@@ -641,11 +661,12 @@ const ManageStock: React.FC = () => {
                         Reason / Notes{" "}
                         <span className="create-Inventory-stock-req">*</span>
                       </label>
-                      <textarea
-                        className={`create-Inventory-stock-textarea ${errors.reason ? "error-border" : ""}`}
-                        placeholder="E.g., Inventory recount, received partial shipment..."
-                        value={reason ?? ""}
-                        onChange={(e) => setReason(e.target.value)}
+                      <DashboardInput
+                        type="textarea"
+                        placeholder={`Reason for ${actionType.label == InventoryAction.ADJUST ? 'Adjustment' : 'Wastage'}`}
+                        value={reason ?? ''}
+                        row={3}
+                        onChange={(e) => setReason(e)}
                       />
                       {errors.reason && (
                         <span className="create-Inventory-stock-error">
@@ -672,6 +693,25 @@ const ManageStock: React.FC = () => {
                 </div>
               </div>
             </div>
+            {openModal &&
+              <SimpleModal
+                title={'Bin Stock Getting Emptied ! Can We Delete The Bin Stock Record ?'}
+                subtitle={'Bin Stock quantity is becoming zero (0), so can we free up binstock by deleting ?'}
+                icon={<PiBatteryWarningVerticalFill />}
+                isWarning={true}
+                button1Name={"NO"}
+                button1OnClick={async () => {
+                  setOpenModal(false);
+                  await submitAdjustment(false);
+                }}
+                button2Name={"Yes"}
+                button2OnClick={async () => {
+                  setOpenModal(false);
+                  await submitAdjustment(true);
+                }}
+                onOverlayClick={() => setOpenModal(false)}
+              />
+            }
           </>
         )
       }

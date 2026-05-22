@@ -1,0 +1,65 @@
+.stock-info-card {
+  font-family: var(--font-family, sans-serif);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #f2efe9;
+  padding: 16px 16px 16px 12px;
+  border-radius: 12px;
+  margin-top: 8px;
+}
+
+.stock-info-card-icon {
+  background-color: #ffffff;
+  width: 35px;
+  height: 35px;
+  min-width: 35px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8c6d3f;
+  font-size: 1.2rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.stock-info-card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 10px
+}
+
+.stock-info-card-label {
+  font-size: 0.75rem;
+  color: #666;
+  text-transform: uppercase;
+  white-space: pre-line;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+
+.stock-info-card-value {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  white-space: pre-line;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 600px) {
+  .stock-info-card {
+    padding: 11px;
+    gap: 10px;
+  }
+
+  .stock-info-card-value {
+    font-size: 1rem;
+  }
+
+  .stock-info-card-label {
+    font-size: 0.7rem;
+  }
+}

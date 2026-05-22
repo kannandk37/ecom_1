@@ -59,9 +59,9 @@ export class InventoryService {
         }
     }
 
-    async adjustStock(inventory: Inventory, binStock: BinStock, stockLedger: StockLedger): Promise<Inventory> {
+    async adjustStock(inventory: Inventory, binStock: BinStock, stockLedger: StockLedger, canDelete: boolean): Promise<Inventory> {
         try {
-            let response = await this.axiosInstance.post(`/inventories/adjust`, { inventory, binStock, stockLedger });
+            let response = await this.axiosInstance.post(`/inventories/adjust`, { inventory, binStock, stockLedger, canDelete });
             return inventoryResponseDatumToInventoryEntity(response.data);
         } catch (error) {
             console.log(error);

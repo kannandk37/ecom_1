@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
 import {
   FiArrowLeft,
   FiUploadCloud,
@@ -9,7 +8,6 @@ import {
   FiImage,
   FiPlus,
 } from "react-icons/fi";
-
 import DashBoardButton from "../../../assets/ui/DashBoardButton/DashBoardButton";
 import DashBoardInput from "../../../assets/ui/DashBoardInput/DashBoardInput";
 import Dropdown from "../../../assets/dropdown/DropDown";
@@ -21,9 +19,10 @@ import { FaExclamationTriangle } from "react-icons/fa";
 import { FaIndianRupeeSign } from "react-icons/fa6";
 import { VariantService } from "../../../service/variant";
 import Loader2 from "../../../assets/loader/Loader2";
+import { priceRegex } from "../../../utils/utils";
 
 const CreateOrEditVariant: React.FC = () => {
-  const { id = "69f3c4cd84c187aa7de7c0b2" } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isEditMode = Boolean(id);
 
@@ -46,7 +45,7 @@ const CreateOrEditVariant: React.FC = () => {
   }>(null);
 
   // Inventory & Pricing States
-  const [price, setPrice] = useState<number>(0);
+  const [price, setPrice] = useState<string>('');
   const [nameError, setNameError] = useState<string>(null);
   const [productIdError, setProductIdError] = useState<string>(null);
   const [typeError, setTypeError] = useState<string>(null);
@@ -56,7 +55,6 @@ const CreateOrEditVariant: React.FC = () => {
     useState<string>(null);
 
   // const [sku, setSku] = useState("");
-  // const [stockQuantity, setStockQuantity] = useState("");
 
   // Image States (Max 6)
   const [existingImages, setExistingImages] = useState<string[]>([]);
@@ -150,9 +148,8 @@ const CreateOrEditVariant: React.FC = () => {
                 label: variantWithId.grade,
                 value: variantWithId.grade,
               });
-              setPrice(variantWithId.price || 0);
+              setPrice(variantWithId.price?.toString() || '');
               // setSku(variantWithId.sku || "");
-              // setStockQuantity(variantWithId.stockQuantity?.toString() || "");
               // setExistingImages(variantWithId.images || []);
             }
           }
@@ -210,13 +207,13 @@ const CreateOrEditVariant: React.FC = () => {
       setTypeError("Please Select Type");
     } else if (!grade) {
       setGradeError("Please Select Grade");
-    } else if (price <= 0) {
+    } else if (Number(price) <= 0) {
       setPriceError("Please Provide Price");
-    } else if (
-      newImagePreviewsError == null ||
-      newImagePreviewsError?.length < 1
-    ) {
-      setNewImagePreviewsError("Please Provide At Least One Image");
+    // } else if (
+    //   newImagePreviewsError == null ||
+    //   newImagePreviewsError?.length < 1
+    // ) {
+    //   setNewImagePreviewsError("Please Provide At Least One Image");
     } else {
       return true;
     }
@@ -226,7 +223,6 @@ const CreateOrEditVariant: React.FC = () => {
   // Submit Handler
   const handleSubmit = async () => {
     // if (!sku.trim()) newErrors.sku = "Required";
-    // if (!stockQuantity) newErrors.stockQuantity = "Required";
 
     if (isValid()) {
       setIsLoading(true);
@@ -238,7 +234,7 @@ const CreateOrEditVariant: React.FC = () => {
         variant.product = product;
         variant.type = type.value;
         variant.grade = grade.value;
-        variant.price = price;
+        variant.price = Number(price);
         // variant.images = newImageFiles;
 
         if (isEditMode) {
@@ -303,13 +299,22 @@ const CreateOrEditVariant: React.FC = () => {
     setGradeError(null);
   };
 
-  const onChangePrice = (price: number) => {
-    if (price < 0) {
-      setPriceError("Plese Provide price");
-    } else {
-      // add any regexs
-      setPrice(price);
+  const onChangePrice = (price: string) => {
+    if (price === '') {
+      setPrice('');
       setPriceError(null);
+      return;
+    }
+    
+    if (priceRegex.test(price)) {
+      if(price == "0") {
+        setPriceError("Plese Provide price");
+      } else {
+        setPrice(price);
+        setPriceError(null);
+      }
+    } else {
+      setPriceError("Only numbers allowed, max 2 decimal places");
     }
   };
 
@@ -412,10 +417,10 @@ const CreateOrEditVariant: React.FC = () => {
                     </label>
                     <DashBoardInput
                       icon={<FaIndianRupeeSign />}
-                      placeholder="0.00"
+                      placeholder="0"
                       value={price?.toString()}
                       onChange={(e: any) => onChangePrice(e)}
-                      type="number"
+                      type="text"
                       error={priceError ? true : false}
                       errorMessage={priceError}
                     />
@@ -434,22 +439,6 @@ const CreateOrEditVariant: React.FC = () => {
                 />
                 {errors.sku && (
                   <span className="create-variant-error">{errors.sku}</span>
-                )}
-              </div>
-              <div className="create-variant-field-group">
-                <label>
-                  Stock Quantity <span className="req">*</span>
-                </label>
-                <DashBoardInput
-                  placeholder="0"
-                  value={stockQuantity}
-                  onChange={(e: any) => setStockQuantity(e.target.value)}
-                  type="number"
-                />
-                {errors.stockQuantity && (
-                  <span className="create-variant-error">
-                    {errors.stockQuantity}
-                  </span>
                 )}
               </div>
             </div> */}
