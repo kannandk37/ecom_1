@@ -241,7 +241,7 @@ export const Sidebar = ({ isCollapsed, onToggle }: any) => {
     {
       name: "Profile",
       icon: <MdManageAccounts size={20} />,
-      onClick: function () {},
+      onClick: function () { },
     },
     // {
     //   name: 'Settings',
@@ -263,6 +263,7 @@ export const Sidebar = ({ isCollapsed, onToggle }: any) => {
     await new LocalStorage().clearRole();
     await new LocalStorage().clearProfile();
     await new LocalStorage().clearCart();
+    await new LocalStorage().clearWishlists();
     await new LocalStorage().clearToken();
     await new LocalStorage().clearRefreshToken();
     // TODO: Have to change this to context api
@@ -280,7 +281,7 @@ export const Sidebar = ({ isCollapsed, onToggle }: any) => {
             name=""
             icon={<FiAlignJustify size={22} />}
             variant="primary"
-            onClick={onToggle}
+            onClick={() => { onToggle(); showUserDropdown && setShowUserDropdown(!showUserDropdown) }}
             type="button"
             height="45px"
             width="45px"
@@ -303,7 +304,7 @@ export const Sidebar = ({ isCollapsed, onToggle }: any) => {
               icon={item.icon}
               name={showLabel ? item.name : ""}
               variant="primary"
-              onClick={() => item.path && navigate(item.path)}
+              onClick={() => { item.path && navigate(item.path); showUserDropdown && setShowUserDropdown(!showUserDropdown) }}
               showBg={location.pathname?.startsWith(item.path)}
               type="button"
               width="100%"
@@ -313,7 +314,49 @@ export const Sidebar = ({ isCollapsed, onToggle }: any) => {
         ))}
       </nav>
 
-      {/* <div className="sidebar-sidebar-header">
+      <div className={`sidebar-sidebar-footer ${isCollapsed ? 'sidebar-sidebar-footer-collapsed' : ''}`} >
+
+        <DashboardButton
+          icon={<FaUserCircle size={30} />}
+          name={showLabel ? "ADMIN" : ""}
+          variant="primary"
+          onClick={() => {
+            if (isCollapsed) onToggle();
+            navigate("/dashboard/users");
+            setShowUserDropdown(!showUserDropdown);
+          }}
+          showBg={location.pathname?.startsWith("/dashboard/users")}
+          type="button"
+          width="100%"
+          side="flex-start"
+          height="56.2px"
+        />
+
+        {showUserDropdown && userOptions.length > 0 && (
+          <ul className="sidebar-search-user-options-dropdown">
+            {userOptions.map((option: UserOptions) => (
+              <div
+                className="sidebar-search--user-options-items-list"
+                key={option.name}
+              >
+                {option && option.icon}
+                <li
+                  className="sidebar-search-result-item"
+                  onClick={option.onClick}
+                >
+                  {option.name}
+                </li>
+              </div>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+};
+
+
+{/* <div className="sidebar-sidebar-header">
         <div
           className={`sidebar-branding-wrapper ${isCollapsed ? "sidebar-collapsed-branding" : ""}`}
           onClick={() => {
@@ -349,46 +392,3 @@ export const Sidebar = ({ isCollapsed, onToggle }: any) => {
           </ul>
         )}
       </div> */}
-
-      <div className="sidebar-sidebar-footer">
-        <div
-          className={`sidebar-branding-wrapper ${isCollapsed ? "sidebar-collapsed-branding" : ""}`}
-          onClick={() => {
-            navigate("/dashboard/orders");
-            setShowUserDropdown(!showUserDropdown);
-          }}
-          style={{ marginLeft: isCollapsed ? "8px" : "15px" }}
-        >
-          <span className="sidebar-logo-image">
-            {<FaUserCircle size={30} />}
-          </span>
-          <span
-            className="sidebar-logo-text"
-            style={{ marginLeft: "25px", marginBottom: "27px" }}
-          >
-            ADMIN
-          </span>
-        </div>
-
-        {showUserDropdown && userOptions.length > 0 && (
-          <ul className="sidebar-search-user-options-dropdown">
-            {userOptions.map((option: UserOptions) => (
-              <div
-                className="sidebar-search--user-options-items-list"
-                key={option.name}
-              >
-                {option && option.icon}
-                <li
-                  className="sidebar-search-result-item"
-                  onClick={option.onClick}
-                >
-                  {option.name}
-                </li>
-              </div>
-            ))}
-          </ul>
-        )}
-      </div>
-    </div>
-  );
-};

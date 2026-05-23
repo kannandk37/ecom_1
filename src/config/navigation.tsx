@@ -36,7 +36,7 @@ import CreateOrEditVariant from "../pages/DashBoard/Variant/createOrEditVariant"
 import CreateOrEditUser from "../pages/User/CreateOrEditUser";
 import UsersList from "../pages/DashBoard/User/Users";
 import CreateOrEditWareHouse from "../pages/WareHouse/CreateOrEditWareHouse";
-import { LuPackageSearch, LuWarehouse } from "react-icons/lu";
+import { LuPackagePlus, LuPackageSearch, LuWarehouse } from "react-icons/lu";
 import { CiBoxes } from "react-icons/ci";
 import ManageStock from "../pages/Inventory/ManageStock/ManageStock";
 import AddProductToInventory from "../pages/Inventory/AddProductToInventory/AddProductToInventory";
@@ -97,6 +97,15 @@ export const NAV_OPTIONS: NavItem[] = [
     icon: <TbBrandBitbucket />,
     path: "/dashboard/brands",
     component: <CreateOrEditBrand />,
+    children: [
+      {
+        id: "add-brands",
+        name: "Add Brands",
+        icon: <FiBox />,
+        path: "/dashboard/brands/add",
+        component: <CreateOrEditBrand />,
+      },
+    ],
   },
   {
     id: "products",
@@ -104,6 +113,15 @@ export const NAV_OPTIONS: NavItem[] = [
     icon: <FiBox />,
     path: "/dashboard/products",
     component: <CreateOrEditProduct />,
+    children: [
+      {
+        id: "add-products",
+        name: "Add Products",
+        icon: <FiBox />,
+        path: "/dashboard/products/add",
+        component: <CreateOrEditProduct />,
+      },
+    ],
   },
   {
     id: "variants",
@@ -111,6 +129,15 @@ export const NAV_OPTIONS: NavItem[] = [
     icon: <CiBoxes />,
     path: "/dashboard/variants",
     component: <CreateOrEditVariant />,
+    children: [
+      {
+        id: "add-variants",
+        name: "Add Variants",
+        icon: <FiBox />,
+        path: "/dashboard/variants/add",
+        component: <CreateOrEditVariant />,
+      },
+    ],
   },
   {
     id: "users",
@@ -134,21 +161,39 @@ export const NAV_OPTIONS: NavItem[] = [
     icon: <LuWarehouse />,
     path: "/dashboard/warehouses",
     component: <CreateOrEditWareHouse />,
-  },
-    {
-    id: "Inventories",
-    name: "Inventory",
-    icon: <LuWarehouse />,
-    path: "/dashboard/add-product-to-inventory",
-    component: <AddProductToInventory />,
+    children: [
+      {
+        id: "add-warehouses",
+        name: "Add Warehouses",
+        icon: <FiBox />,
+        path: "/dashboard/Warehouses/add",
+        component: <CreateOrEditWareHouse />,
+      },
+    ],
   },
   {
-    id: "manage-stock",
-    name: "Manage Stock",
-    icon: <LuPackageSearch />,
-    path: "/dashboard/manage-stock",
-    component: <ManageStock />,
+    id: "Inventories",
+    name: "Inventory",
+    icon: <LuPackagePlus />,
+    path: "/dashboard/inventory",
+    component: <AddProductToInventory />,
+    children: [
+      {
+        id: "add-product-to-inventory",
+        name: "Add Product To Inventory",
+        icon: <FiBox />,
+        path: "/dashboard//inventory/add-product",
+        component: <CreateOrEditBrand />,
+      },
+    ],
   },
+  // {
+  //   id: "manage-stock",
+  //   name: "Manage Stock",
+  //   icon: <LuPackageSearch />,
+  //   path: "/dashboard/manage-stock",
+  //   component: <ManageStock />,
+  // },
 ];
 
 const mockOrderData: OrderProps = {

@@ -4,7 +4,7 @@ import { Sidebar } from "../../../assets/ui/SideBar/SideBar";
 import "./index.css";
 
 const DashboardLayout: React.FC = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
