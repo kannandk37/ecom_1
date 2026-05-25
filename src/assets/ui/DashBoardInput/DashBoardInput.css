@@ -77,6 +77,12 @@
   scrollbar-color: var(--color-scroll-bar) transparent;
 }
 
+.db-field.border {
+  border: "2px solid";
+  border-color: #8c6d3f;
+  border-radius: "8px";
+}
+
 .db-field:focus {
   outline: none;
   background-color: #ffffff;
@@ -84,7 +90,7 @@
   box-shadow: 0 4px 12px rgba(140, 109, 63, 0.08);
 }
 
-.db-field:focus + .db-icon {
+.db-field:focus+.db-icon {
   transform: scale(1.1);
 }
 
@@ -123,19 +129,23 @@
 }
 
 @keyframes shake {
+
   10%,
   90% {
     transform: translate3d(-1px, 0, 0);
   }
+
   20%,
   80% {
     transform: translate3d(2px, 0, 0);
   }
+
   30%,
   50%,
   70% {
     transform: translate3d(-3px, 0, 0);
   }
+
   40%,
   60% {
     transform: translate3d(3px, 0, 0);

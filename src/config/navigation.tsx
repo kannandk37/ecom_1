@@ -25,13 +25,11 @@ import DATES from "../../data/DATES.png";
 import { FaIndianRupeeSign, FaRegUser, FaUser } from "react-icons/fa6";
 import { MdOutlineCategory } from "react-icons/md";
 import { TbBrandBitbucket } from "react-icons/tb";
-import DashBoardCategories from "../pages/DashBoard/Categories/DashBoardCategories";
 import DashBoardOrders from "../pages/DashBoard/Orders/DashBoardOrders";
 import Orders from "../pages/Orders/Orders";
-import CreateOrEditCategory from "../pages/Category/CreateOrEditCategory/CreateOrEditCategory";
-import CreateOrEditBrand from "../pages/Brand/CreateOrEditBrand/CreateOrEditBrand";
-import CategoryList from "../pages/Category/CategoryList/CategoryList";
-import CreateOrEditProduct from "../pages/DashBoard/Product/CreateOrEditProduct";
+import CreateOrEditCategory from "../pages/DashBoard/Categories/CreateOrEditCategory/CreateOrEditCategory";
+import CategoryList from "../pages/DashBoard/Categories/CategoryList/CategorysList";
+import CreateOrEditProduct from "../pages/DashBoard/Products/CreateOrEditProduct/CreateOrEditProduct";
 import CreateOrEditVariant from "../pages/DashBoard/Variant/createOrEditVariant";
 import CreateOrEditUser from "../pages/User/CreateOrEditUser";
 import UsersList from "../pages/DashBoard/User/Users";
@@ -40,6 +38,9 @@ import { LuPackagePlus, LuPackageSearch, LuWarehouse } from "react-icons/lu";
 import { CiBoxes } from "react-icons/ci";
 import ManageStock from "../pages/Inventory/ManageStock/ManageStock";
 import AddProductToInventory from "../pages/Inventory/AddProductToInventory/AddProductToInventory";
+import BrandsList from "../pages/DashBoard/Brands/BrandsList/BrandsList";
+import CreateOrEditBrand from "../pages/DashBoard/Brands/CreateOrEditBrand/CreateOrEditBrand";
+import ProductsList from "../pages/DashBoard/Products/ProductsList/ProductsList";
 // import Ware from "../pages/WareHouse/Ware";
 export interface NavItem {
   id: string;
@@ -79,14 +80,20 @@ export const NAV_OPTIONS: NavItem[] = [
     name: "Categories",
     icon: <MdOutlineCategory />,
     path: "/dashboard/categories",
-    // component: <DashBoardCategories />,
     component: <CategoryList />,
     children: [
       {
         id: "add-categories",
         name: "Add Categories",
-        icon: <FiBox />,
+        icon: <MdOutlineCategory />,
         path: "/dashboard/categories/add",
+        component: <CreateOrEditCategory />,
+      },
+      {
+        id: "edit-categories",
+        name: "Edit Categories",
+        icon: <MdOutlineCategory />,
+        path: "/dashboard/categories/edit/:id",
         component: <CreateOrEditCategory />,
       },
     ],
@@ -96,13 +103,20 @@ export const NAV_OPTIONS: NavItem[] = [
     name: "Brands",
     icon: <TbBrandBitbucket />,
     path: "/dashboard/brands",
-    component: <CreateOrEditBrand />,
+    component: <BrandsList />,
     children: [
       {
         id: "add-brands",
         name: "Add Brands",
-        icon: <FiBox />,
+        icon: <TbBrandBitbucket />,
         path: "/dashboard/brands/add",
+        component: <CreateOrEditBrand />,
+      },
+      {
+        id: "edit-brands",
+        name: "Edit Brands",
+        icon: <TbBrandBitbucket />,
+        path: "/dashboard/brands/edit/:id",
         component: <CreateOrEditBrand />,
       },
     ],
@@ -112,13 +126,20 @@ export const NAV_OPTIONS: NavItem[] = [
     name: "Products",
     icon: <FiBox />,
     path: "/dashboard/products",
-    component: <CreateOrEditProduct />,
+    component: <ProductsList />,
     children: [
       {
         id: "add-products",
         name: "Add Products",
         icon: <FiBox />,
         path: "/dashboard/products/add",
+        component: <CreateOrEditProduct />,
+      },
+      {
+        id: "edit-products",
+        name: "Edit Products",
+        icon: <FiBox />,
+        path: "/dashboard/products/edit/:id",
         component: <CreateOrEditProduct />,
       },
     ],

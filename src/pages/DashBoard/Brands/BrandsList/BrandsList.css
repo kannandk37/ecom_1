@@ -1,0 +1,147 @@
+.brands-list-page-container {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--font-family);
+  min-height: 100vh;
+  background-color: var(--bg-body, #f9f5f1);
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.brands-list-page-header {
+  margin-bottom: 30px;
+}
+
+.brands-list-page-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.brands-list-page-subtitle {
+  font-size: 0.95rem;
+  color: #666;
+  margin: 0;
+}
+
+.brands-list-table-actions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  gap: 20px;
+  padding-left: 20px;
+}
+
+.brands-list-search-bar-wrapper {
+  width: 500px;
+  flex-shrink: 0;
+}
+
+.brands-list-action-btn-wrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.brands-list-statistic-card {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 18px 0;
+  padding-left: 20px;
+  margin: 0;
+  margin-bottom: 20px;
+}
+
+.brands-list-statistic-card > * {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+
+.brands-list-admin-page-header {
+  margin-bottom: 30px;
+}
+
+@media (max-width: 1024px) {
+  .brands-list-search-bar-wrapper {
+    width: 380px;
+  }
+}
+
+@media (max-width: 900px) {
+  .brands-list-page-container {
+    padding: 20px;
+  }
+
+  .brands-list-page-title {
+    font-size: 1.6rem;
+  }
+
+  .brands-list-search-bar-wrapper {
+    width: 280px;
+  }
+
+  .brands-list-statistic-card > * {
+    flex: 1 1 220px;
+  }
+}
+
+@media (max-width: 650px) {
+  .brands-list-page-title {
+    font-size: 1.4rem;
+  }
+
+  .brands-list-table-actions-header {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 15px;
+  }
+
+  brands-list-search-bar-wrapper {
+    width: 100%;
+  }
+
+  .brands-list-action-btn-wrapper {
+    width: 100%;
+  }
+
+  .brands-list-action-btn-wrapper button {
+    width: 100%;
+  }
+
+  .brands-list-statistic-card {
+    flex-direction: column;
+    padding: 18px 0;
+  }
+
+  .brands-list-statistic-card > * {
+    flex: 1 1 100%;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .brands-list-page-container {
+    padding: 14px;
+  }
+
+  .brands-list-page-title {
+    font-size: 1.2rem;
+  }
+
+  .brands-list-page-subtitle {
+    font-size: 0.85rem;
+  }
+}

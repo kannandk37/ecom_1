@@ -23,7 +23,7 @@ export const IconText: React.FC<IconTextProps> = ({ image, text }) => (
   <div className="icon-text-wrapper">
     {image && (
       <div className="icon-wrapper">
-        <img src={image} className="icon-image-wrapper"/>
+        <img src={image} className="icon-image-wrapper" />
       </div>
     )}
     <span className="text-wrapper">{text}</span>
@@ -139,6 +139,7 @@ interface TableProps<T> {
   actions?: ActionCallbacks;
   pagination?: PaginationData;
   idField?: keyof T; // e.g. 'id', used to identify row for actions.
+  isSearch?: string;
 }
 
 const Table = <T extends Record<string, any>>({
@@ -149,6 +150,8 @@ const Table = <T extends Record<string, any>>({
   actions,
   pagination,
   idField = "id" as keyof T, // Default to 'id' if not provided
+  isSearch
+
 }: TableProps<T>) => {
   const tableStyle = {
     width,
@@ -157,126 +160,61 @@ const Table = <T extends Record<string, any>>({
 
   return (
     <div className="table-wrapper" style={tableStyle}>
-      <table className="custom-table">
-        <thead>
-          <tr>
-            {columns.map((col) => (
-              <th
-                key={col.key as string}
-                className={col.align ? `align-${col.align}` : ""}
-                style={{ width: col.width }}
-              >
-                {col.label}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row, rowIndex) => (
-            <tr key={rowIndex} className={rowIndex % 2 !== 0 ? "even-row" : ""}>
-              {columns.map((col) => {
-                const isActions = col.key === "actions";
-                const cellValue = row[col.key as string];
-
-                return (
-                  <td
-                    key={col.key as string}
-                    className={col.align ? `align-${col.align}` : ""}
-                  >
-                    {isActions && actions ? (
-                      <ActionCell id={row[idField]} callbacks={actions} />
-                    ) : col.renderCell ? (
-                      col.renderCell(cellValue, row)
-                    ) : (
-                      cellValue // Default: render value as text
-                    )}
-                  </td>
-                );
-              })}
+      <div className="table-scroll-contrainer">
+        <table className="custom-table">
+          <thead>
+            <tr>
+              {columns.map((col) => (
+                <th
+                  key={col.key as string}
+                  className={col.align ? `align-${col.align}` : ""}
+                  style={{ width: col.width }}
+                >
+                  {col.label}
+                </th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
-      {pagination && <Pagination data={pagination} />}
+          </thead>
+          <tbody>
+            {
+              data.length === 0 ? (
+                <tr>
+                  <td colSpan={columns.length} className="table-empty-state">
+                    {isSearch ? `No Search Data` : `No Data`}
+                  </td>
+                </tr>
+              ) : (
+                data.map((row, rowIndex) => (
+                  <tr key={rowIndex} className={rowIndex % 2 !== 0 ? "even-row" : ""}>
+                    {columns.map((col) => {
+                      const isActions = col.key === "actions";
+                      const cellValue = row[col.key as string];
+
+                      return (
+                        <td
+                          key={col.key as string}
+                          className={col.align ? `align-${col.align}` : ""}
+                        >
+                          {isActions && actions ? (
+                            <ActionCell id={row[idField]} callbacks={actions} />
+                          ) : col.renderCell ? (
+                            col.renderCell(cellValue, row)
+                          ) : (
+                            cellValue
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))
+              )
+            }
+          </tbody>
+        </table>
+      </div>
+      {pagination && data.length > 0 && <Pagination data={pagination} />}
     </div>
   );
 };
 
 export default Table;
-
-// --- ILLUSTRATIVE EXAMPLE OF USAGE ---
-// This would go in your parent component.
-
-/*
-import Table, { TableColumn, PaginationData, ActionCallbacks } from './components/Table/Table';
-import { LeafIcon, CoffeeIcon, SeedlingIcon } from '@heroicons/react/24/outline';
-
-// 1. Define your data type
-interface CategoryData {
-  id: number;
-  slNo: string;
-  categoryId: string;
-  name: { text: string; icon: 'seed' | 'coffee' | 'leaf' };
-  brandsCount: number;
-  productsCount: number;
-}
-
-// 2. Define your columns with custom rendering
-const categoriesColumns: TableColumn<CategoryData>[] = [
-  { key: 'slNo', label: 'SL. NO', width: '5%', align: 'center' },
-  { key: 'categoryId', label: 'CATEGORY ID', width: '15%' },
-  { 
-    key: 'name', 
-    label: 'NAME', 
-    width: '30%',
-    renderCell: (value) => <IconText iconName={value.icon} text={value.text} />
-  },
-  { 
-    key: 'brandsCount', 
-    label: 'BRANDS COUNT', 
-    width: '15%',
-    align: 'center',
-    renderCell: (value) => <Badge text={`${value} Brands`} />
-  },
-  { 
-    key: 'productsCount', 
-    label: 'PRODUCTS COUNT', 
-    width: '15%',
-    align: 'center',
-    renderCell: (value) => <>{value} items</>
-  },
-  { key: 'actions', label: 'ACTIONS', width: '10%', align: 'center' },
-];
-
-// 3. Define action callbacks
-const handleEdit = (id: any) => console.log(`Edit category ${id}`);
-const handleDelete = (id: any) => console.log(`Delete category ${id}`);
-const categoriesActions: ActionCallbacks = { onEdit: handleEdit, onDelete: handleDelete };
-
-// 4. Data (e.g. from an API)
-const categoriesData: CategoryData[] = [
-  { id: 1, slNo: '01', categoryId: 'CAT - 8821', name: { text: 'Organic Grains', icon: 'seed' }, brandsCount: 12, productsCount: 248 },
-  { id: 2, slNo: '02', categoryId: 'CAT - 9104', name: { text: 'Artisan Blends', icon: 'coffee' }, brandsCount: 8, productsCount: 112 },
-  { id: 3, slNo: '03', categoryId: 'CAT - 7732', name: { text: 'Herbal Extracts', icon: 'leaf' }, brandsCount: 24, productsCount: 503 },
-  { id: 4, slNo: '04', categoryId: 'CAT - 4490', name: { text: 'Cold-Pressed Oils', icon: 'seed' }, brandsCount: 5, productsCount: 88 },
-  { id: 5, slNo: '05', categoryId: 'CAT - 1209', name: { text: 'Sustainable Spices', icon: 'seed' }, brandsCount: 18, productsCount: 422 },
-];
-
-// 5. Pagination Data
-const pagination: PaginationData = {
-  currentPage: 1,
-  totalEntries: 24,
-  perPage: 5,
-  onPageChange: (page) => console.log(`Go to page ${page}`),
-};
-
-// 6. Final Usage
-<Table<CategoryData>
-  width="100%"
-  columns={categoriesColumns}
-  data={categoriesData}
-  actions={categoriesActions}
-  pagination={pagination}
-  idField="id" // Specify the primary key for action buttons
-/>
-*/

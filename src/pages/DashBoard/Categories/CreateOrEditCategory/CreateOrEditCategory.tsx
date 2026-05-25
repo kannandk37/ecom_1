@@ -2,13 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FiArrowLeft, FiPlus, FiUploadCloud, FiX } from "react-icons/fi";
 import { FaLightbulb } from "react-icons/fa";
-import DashBoardButton from "../../../assets/ui/DashBoardButton/DashBoardButton";
-import Dropdown from "../../../assets/dropdown/DropDown";
+import DashBoardButton from "../../../../assets/ui/DashBoardButton/DashBoardButton";
+import Dropdown from "../../../../assets/dropdown/DropDown";
 import "./CreateOrEditCategory.css";
-import { Category } from "../../../entity/category";
-import { CategoryService } from "../../../service/category";
-import DashboardInput from "../../../assets/ui/DashBoardInput/DashBoardInput";
-import Loader2 from "../../../assets/loader/Loader2";
+import { Category } from "../../../../entity/category";
+import { CategoryService } from "../../../../service/category";
+import DashboardInput from "../../../../assets/ui/DashBoardInput/DashBoardInput";
+import Loader2 from "../../../../assets/loader/Loader2";
 
 const CreateOrEditCategory: React.FC = () => {
   const { id } = useParams<{ id: string }>();

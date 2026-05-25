@@ -1,78 +1,95 @@
+import { useState, useEffect } from "react";
+import { FiBox, FiPlus, FiSearch } from "react-icons/fi";
+import "./CategorysList.css";
+import { useNavigate } from "react-router-dom";
+import { MdOutlineCategory } from "react-icons/md";
+import { TbBrandBitbucket } from "react-icons/tb";
+import IMAGE from "../../../../../data/DRY_FRUITS.png";
 import Table, {
   TableColumn,
   PaginationData,
   ActionCallbacks,
   Badge,
   IconText,
-} from "../../../assets/table/Table";
-import IMAGE from "../../../../data/DRY_FRUITS.png";
-import { useState, useEffect } from "react";
-import { FiPlus, FiSearch } from "react-icons/fi";
-import "./CategoryList.css";
-import DashBoardInput from "../../../assets/ui/DashBoardInput/DashBoardInput";
-import DashBoardButton from "../../../assets/ui/DashBoardButton/DashBoardButton";
-import { CategoryService } from "../../../service/category";
-import Loader2 from "../../../assets/loader/Loader2";
-import { useNavigate } from "react-router-dom";
+} from "../../../../assets/table/Table";
+import DashBoardInput from "../../../../assets/ui/DashBoardInput/DashBoardInput";
+import DashBoardButton from "../../../../assets/ui/DashBoardButton/DashBoardButton";
+import { CategoryService } from "../../../../service/category";
+import Loader2 from "../../../../assets/loader/Loader2";
+import StatisticCard from "../../../../assets/ui/StatisticCard/StatisticCard";
 
 interface CategoryData {
-  id: number;
+  id: string;
   slNo: string;
-  categoryId: string;
-  name: { text: string; image: any };
+  name: { name: string; image: any };
   brandsCount: number;
   productsCount: number;
 }
 
 const categoriesColumns: TableColumn<CategoryData>[] = [
-  { key: "slNo", label: "SL. NO", width: "5%", align: "center" },
+  { key: "slNo", label: "SL. NO", width: "6.5%", align: "center" },
   {
     key: "name",
     label: "NAME",
-    width: "30%",
-    renderCell: (value) => <IconText image={value.image} text={value.text} />,
+    width: "23.5%",
+    renderCell: (value) => <IconText image={value.image} text={value.name} />,
   },
-  { key: "categoryId", label: "CATEGORY ID", width: "15%" },
   {
     key: "brandsCount",
     label: "BRANDS COUNT",
-    width: "15%",
+    width: "23%",
     align: "center",
     renderCell: (value) => <Badge text={`${value} Brands`} />,
   },
   {
     key: "productsCount",
     label: "PRODUCTS COUNT",
-    width: "15%",
+    width: "23%",
     align: "center",
     renderCell: (value) => <>{value} items</>,
   },
-  { key: "actions", label: "ACTIONS", width: "10%", align: "center" },
+  { key: "actions", label: "ACTIONS", width: "23%", align: "center" },
 ];
 
 const PER_PAGE = 5;
 
 const CategoriesPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredData, setFilteredData] = useState<any[]>([]);
-  const [rawCategoriesData, setRawCategoriesData] = useState<any[]>([]);
+  const [filteredData, setFilteredData] = useState<CategoryData[]>([]);
+  const [rawCategoriesData, setRawCategoriesData] = useState<CategoryData[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [categoriesCount, setCategoriesCount] = useState<number>(0);
+  const [brandsCount, setBrandsCount] = useState<number>(0);
+  const [productsCount, setProductsCount] = useState<number>(0);
   const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
       try {
         setIsLoading(true);
-        const categories = await new CategoryService().get();
-        const mapped = categories.map((el: any, index: number) => ({
-          id: el.id,
-          slNo: `${index + 1}`,
-          name: { text: el.name, image: IMAGE },
-          categoryId: el.subCategory?.name ?? "-",
-          brandsCount: 24,
-          productsCount: 503,
-        }));
+        const responseData = await new CategoryService().getCategoriesWithBrandsAndProducts();
+        let mapped: CategoryData[] = [];
+        if (responseData?.length > 0) {
+          let index = 0;
+          let brandsCount = 0;
+          let productsCount = 0;
+          for (const response of responseData) {
+            brandsCount = brandsCount + (response.brands?.length ?? 0);
+            productsCount = productsCount + (response.products?.length ?? 0);
+            mapped.push({
+              id: response.catgeory.id,
+              slNo: `${index + 1}`,
+              name: { name: response.catgeory.name, image: IMAGE },
+              brandsCount: response.brands?.length ?? 0,
+              productsCount: response.products?.length ?? 0
+            });
+            index++;
+          }
+          setCategoriesCount(index);
+          setBrandsCount(brandsCount);
+          setProductsCount(productsCount);
+        }
         setRawCategoriesData(mapped);
         setFilteredData(mapped);
       } catch (err) {
@@ -89,8 +106,7 @@ const CategoriesPage = () => {
       const result = rawCategoriesData.filter(
         (el) =>
           el.slNo?.toLowerCase().includes(query) ||
-          el.categoryId?.toLowerCase().includes(query) ||
-          el.name?.text?.toLowerCase().includes(query)
+          el.name?.name?.toLowerCase().includes(query)
       );
       setFilteredData(result);
     } else {
@@ -121,7 +137,7 @@ const CategoriesPage = () => {
 
   const categoriesActions: ActionCallbacks = {
     onEdit: (id) => navigate(`/dashboard/categories/edit/${id}`),
-    onDelete: (id) => console.log(`Delete category ${id}`),
+    // onDelete: (id) => console.log(`Delete category ${id}`),
   };
 
   return (
@@ -133,10 +149,31 @@ const CategoriesPage = () => {
           <div className="admin-page-header">
             <h1 className="admin-page-title">Categories Management</h1>
             <p className="admin-page-subtitle">
-              View, search, and manage your product categories.
+              View, Search, And Manage Your Categories.
             </p>
           </div>
 
+          <div className="category-list-statistic-card">
+            <StatisticCard
+              title="Total Categories"
+              value={categoriesCount}
+              icon={<MdOutlineCategory />}
+              showBackground={true}
+            />
+            <StatisticCard
+              title="Total Brands"
+              value={brandsCount}
+              icon={<TbBrandBitbucket />}
+              showBackground={true}
+            />
+            <StatisticCard
+              title="Total Products"
+              value={productsCount}
+              icon={<FiBox />}
+              showBackground={true}
+            />
+          </div>
+          
           <div className="table-actions-header">
             <div className="search-bar-wrapper">
               <DashBoardInput
@@ -144,6 +181,7 @@ const CategoriesPage = () => {
                 value={searchQuery}
                 onChange={(e: any) => setSearchQuery(e)}
                 icon={<FiSearch />}
+                showBorder={true}
               />
             </div>
             <div className="action-btn-wrapper">
@@ -163,7 +201,9 @@ const CategoriesPage = () => {
             actions={categoriesActions}
             pagination={pagination}
             idField="id"
+            isSearch={searchQuery}
           />
+
         </div>
       )}
     </>

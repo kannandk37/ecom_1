@@ -34,7 +34,8 @@ export const StatisticCard: React.FC<StatisticCardProps> = ({
     width: typeof width === "number" ? `${width}px` : width,
     height: typeof height === "number" ? `${height}px` : height,
     backgroundColor: showBackground ? "#ffffff" : "transparent",
-    boxShadow: showBackground ? "0 10px 30px rgba(0, 0, 0, 0.04)" : "none",
+    flexDirection: trendValue ? 'column' : "row",
+    boxShadow: showBackground ? "0 4px 24px rgba(0, 0, 0, 0.08), 0 1.5px 6px rgba(0,0,0,0.08)" : "none",
   } as React.CSSProperties;
 
   return (

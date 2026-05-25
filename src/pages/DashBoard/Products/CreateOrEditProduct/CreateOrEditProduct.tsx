@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FiArrowLeft, FiUploadCloud, FiX, FiPlus } from "react-icons/fi";
-import DashBoardButton from "../../../assets/ui/DashBoardButton/DashBoardButton";
-import DashBoardInput from "../../../assets/ui/DashBoardInput/DashBoardInput";
-import Dropdown from "../../../assets/dropdown/DropDown";
+import DashBoardButton from "../../../../assets/ui/DashBoardButton/DashBoardButton";
+import DashBoardInput from "../../../../assets/ui/DashBoardInput/DashBoardInput";
+import Dropdown from "../../../../assets/dropdown/DropDown";
 import "./CreateOrEditProduct.css";
 import {
   Duration,
@@ -11,15 +11,15 @@ import {
   Storage,
   Label,
   Product,
-} from "../../../entity/product";
-import Loader2 from "../../../assets/loader/Loader2";
+} from "../../../../entity/product";
+import Loader2 from "../../../../assets/loader/Loader2";
 import { FaExclamation, FaIndianRupeeSign } from "react-icons/fa6";
-import { CategoryService } from "../../../service/category";
-import { Category } from "../../../entity/category";
-import { BrandService } from "../../../service/brand";
-import { Brand } from "../../../entity/brand";
+import { CategoryService } from "../../../../service/category";
+import { Category } from "../../../../entity/category";
+import { BrandService } from "../../../../service/brand";
+import { Brand } from "../../../../entity/brand";
 import { FaExclamationTriangle } from "react-icons/fa";
-import { ProductService } from "../../../service/product";
+import { ProductService } from "../../../../service/product";
 
 const CreateOrEditProduct: React.FC = () => {
   const { id } = useParams<{ id: string }>();

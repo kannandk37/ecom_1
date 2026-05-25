@@ -322,10 +322,9 @@ export const Sidebar = ({ isCollapsed, onToggle }: any) => {
           variant="primary"
           onClick={() => {
             if (isCollapsed) onToggle();
-            navigate("/dashboard/users");
+            // navigate("/dashboard/users");
             setShowUserDropdown(!showUserDropdown);
           }}
-          showBg={location.pathname?.startsWith("/dashboard/users")}
           type="button"
           width="100%"
           side="flex-start"

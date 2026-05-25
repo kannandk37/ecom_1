@@ -2,6 +2,10 @@ import { AxiosInstance, AxiosResponse } from "axios";
 import axiosinstance from "..";
 import { Category } from "../../entity/category";
 import { categoriesResponseDataToCategoriesEntities, categoryResponseDatumToCategoryEntity } from "./transformer";
+import { Brand } from "../../entity/brand";
+import { Product } from "../../entity/product";
+import { brandsResponseDataToBrandsEntities } from "../brand/transformer";
+import { productsResponseDataToProductsEntities } from "../product/transformer";
 
 export class CategoryService {
     private axiosInstance: AxiosInstance;
@@ -26,6 +30,29 @@ export class CategoryService {
         try {
             let response = await this.axiosInstance.get('/categories');
             return categoriesResponseDataToCategoriesEntities(response.data as any);
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
+    async getCategoriesWithBrandsAndProducts(): Promise<{ catgeory: Category, brands: Brand[], products: Product[] }[]> {
+        try {
+            let response = await this.axiosInstance.get('/categories/categorieswithbrandsandproducts');
+            let result: { catgeory: Category, brands: Brand[], products: Product[] }[] = [];
+            if (response.data?.length) {
+                for (const catgeoryInfo of response.data) {
+                    let category = await categoryResponseDatumToCategoryEntity(catgeoryInfo.catgeory);
+                    let brands = await brandsResponseDataToBrandsEntities(catgeoryInfo.brands);
+                    let products = await productsResponseDataToProductsEntities(catgeoryInfo.products);
+                    result.push({
+                        catgeory: category,
+                        brands: brands,
+                        products: products
+                    })
+                }
+            }
+            return result;
         } catch (error) {
             console.log(error);
             throw error;

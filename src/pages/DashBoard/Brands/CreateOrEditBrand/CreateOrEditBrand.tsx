@@ -1,18 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FiArrowLeft, FiPlus, FiUploadCloud, FiX } from "react-icons/fi";
-import DashBoardButton from "../../../assets/ui/DashBoardButton/DashBoardButton";
-import DashBoardInput, {
-  DashboardInput,
-} from "../../../assets/ui/DashBoardInput/DashBoardInput";
-import Dropdown from "../../../assets/dropdown/DropDown";
 import "./CreateOrEditBrand.css";
-import { IoMdAddCircleOutline } from "react-icons/io";
-import { Brand } from "../../../entity/brand/index";
-import { BrandService } from "../../../service/brand";
-import { Category } from "../../../entity/category";
-import { CategoryService } from "../../../service/category";
-import Loader2 from "../../../assets/loader/Loader2";
+import { CategoryService } from "../../../../service/category";
+import { Category } from "../../../../entity/category";
+import { BrandService } from "../../../../service/brand";
+import { Brand } from "../../../../entity/brand";
+import Loader2 from "../../../../assets/loader/Loader2";
+import DashBoardInput, { DashboardInput } from "../../../../assets/ui/DashBoardInput/DashBoardInput";
+import Dropdown from "../../../../assets/dropdown/DropDown";
+import DashBoardButton from "../../../../assets/ui/DashBoardButton/DashBoardButton";
 
 const CreateOrEditBrand: React.FC = () => {
   const { id } = useParams<{ id: string }>();

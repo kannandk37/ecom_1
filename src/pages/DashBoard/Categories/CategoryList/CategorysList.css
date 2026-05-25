@@ -1,11 +1,7 @@
-/* Overall Page Container */
 .admin-page-container {
   width: 100%;
-  padding: 30px;
   box-sizing: border-box;
   font-family: var(--font-family);
-  /* Assuming your admin sidebar leaves a main content area. 
-     You might not need min-height depending on your global layout */
   min-height: 100vh;
   background-color: var(--bg-body, #f9f5f1);
   animation: fadeIn 0.3s ease-out;
@@ -22,7 +18,6 @@
   }
 }
 
-/* Page Titles */
 .admin-page-header {
   margin-bottom: 30px;
 }
@@ -40,17 +35,17 @@
   margin: 0;
 }
 
-/* Table Actions Header (Search + Add Button) */
 .table-actions-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 25px;
   gap: 20px;
+  padding-left: 20px;
 }
 
 .search-bar-wrapper {
-  width: 500px; /* Fixed width for desktop, looks neat and intentional */
+  width: 500px;
   flex-shrink: 0;
 }
 
@@ -59,37 +54,90 @@
   justify-content: flex-end;
 }
 
-/* --- RESPONSIVENESS --- */
+.category-list-statistic-card {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 18px 0;
+  padding-left: 20px;
+  margin: 0;
+  margin-bottom: 20px;
+}
 
-/* For smaller laptops or tablets */
+.category-list-statistic-card > * {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+
+@media (max-width: 1024px) {
+  .search-bar-wrapper {
+    width: 380px;
+  }
+}
+
 @media (max-width: 900px) {
   .admin-page-container {
     padding: 20px;
   }
 
+  .admin-page-title {
+    font-size: 1.6rem;
+  }
+
   .search-bar-wrapper {
     width: 280px;
   }
+
+  .category-list-statistic-card > * {
+    flex: 1 1 220px;
+  }
 }
 
-/* For mobile/small tablets: Stack the search and the button */
 @media (max-width: 650px) {
+  .admin-page-title {
+    font-size: 1.4rem;
+  }
+
   .table-actions-header {
-    flex-direction: column-reverse; /* Puts search bar on bottom, button on top */
-    align-items: stretch; /* Makes children take full width */
+    flex-direction: column-reverse;
+    align-items: stretch;
     gap: 15px;
   }
 
   .search-bar-wrapper {
-    width: 100%; /* Search bar takes full width on mobile */
+    width: 100%;
   }
 
   .action-btn-wrapper {
     width: 100%;
   }
 
-  /* Assuming your DashBoardButton can expand to 100% width if needed */
   .action-btn-wrapper button {
     width: 100%;
+  }
+
+  .category-list-statistic-card {
+    flex-direction: column;
+    padding: 18px 0;
+  }
+
+  .category-list-statistic-card > * {
+    flex: 1 1 100%;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .admin-page-container {
+    padding: 14px;
+  }
+
+  .admin-page-title {
+    font-size: 1.2rem;
+  }
+
+  .admin-page-subtitle {
+    font-size: 0.85rem;
   }
 }
