@@ -8,18 +8,18 @@ import {
   FiImage,
   FiPlus,
 } from "react-icons/fi";
-import DashBoardButton from "../../../assets/ui/DashBoardButton/DashBoardButton";
-import DashBoardInput from "../../../assets/ui/DashBoardInput/DashBoardInput";
-import Dropdown from "../../../assets/dropdown/DropDown";
+import DashBoardButton from "../../../../assets/ui/DashBoardButton/DashBoardButton";
+import DashBoardInput from "../../../../assets/ui/DashBoardInput/DashBoardInput";
+import Dropdown from "../../../../assets/dropdown/DropDown";
 import "./CreateOrEditVariant.css";
-import { Variant, VariantGrade, VariantType } from "../../../entity/variant";
-import { ProductService } from "../../../service/product";
-import { Product } from "../../../entity/product";
+import { Variant, VariantGrade, VariantType } from "../../../../entity/variant";
+import { ProductService } from "../../../../service/product";
+import { Product } from "../../../../entity/product";
 import { FaExclamationTriangle } from "react-icons/fa";
 import { FaIndianRupeeSign } from "react-icons/fa6";
-import { VariantService } from "../../../service/variant";
-import Loader2 from "../../../assets/loader/Loader2";
-import { priceRegex } from "../../../utils/utils";
+import { VariantService } from "../../../../service/variant";
+import Loader2 from "../../../../assets/loader/Loader2";
+import { priceRegex } from "../../../../utils/utils";
 
 const CreateOrEditVariant: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -243,7 +243,7 @@ const CreateOrEditVariant: React.FC = () => {
           await new VariantService().create(variant);
         }
 
-        navigate("/dashboard/products"); // Redirect to products
+        navigate("/dashboard/variants"); // Redirect to products
       } catch (err) {
         console.error(err);
       } finally {
@@ -328,9 +328,9 @@ const CreateOrEditVariant: React.FC = () => {
             <div className="create-variant-title-area">
               <button
                 className="create-variant-back-btn"
-                onClick={() => navigate("/dashboard/products")}
+                onClick={() => navigate("/dashboard/variants")}
               >
-                <FiArrowLeft /> Back to Products
+                <FiArrowLeft /> Back to Variants
               </button>
               <h1 className="create-variant-title">
                 {isEditMode ? "Edit Variant" : "Add Variant"}
@@ -553,7 +553,7 @@ const CreateOrEditVariant: React.FC = () => {
               width={"280px"}
               name="Cancel"
               variant="secondary"
-              onClick={() => navigate("/dashboard/products")}
+              onClick={() => navigate("/dashboard/variants")}
             />
             <DashBoardButton
               icon={<FiPlus size={25} />}

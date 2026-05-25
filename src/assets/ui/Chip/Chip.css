@@ -1,0 +1,95 @@
+.organic-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 10px 20px;
+  border-radius: 9999px; 
+  font-family: var(--font-family, sans-serif);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.organic-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.organic-chip:active {
+  transform: translateY(0);
+}
+
+.organic-chip-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.organic-chip-title {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.organic-chip-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.organic-chip-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  min-width: 24px;
+}
+
+.organic-chip-primary {
+  background-color: #8c6d3f;
+  border: 1px solid #8c6d3f;
+  color: #ffffff;
+}
+
+.organic-chip-primary .organic-chip-badge {
+  background-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+.organic-chip-secondary {
+  background-color: #ede8e1;
+  border: 1px solid #ede8e1;
+  color: #5c443c;
+}
+
+.organic-chip-secondary .organic-chip-badge {
+  background-color: #ffffff;
+  color: #1a1a1a;
+}
+
+.organic-chip-secondary:hover {
+  background-color: #e5dfd6;
+  border-color: #e5dfd6;
+}
+
+/* 3. Outline Variant (White with Brown Outline) */
+.organic-chip-outline {
+  background-color: #ffffff;
+  border: 1px solid #8c6d3f;
+  color: #8c6d3f;
+}
+
+.organic-chip-outline .organic-chip-badge {
+  background-color: #ede8e1;
+  color: #5c443c;
+}
+
+.organic-chip-outline:hover {
+  background-color: #fcfcfc;
+}

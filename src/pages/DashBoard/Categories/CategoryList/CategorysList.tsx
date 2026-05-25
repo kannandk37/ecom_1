@@ -31,7 +31,8 @@ const categoriesColumns: TableColumn<CategoryData>[] = [
   {
     key: "name",
     label: "NAME",
-    width: "23.5%",
+    width: "24.5%",
+    align: "center",
     renderCell: (value) => <IconText image={value.image} text={value.name} />,
   },
   {

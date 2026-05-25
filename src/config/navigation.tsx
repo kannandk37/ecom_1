@@ -30,7 +30,7 @@ import Orders from "../pages/Orders/Orders";
 import CreateOrEditCategory from "../pages/DashBoard/Categories/CreateOrEditCategory/CreateOrEditCategory";
 import CategoryList from "../pages/DashBoard/Categories/CategoryList/CategorysList";
 import CreateOrEditProduct from "../pages/DashBoard/Products/CreateOrEditProduct/CreateOrEditProduct";
-import CreateOrEditVariant from "../pages/DashBoard/Variant/createOrEditVariant";
+import CreateOrEditVariant from "../pages/DashBoard/Variants/CreateOrEditVariant/createOrEditVariant";
 import CreateOrEditUser from "../pages/User/CreateOrEditUser";
 import UsersList from "../pages/DashBoard/User/Users";
 import CreateOrEditWareHouse from "../pages/WareHouse/CreateOrEditWareHouse";
@@ -41,7 +41,8 @@ import AddProductToInventory from "../pages/Inventory/AddProductToInventory/AddP
 import BrandsList from "../pages/DashBoard/Brands/BrandsList/BrandsList";
 import CreateOrEditBrand from "../pages/DashBoard/Brands/CreateOrEditBrand/CreateOrEditBrand";
 import ProductsList from "../pages/DashBoard/Products/ProductsList/ProductsList";
-// import Ware from "../pages/WareHouse/Ware";
+import VariantsList from "../pages/DashBoard/Variants/VariantsList/VariantsList";
+
 export interface NavItem {
   id: string;
   name: string;
@@ -149,7 +150,7 @@ export const NAV_OPTIONS: NavItem[] = [
     name: "Variants",
     icon: <CiBoxes />,
     path: "/dashboard/variants",
-    component: <CreateOrEditVariant />,
+    component: <VariantsList />,
     children: [
       {
         id: "add-variants",
@@ -158,6 +159,13 @@ export const NAV_OPTIONS: NavItem[] = [
         path: "/dashboard/variants/add",
         component: <CreateOrEditVariant />,
       },
+      {
+        id: "edit-variants",
+        name: "Edit Variants",
+        icon: <FiBox />,
+        path: "/dashboard/variants/edit/:id",
+        component: <CreateOrEditVariant />,
+      }
     ],
   },
   {

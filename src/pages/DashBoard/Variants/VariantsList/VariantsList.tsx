@@ -2,31 +2,38 @@
 import { useState, useEffect } from "react";
 import { FiBox, FiPlus, FiSearch } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import "./ProductsList.css";
+import "./VariantsList.css";
 import IMAGE from "../../../../../data/DRY_FRUITS.png";
 import Table, { ActionCallbacks, IconText, PaginationData, TableColumn } from "../../../../assets/table/Table";
 import Loader2 from "../../../../assets/loader/Loader2";
 import DashBoardInput from "../../../../assets/ui/DashBoardInput/DashBoardInput";
 import DashBoardButton from "../../../../assets/ui/DashBoardButton/DashBoardButton";
 import { ProductService } from "../../../../service/product";
-import { TbBrandBitbucket } from "react-icons/tb";
-import StatisticCard from "../../../../assets/ui/StatisticCard/StatisticCard";
+import Chip from "../../../../assets/ui/Chip/Chip";
+import { Product } from "../../../../entity/product";
 
-interface ProductData {
+interface VariantData {
     id: string;
     slNo: string;
     name: { name: string; image: any };
+    product: { name: string; image: any },
     brand: { name: string; image: any };
     category: { name: string; image: any };
-    variantsCount: number;
 }
 
-const productsColumns: TableColumn<ProductData>[] = [
+const variantsColumns: TableColumn<VariantData>[] = [
     { key: "slNo", label: "SL. NO", width: "6.4%", align: "center" },
     {
         key: "name",
         label: "NAME",
         width: "21.2%",
+        align: "center",
+        renderCell: (value) => <IconText image={value.image} text={value.name} />,
+    },
+    {
+        key: "product",
+        label: "Product",
+        width: "15%",
         align: "center",
         renderCell: (value) => <IconText image={value.image} text={value.name} />,
     },
@@ -44,22 +51,15 @@ const productsColumns: TableColumn<ProductData>[] = [
         align: "center",
         renderCell: (value) => <IconText image={value.image} text={value.name} />,
     },
-    {
-        key: "variantsCount",
-        label: "VariantS COUNT",
-        width: "15%",
-        align: "center",
-        renderCell: (value) => <>{value} items</>,
-    },
     { key: "actions", label: "ACTIONS", width: "15%", align: "center" },
 ];
 
 const PER_PAGE = 5;
 
-const ProductsList = () => {
+const VariantsList = () => {
     const [searchQuery, setSearchQuery] = useState("");
-    const [filteredData, setFilteredData] = useState<ProductData[]>([]);
-    const [rawProductsData, setRawProductsData] = useState<ProductData[]>([]);
+    const [filteredData, setFilteredData] = useState<VariantData[]>([]);
+    const [rawVariantsData, setRawVariantsData] = useState<VariantData[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [variantsCount, setVariantsCount] = useState<number>(0);
@@ -70,28 +70,33 @@ const ProductsList = () => {
             try {
                 setIsLoading(true);
                 const responseData = await new ProductService().get();
-                let mapped: ProductData[] = [];
+                let mapped: VariantData[] = [];
                 if (responseData?.length > 0) {
                     let index = 0;
                     let variantsCount = 0;
-                    for (const response of responseData) {
-                        variantsCount = variantsCount + (response.variants?.length ?? 0);
-                        mapped.push({
-                            id: response.id,
-                            slNo: `${index + 1}`,
-                            name: { name: response.name, image: IMAGE },
-                            brand: { name: response.brand.name, image: IMAGE },
-                            category: { name: response.category.name, image: IMAGE },
-                            variantsCount: response.variants?.length ?? 0
-                        });
-                        index++;
+                    let variants = responseData.flatMap((product: Product) => product.variants);
+                    if (variants?.length > 0) {
+                        for (const variant of variants) {
+                            if (variant) {
+                                let product = responseData.find((product: Product) => product.id == variant.product?.id);
+                                mapped.push({
+                                    id: variant.id,
+                                    slNo: `${index + 1}`,
+                                    name: { name: variant.name, image: IMAGE },
+                                    brand: { name: product?.brand?.name, image: IMAGE },
+                                    category: { name: product?.category?.name, image: IMAGE },
+                                    product: { name: product?.name, image: IMAGE }
+                                });
+                                index++;
+                            }
+                        }
                     }
                     setVariantsCount(variantsCount);
                 }
-                setRawProductsData(mapped);
+                setRawVariantsData(mapped);
                 setFilteredData(mapped);
             } catch (err) {
-                console.error("Failed to load products", err);
+                console.error("Failed to load variants", err);
             } finally {
                 setIsLoading(false);
             }
@@ -101,19 +106,20 @@ const ProductsList = () => {
     useEffect(() => {
         const query = searchQuery.trim().toLowerCase();
         if (query) {
-            const result = rawProductsData.filter(
+            const result = rawVariantsData.filter(
                 (el) =>
                     el.slNo?.toLowerCase().includes(query) ||
                     el.name?.name?.toLowerCase().includes(query) ||
+                    el.product?.name?.toLowerCase().includes(query) ||
                     el.brand?.name?.toLowerCase().includes(query) ||
                     el.category?.name?.toLowerCase().includes(query)
             );
             setFilteredData(result);
         } else {
-            setFilteredData(rawProductsData);
+            setFilteredData(rawVariantsData);
         }
         setCurrentPage(1);
-    }, [searchQuery, rawProductsData]);
+    }, [searchQuery, rawVariantsData]);
 
     const totalEntries = filteredData.length;
     const totalPages = Math.ceil(totalEntries / PER_PAGE);
@@ -135,9 +141,9 @@ const ProductsList = () => {
         onPageChange: handlePageChange,
     };
 
-    const productsActions: ActionCallbacks = {
-        onEdit: (id) => navigate(`/dashboard/products/edit/${id}`),
-        // onDelete: (id) => console.log(`Delete product ${id}`),
+    const variantsActions: ActionCallbacks = {
+        onEdit: (id) => navigate(`/dashboard/variants/edit/${id}`),
+        // onDelete: (id) => console.log(`Delete variant ${id}`),
     };
 
     return (
@@ -145,54 +151,48 @@ const ProductsList = () => {
             {isLoading ? (
                 <Loader2 />
             ) : (
-                <div className="products-list-admin-page-container">
-                    <div className="products-list-admin-page-header">
-                        <h1 className="products-list-admin-page-title">Products Management</h1>
-                        <p className="products-list-admin-page-subtitle">
-                            View, Search, And Manage Your Products.
+                <div className="variants-list-admin-page-container">
+                    <div className="variants-list-admin-page-header">
+                        <h1 className="variants-list-admin-page-title">Variants Management</h1>
+                        <p className="variants-list-admin-page-subtitle">
+                            View, Search, And Manage Your Variantts.
                         </p>
                     </div>
 
-                    <div className="brands-list-statistic-card">
-                        <StatisticCard
-                            title="Total Products"
-                            value={rawProductsData.length ?? 0}
-                            icon={<TbBrandBitbucket />}
-                            showBackground={true}
-                        />
-                        <StatisticCard
-                            title="Total Variants"
-                            value={variantsCount}
-                            icon={<FiBox />}
-                            showBackground={true}
-                        />
-                    </div>
-
-                    <div className="products-list-table-actions-header">
-                        <div className="products-list-search-bar-wrapper">
+                    <div className="variants-list-table-actions-header">
+                        <div className="variants-list-search-bar-wrapper">
                             <DashBoardInput
-                                placeholder="Search products..."
+                                placeholder="Search variants..."
                                 value={searchQuery}
                                 onChange={(e: any) => setSearchQuery(e)}
                                 icon={<FiSearch />}
                                 showBorder={true}
                             />
                         </div>
-                        <div className="products-list-action-btn-wrapper">
+                        <div className="variants-list-statistic-card">
+                            <Chip
+                                title="Total Variants"
+                                value={rawVariantsData.length ?? 0}
+                                icon={<FiBox />}
+                                style={{ marginLeft: '380px' }}
+                                variant="outline"
+                            />
+                        </div>
+                        <div className="variants-list-action-btn-wrapper">
                             <DashBoardButton
                                 icon={<FiPlus size={25} />}
-                                name="Add Product"
+                                name="Add Variant"
                                 variant="primary"
-                                onClick={() => navigate("/dashboard/products/add")}
+                                onClick={() => navigate("/dashboard/variants/add")}
                             />
                         </div>
                     </div>
 
-                    <Table<ProductData>
+                    <Table<VariantData>
                         width="100%"
-                        columns={productsColumns}
+                        columns={variantsColumns}
                         data={pagedData}
-                        actions={productsActions}
+                        actions={variantsActions}
                         pagination={pagination}
                         idField="id"
                         isSearch={searchQuery}
@@ -203,4 +203,4 @@ const ProductsList = () => {
     );
 };
 
-export default ProductsList;
+export default VariantsList;

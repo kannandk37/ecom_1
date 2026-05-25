@@ -26,12 +26,14 @@ const brandsColumns: TableColumn<BrandData>[] = [
         key: "name",
         label: "NAME",
         width: "23.5%",
+        align: "center",
         renderCell: (value) => <IconText image={value.image} text={value.name} />,
     },
     {
         key: "category",
         label: "CATEGORY",
         width: "23.5%",
+        align: "center",
         renderCell: (value) => <IconText image={value.image} text={value.name} />,
     },
     {
