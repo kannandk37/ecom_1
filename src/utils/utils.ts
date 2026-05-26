@@ -7,6 +7,8 @@ export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 export const mobileRegex = /^[0-9]+$/;
 export const numberRegex = /^[0-9]+$/;
 export const priceRegex = /^\d+(\.\d{0,2})?$/;
+export const capitalize = (str: any) => str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
+
 
 export const colors = [
     "#7a5e35",
