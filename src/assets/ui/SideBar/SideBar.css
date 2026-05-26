@@ -149,7 +149,8 @@ nav button.active {
   overflow-y: auto;
   overflow-x: hidden;
   flex: 1;
-  padding-right: 5px;
+  padding-top: 10px;
+  padding-left: 2px;
   scrollbar-gutter: stable;
 }
 
@@ -272,10 +273,10 @@ nav button.active {
 }
 
 .sidebar-sidebar-nav::-webkit-scrollbar-thumb {
-  background-color:var(--color-scroll-bar);
+  background-color: var(--color-scroll-bar);
   border-radius: 10px;
 }
 
 .sidebar-sidebar-nav::-webkit-scrollbar-thumb:hover {
-  background-color:var(--color-scroll-bar-hover);
+  background-color: var(--color-scroll-bar-hover);
 }

@@ -241,7 +241,7 @@ export const Sidebar = ({ isCollapsed, onToggle }: any) => {
     {
       name: "Profile",
       icon: <MdManageAccounts size={20} />,
-      onClick: function () { },
+      onClick: function () {},
     },
     // {
     //   name: 'Settings',
@@ -281,7 +281,10 @@ export const Sidebar = ({ isCollapsed, onToggle }: any) => {
             name=""
             icon={<FiAlignJustify size={22} />}
             variant="primary"
-            onClick={() => { onToggle(); showUserDropdown && setShowUserDropdown(!showUserDropdown) }}
+            onClick={() => {
+              onToggle();
+              showUserDropdown && setShowUserDropdown(!showUserDropdown);
+            }}
             type="button"
             height="45px"
             width="45px"
@@ -304,7 +307,10 @@ export const Sidebar = ({ isCollapsed, onToggle }: any) => {
               icon={item.icon}
               name={showLabel ? item.name : ""}
               variant="primary"
-              onClick={() => { item.path && navigate(item.path); showUserDropdown && setShowUserDropdown(!showUserDropdown) }}
+              onClick={() => {
+                item.path && navigate(item.path);
+                showUserDropdown && setShowUserDropdown(!showUserDropdown);
+              }}
               showBg={location.pathname?.startsWith(item.path)}
               type="button"
               width="100%"
@@ -314,8 +320,9 @@ export const Sidebar = ({ isCollapsed, onToggle }: any) => {
         ))}
       </nav>
 
-      <div className={`sidebar-sidebar-footer ${isCollapsed ? 'sidebar-sidebar-footer-collapsed' : ''}`} >
-
+      <div
+        className={`sidebar-sidebar-footer ${isCollapsed ? "sidebar-sidebar-footer-collapsed" : ""}`}
+      >
         <DashboardButton
           icon={<FaUserCircle size={30} />}
           name={showLabel ? "ADMIN" : ""}
@@ -354,8 +361,8 @@ export const Sidebar = ({ isCollapsed, onToggle }: any) => {
   );
 };
 
-
-{/* <div className="sidebar-sidebar-header">
+{
+  /* <div className="sidebar-sidebar-header">
         <div
           className={`sidebar-branding-wrapper ${isCollapsed ? "sidebar-collapsed-branding" : ""}`}
           onClick={() => {
@@ -390,4 +397,5 @@ export const Sidebar = ({ isCollapsed, onToggle }: any) => {
             ))}
           </ul>
         )}
-      </div> */}
+      </div> */
+}
