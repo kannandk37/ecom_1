@@ -19,6 +19,8 @@ interface VariantData {
     product: { name: string; image: any },
     brand: { name: string; image: any };
     category: { name: string; image: any };
+    disableEdit?: boolean;
+    disableDelete?: boolean;
 }
 
 const variantsColumns: TableColumn<VariantData>[] = [

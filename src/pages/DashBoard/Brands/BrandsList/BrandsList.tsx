@@ -18,6 +18,8 @@ interface BrandData {
     name: { name: string; image: any };
     category: { name: string; image: any };
     productsCount: number;
+    disableEdit?: boolean;
+    disableDelete?: boolean;
 }
 
 const brandsColumns: TableColumn<BrandData>[] = [
@@ -73,7 +75,7 @@ const BrandsList = () => {
                             id: response.brand.id,
                             slNo: `${index + 1}`,
                             name: { name: response.brand.name, image: IMAGE },
-                            category: {name: response.brand.category.name, image: IMAGE},
+                            category: { name: response.brand.category.name, image: IMAGE },
                             productsCount: response.products?.length ?? 0
                         });
                         index++;

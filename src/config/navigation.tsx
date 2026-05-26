@@ -31,9 +31,7 @@ import CreateOrEditCategory from "../pages/DashBoard/Categories/CreateOrEditCate
 import CategoryList from "../pages/DashBoard/Categories/CategoryList/CategorysList";
 import CreateOrEditProduct from "../pages/DashBoard/Products/CreateOrEditProduct/CreateOrEditProduct";
 import CreateOrEditVariant from "../pages/DashBoard/Variants/CreateOrEditVariant/createOrEditVariant";
-import CreateOrEditUser from "../pages/User/CreateOrEditUser";
-import UsersList from "../pages/DashBoard/User/Users";
-import CreateOrEditWareHouse from "../pages/WareHouse/CreateOrEditWareHouse";
+import UsersList from "../pages/DashBoard/Users/UsersList/UsersList";
 import { LuPackagePlus, LuPackageSearch, LuWarehouse } from "react-icons/lu";
 import { CiBoxes } from "react-icons/ci";
 import ManageStock from "../pages/Inventory/ManageStock/ManageStock";
@@ -42,6 +40,9 @@ import BrandsList from "../pages/DashBoard/Brands/BrandsList/BrandsList";
 import CreateOrEditBrand from "../pages/DashBoard/Brands/CreateOrEditBrand/CreateOrEditBrand";
 import ProductsList from "../pages/DashBoard/Products/ProductsList/ProductsList";
 import VariantsList from "../pages/DashBoard/Variants/VariantsList/VariantsList";
+import CreateOrEditUser from "../pages/DashBoard/Users/CreateOrEditUser/CreateOrEditUser";
+import CreateOrEditWareHouse from "../pages/DashBoard/Warehouses/CreateOrEditWareHouse/CreateOrEditWareHouse";
+import WarehousesList from "../pages/DashBoard/Warehouses/WarehousesList/WarehousesList";
 
 export interface NavItem {
   id: string;
@@ -182,6 +183,13 @@ export const NAV_OPTIONS: NavItem[] = [
         path: "/dashboard/users/add",
         component: <CreateOrEditUser />,
       },
+      {
+        id: "edit-users",
+        name: "Edit Users",
+        icon: <FaRegUser />,
+        path: "/dashboard/users/edit/:id",
+        component: <CreateOrEditUser />,
+      },
     ],
   },
   {
@@ -189,13 +197,20 @@ export const NAV_OPTIONS: NavItem[] = [
     name: "WareHouses",
     icon: <LuWarehouse />,
     path: "/dashboard/warehouses",
-    component: <CreateOrEditWareHouse />,
+    component: <WarehousesList />,
     children: [
       {
         id: "add-warehouses",
         name: "Add Warehouses",
-        icon: <FiBox />,
+        icon: <LuWarehouse />,
         path: "/dashboard/Warehouses/add",
+        component: <CreateOrEditWareHouse />,
+      },
+      {
+        id: "edit-warehouses",
+        name: "Edit Warehouses",
+        icon: <LuWarehouse />,
+        path: "/dashboard/Warehouses/edit/:id",
         component: <CreateOrEditWareHouse />,
       },
     ],

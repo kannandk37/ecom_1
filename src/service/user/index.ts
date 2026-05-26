@@ -4,7 +4,7 @@ import { User } from "../../entity/user";
 import { UserAccount } from "../../entity/user_account";
 import { Role } from "../../entity/role";
 import { Profile } from "../../entity/profile";
-import { userResponseDatumToUserEntity } from "./transformer";
+import { userResponseDatumToUserEntity, usersResponseDataToUsersEntities } from "./transformer";
 
 
 export class UserService {
@@ -44,10 +44,10 @@ export class UserService {
         }
     }
 
-    async get() {
+    async get():Promise<User[]> {
         try {
             let response = await this.axiosInstance.get(`/users`);
-            return (userResponseDatumToUserEntity(response.data));
+            return (usersResponseDataToUsersEntities(response.data));
         } catch (error) {
             console.log(error);
             throw error;

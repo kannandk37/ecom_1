@@ -12,29 +12,28 @@ import {
   FiChevronUp,
 } from "react-icons/fi";
 
-import DashBoardButton from "../../assets/ui/DashBoardButton/DashBoardButton";
-import DashBoardInput from "../../assets/ui/DashBoardInput/DashBoardInput";
-import Dropdown from "../../assets/dropdown/DropDown";
+import DashBoardButton from "../../../../assets/ui/DashBoardButton/DashBoardButton";
+import DashBoardInput from "../../../../assets/ui/DashBoardInput/DashBoardInput";
+import Dropdown from "../../../../assets/dropdown/DropDown";
 import "./CreateOrEditWareHouse.css";
-import { ProfileService } from "../../service/profile";
-import { Address, AddressType } from "../../entity/address";
+import { ProfileService } from "../../../../service/profile";
+import { Address, AddressType } from "../../../../entity/address";
 import {
   CapacityUnit,
   Warehouse,
   WarehouseStatus,
   WarehouseType,
-} from "../../entity/warehouse";
-
+} from "../../../../entity/warehouse";
 import {
   WarehouseBin,
-} from "../../entity/warehouse_bin";
-import { INDIAN_STATES } from "../../utils/utils";
-import { Profile } from "../../entity/profile";
-import { User } from "../../entity/user";
-import { WarehouseBinService } from "../../service/warehouse_bin";
-import { WarehouseService } from "../../service/warehouse";
+} from "../../../../entity/warehouse_bin";
+import { INDIAN_STATES } from "../../../../utils/utils";
+import { Profile } from "../../../../entity/profile";
+import { User } from "../../../../entity/user";
+import { WarehouseBinService } from "../../../../service/warehouse_bin";
+import { WarehouseService } from "../../../../service/warehouse";
 import axios from "axios";
-import Toast from "../../assets/toast/Toast";
+import Toast from "../../../../assets/toast/Toast";
 
 // ─── Bin tree types (edit mode only) ─────────────────────────────────────────
 
@@ -226,7 +225,7 @@ const CreateOrEditWareHouse: React.FC = () => {
     (async () => {
       setIsLoading(true);
       try {
-        const profiles = await new ProfileService().get();
+        const profiles = await new ProfileService().getStaffs();
         setUserOptions(
           profiles.map((profile: Profile) => ({
             id: profile.id,

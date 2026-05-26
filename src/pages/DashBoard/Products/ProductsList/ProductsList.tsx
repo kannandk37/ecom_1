@@ -19,6 +19,8 @@ interface ProductData {
     brand: { name: string; image: any };
     category: { name: string; image: any };
     variantsCount: number;
+    disableEdit?: boolean;
+    disableDelete?: boolean;
 }
 
 const productsColumns: TableColumn<ProductData>[] = [

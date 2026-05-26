@@ -6,31 +6,33 @@ import {
   FiChevronRight,
 } from "react-icons/fi";
 import "./Table.css";
+
 interface BadgeProps {
   text: string;
+  style?: React.CSSProperties
 }
 
-export const Badge: React.FC<BadgeProps> = ({ text }) => (
-  <span className="badge">{text}</span>
+export const Badge: React.FC<BadgeProps> = ({ text, style }) => (
+  <span className="badge" style={style}>{text}</span>
 );
 
 interface IconTextProps {
   image?: any;
-  text: string;
+  text?: string;
+  imageStyle?: React.CSSProperties
 }
 
-export const IconText: React.FC<IconTextProps> = ({ image, text }) => (
+export const IconText: React.FC<IconTextProps> = ({ image, text, imageStyle }) => (
   <div className="icon-text-wrapper">
     {image && (
       <div className="icon-wrapper">
-        <img src={image} className="icon-image-wrapper" />
+        <img src={image} style={imageStyle} className="icon-image-wrapper" />
       </div>
     )}
-    <span className="text-wrapper">{text}</span>
+    {text && <span className="text-wrapper">{text}</span>}
   </div>
 );
 
-// Definition for action callbacks
 export interface ActionCallbacks {
   onEdit?: (id: any) => void;
   onDelete?: (id: any) => void;
@@ -39,14 +41,22 @@ export interface ActionCallbacks {
 interface ActionCellProps {
   id: any;
   callbacks: ActionCallbacks;
+  disableEdit?: boolean;
+  disableDelete?: boolean;
 }
 
-const ActionCell: React.FC<ActionCellProps> = ({ id, callbacks }) => (
+const ActionCell: React.FC<ActionCellProps> = ({
+  id,
+  callbacks,
+  disableEdit,
+  disableDelete,
+}) => (
   <div className="action-cell">
     {callbacks.onEdit && (
       <button
         className="action-btn edit-btn"
         onClick={() => callbacks.onEdit?.(id)}
+        disabled={disableEdit}
       >
         <FiEdit className="action-icon" />
       </button>
@@ -55,6 +65,7 @@ const ActionCell: React.FC<ActionCellProps> = ({ id, callbacks }) => (
       <button
         className="action-btn delete-btn"
         onClick={() => callbacks.onDelete?.(id)}
+        disabled={disableDelete}
       >
         <FiTrash2 className="action-icon" />
       </button>
@@ -62,7 +73,6 @@ const ActionCell: React.FC<ActionCellProps> = ({ id, callbacks }) => (
   </div>
 );
 
-// Definition for pagination data
 export interface PaginationData {
   currentPage: number;
   totalEntries: number;
@@ -82,11 +92,19 @@ const Pagination: React.FC<PaginationProps> = ({ data }) => {
 
   if (totalPages <= 0) return null;
 
-  const pageNumbers = [];
-  // Basic pagination, shows all pages. More advanced logic would involve ellipses.
-  for (let i = 1; i <= totalPages; i++) {
-    pageNumbers.push(i);
-  }
+  const getPageNumbers = (): (number | string)[] => {
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+    const pages: (number | string)[] = [1];
+    if (currentPage > 3) pages.push("...");
+    const start = Math.max(2, currentPage - 1);
+    const end = Math.min(totalPages - 1, currentPage + 1);
+    for (let i = start; i <= end; i++) pages.push(i);
+    if (currentPage < totalPages - 2) pages.push("...");
+    pages.push(totalPages);
+    return pages;
+  };
 
   return (
     <div className="pagination-wrapper">
@@ -101,15 +119,23 @@ const Pagination: React.FC<PaginationProps> = ({ data }) => {
         >
           <FiChevronLeft className="nav-icon" />
         </button>
-        {pageNumbers.map((page) => (
-          <button
-            key={page}
-            className={`page-btn ${page === currentPage ? "active" : ""}`}
-            onClick={() => onPageChange(page)}
-          >
-            {page}
-          </button>
-        ))}
+        {
+          getPageNumbers().map((page, index) =>
+            page === "..." ? (
+              <span key={`ellipsis-${index}`} className="pagination-ellipsis">
+                ...
+              </span>
+            ) : (
+              <button
+                key={page}
+                className={`page-btn ${page === currentPage ? "active" : ""}`}
+                onClick={() => onPageChange(page as number)}
+              >
+                {page}
+              </button>
+            )
+          )
+        }
         <button
           className="page-btn nav-btn"
           onClick={() => onPageChange(currentPage + 1)}
@@ -122,13 +148,12 @@ const Pagination: React.FC<PaginationProps> = ({ data }) => {
   );
 };
 
-// Generic Column Definition
 export interface TableColumn<T> {
   key: keyof T | "actions";
   label: string;
   renderCell?: (value: any, row: T) => React.ReactNode;
   align?: "left" | "center" | "right";
-  width?: string; // e.g. '10%'
+  width?: string;
 }
 
 interface TableProps<T> {
@@ -155,12 +180,12 @@ const Table = <T extends Record<string, any>>({
 }: TableProps<T>) => {
   const tableStyle = {
     width,
-    ...(height && { height, overflow: "auto" }), // Make table body scrollable if height is set
+    ...(height && { height, overflow: "auto" }),
   };
 
   return (
     <div className="table-wrapper" style={tableStyle}>
-      <div className="table-scroll-contrainer">
+      <div className="table-scroll-container">
         <table className="custom-table">
           <thead>
             <tr>
@@ -185,18 +210,25 @@ const Table = <T extends Record<string, any>>({
                 </tr>
               ) : (
                 data.map((row, rowIndex) => (
-                  <tr key={rowIndex} className={rowIndex % 2 !== 0 ? "even-row" : ""}>
+                  <tr
+                    key={String(row[idField])}
+                    className={rowIndex % 2 !== 0 ? "even-row" : ""}
+                  >
                     {columns.map((col) => {
                       const isActions = col.key === "actions";
                       const cellValue = row[col.key as string];
-
                       return (
                         <td
                           key={col.key as string}
                           className={col.align ? `align-${col.align}` : ""}
                         >
                           {isActions && actions ? (
-                            <ActionCell id={row[idField]} callbacks={actions} />
+                            <ActionCell
+                              id={row[idField]}
+                              callbacks={actions}
+                              disableEdit={row.disableEdit}
+                              disableDelete={row.disableDelete}
+                            />
                           ) : col.renderCell ? (
                             col.renderCell(cellValue, row)
                           ) : (

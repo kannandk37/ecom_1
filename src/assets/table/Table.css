@@ -1,19 +1,14 @@
 :root {
-  /* Text and Main Theme Colors from reference */
   --primary-brown: #7c5d40;
-  /* pagination active, edit icon on hover */
   --text-header: #5c443c;
-  /* Table headers desaturated brown */
   --bg-table-header: #f5efeb;
   --bg-card: #ffffff;
   --bg-body: #f9f5f1;
-  /* the overall container area's color is a bit different than standard off-white */
   --badge-bg: #f2e7de;
   --text-color: #333333;
   --border-color: #eeeeee;
-  /* Use font family as provided --font-family */
+  --border-line-color: #aaa;
 }
-
 
 .table-wrapper {
   font-family: var(--font-family);
@@ -33,7 +28,6 @@
 .custom-table {
   width: 100%;
   border-collapse: collapse;
-  /* flex: 1; */
 }
 
 .table-scroll-container {
@@ -62,6 +56,7 @@
   background-color: var(--bg-table-header);
   border-bottom: 1px solid var(--border-color);
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
   text-align: center;
 }
 
@@ -90,9 +85,6 @@
 .custom-table tbody tr:hover {
   background-color: var(--bg-body);
 }
-
-/* Optional alternate row background for extra readability */
-/* .even-row { background-color: var(--bg-body); } */
 
 .custom-table tbody tr td {
   font-size: 15px;
@@ -135,10 +127,10 @@
   background-color: var(--badge-bg);
   color: var(--text-header);
   border-radius: 20px;
-  /* pill shape */
   font-size: 13px;
   font-weight: 600;
   white-space: nowrap;
+  letter-spacing: 0.1rem;
 }
 
 .action-cell {
@@ -166,20 +158,33 @@
   color: var(--text-color);
 }
 
-.edit-btn:hover {
+.edit-btn:hover:not(:disabled) {
   background-color: rgba(124, 93, 64, 0.1);
 }
 
-.edit-btn:hover .action-icon {
+.edit-btn:hover:not(:disabled) .action-icon {
   color: var(--primary-brown);
 }
 
-.delete-btn:hover {
+.delete-btn:hover:not(:disabled) {
   background-color: rgba(220, 53, 69, 0.1);
 }
 
-.delete-btn:hover .action-icon {
+.delete-btn:hover:not(:disabled) .action-icon {
   color: #dc3545;
+}
+
+.action-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.action-btn:disabled:hover {
+  background-color: transparent;
+}
+
+.action-btn:disabled .action-icon {
+  color: var(--text-color);
 }
 
 .pagination-wrapper {
@@ -189,22 +194,28 @@
   padding: 20px 25px;
   font-size: 14px;
   color: var(--text-color);
-  border-top: 2px solid #aaa;
+  border-top: 1px solid var(--border-line-color);
+}
+
+.pagination-showing {
+  margin: 0;
 }
 
 .pagination-pages {
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .page-btn {
   background-color: var(--bg-card);
-  border: 0px solid var(--border-color);
+  border: 1px solid var(--border-color);
   color: var(--text-color);
   width: 38px;
   height: 38px;
-  border-radius: 14px;
+  border-radius: 6px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -242,6 +253,18 @@
   height: 1.25rem;
 }
 
+.pagination-ellipsis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-color);
+  user-select: none;
+}
+
 @media (max-width: 650px) {
   .pagination-wrapper {
     flex-direction: column;
@@ -259,6 +282,10 @@
     width: 34px;
     height: 34px;
     font-size: 13px;
+  }
+
+  .pagination-ellipsis {
+    width: 28px;
   }
 }
 
@@ -286,5 +313,6 @@
   .table-wrapper {
     margin: 10px;
     border-radius: 8px;
+    min-height: 200px;
   }
 }

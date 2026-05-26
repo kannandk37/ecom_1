@@ -19,7 +19,8 @@ interface DropdownProps {
   errorMessage?: string;
   isLoading?: boolean;
   noData?: boolean;
-  selected?: DropdownOption
+  selected?: DropdownOption;
+  showClose?: boolean;
 }
 
 export const Dropdown: React.FC<DropdownProps> = ({
@@ -32,7 +33,8 @@ export const Dropdown: React.FC<DropdownProps> = ({
   errorMessage,
   isLoading,
   noData,
-  selected
+  selected,
+  showClose = true
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
@@ -106,7 +108,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
         </span>
 
         <div className="ds-dropdown-icons">
-          {selectedValue && (
+          {selectedValue && showClose && (
             <div
               className="ds-dropdown-clear-btn"
               onClick={handleClear}

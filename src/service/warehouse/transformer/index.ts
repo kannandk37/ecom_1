@@ -1,6 +1,7 @@
 import { CapacityUnit, Warehouse, WarehouseStatus, WarehouseType } from "../../../entity/warehouse";
 import { addressResponseDatumToAddressEntity } from "../../address/transformer";
 import { userResponseDatumToUserEntity } from "../../user/transformer";
+import { warehousesBinResponseDataToWarehousesBinEntities } from "../../warehouse_bin/transformer";
 
 export function warehouseResponseDatumToWarehouseEntity(response: any): Warehouse {
     let warehouse = new Warehouse();
@@ -47,6 +48,10 @@ export function warehouseResponseDatumToWarehouseEntity(response: any): Warehous
 
     if (response.operator) {
         warehouse.operator = userResponseDatumToUserEntity(response.operator);
+    }
+
+        if (response.warehouseBins) {
+        warehouse.warehouseBins = warehousesBinResponseDataToWarehousesBinEntities(response.warehouseBins);
     }
 
     return warehouse;

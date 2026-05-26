@@ -1,6 +1,7 @@
 import { AxiosInstance } from "axios";
 import axiosinstance from "..";
-import { profilesResponseDataToProfilesEntities } from "./transformer";
+import { profileResponseDatumToProfileEntity, profilesResponseDataToProfilesEntities } from "./transformer";
+import { Profile } from "../../entity/profile";
 
 
 export class ProfileService {
@@ -8,6 +9,36 @@ export class ProfileService {
 
     constructor() {
         this.axiosInstance = axiosinstance;
+    }
+
+    async get(): Promise<Profile[]> {
+        try {
+            let response = await this.axiosInstance.get(`/profiles`);
+            return (profilesResponseDataToProfilesEntities(response.data));
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
+    async getById(id: string): Promise<Profile> {
+        try {
+            let response = await this.axiosInstance.get(`/profiles/${id}`);
+            return (profileResponseDatumToProfileEntity(response.data));
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
+    async getStaffs(): Promise<Profile[]> {
+        try {
+            let response = await this.axiosInstance.get(`/profiles/staffs`);
+            return (profilesResponseDataToProfilesEntities(response.data));
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
     }
 
     // async create(user: User, role: Role, profile: Profile, userAccount: UserAccount): Promise<User> {
@@ -39,15 +70,5 @@ export class ProfileService {
     //         throw error;
     //     }
     // }
-
-    async get() {
-        try {
-            let response = await this.axiosInstance.get(`/profiles/staffs`);
-            return (profilesResponseDataToProfilesEntities(response.data));
-        } catch (error) {
-            console.log(error);
-            throw error;
-        }
-    }
 
 }

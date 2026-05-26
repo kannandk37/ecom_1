@@ -66,7 +66,7 @@ export class BrandService {
         try {
             let response = await this.axiosInstance.get('/brands/brandswithproducts');
             let result: { brand: Brand, products: Product[] }[] = [];
-            if (response.data?.length) {
+            if (response.data?.length > 0) {
                 for (const brandInfo of response.data) {
                     let brand = await brandResponseDatumToBrandEntity(brandInfo.brand);
                     let products = await productsResponseDataToProductsEntities(brandInfo.products);

@@ -10,18 +10,18 @@ import {
   FiInfo,
   FiPlus,
 } from "react-icons/fi";
-
-import DashBoardButton from "../../assets/ui/DashBoardButton/DashBoardButton";
-import DashBoardInput from "../../assets/ui/DashBoardInput/DashBoardInput";
-import Dropdown from "../../assets/dropdown/DropDown";
+import DashBoardButton from "../../../../assets/ui/DashBoardButton/DashBoardButton";
+import DashBoardInput from "../../../../assets/ui/DashBoardInput/DashBoardInput";
+import Dropdown from "../../../../assets/dropdown/DropDown";
 import "./CreateOrEditUser.css";
-import { Profile } from "../../entity/profile";
-import { Role } from "../../entity/role";
-import { RoleService } from "../../service/role";
-import Loader2 from "../../assets/loader/Loader2";
-import { User } from "../../entity/user";
-import { AccountStatus, UserAccount } from "../../entity/user_account";
-import { UserService } from "../../service/user";
+import { Profile } from "../../../../entity/profile";
+import { Role } from "../../../../entity/role";
+import { RoleService } from "../../../../service/role";
+import Loader2 from "../../../../assets/loader/Loader2";
+import { User } from "../../../../entity/user";
+import { AccountStatus, UserAccount } from "../../../../entity/user_account";
+import { UserService } from "../../../../service/user";
+import { ProfileService } from "../../../../service/profile";
 
 const CreateOrEditUser: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -74,27 +74,31 @@ const CreateOrEditUser: React.FC = () => {
   }, [])
 
   useEffect(() => {
-
-
-    if (isEditMode) {
-      setIsLoading(true);
-      axios
-        .get(`/api/profiles/${id}`)
-        .then((res) => {
-          const profile: Profile = res.data;
-          setName(profile.name || "");
-          setEmail(profile.email || "");
-          setMobile(profile.mobile || "");
-          setRoleId({
-            id: profile.role?.name,
-            label: profile.role?.name,
-            value: profile.role?.name,
-          });
-          setImagePreview(profile.profilePic || null);
-        })
-        .catch((err) => console.error(err))
-        .finally(() => setIsLoading(false));
-    }
+    (async () => {
+      if (isEditMode && id) {
+        console.log(isEditMode, id)
+        setIsLoading(true);
+        try {
+          setIsLoading(false);
+          let response = await new ProfileService().getById(id)
+          if (response) {
+            const profile: Profile = response;
+            setName(profile.name || "");
+            setEmail(profile.email || "");
+            setMobile(profile.mobile || "");
+            setRoleId({
+              id: profile.role?.name,
+              label: profile.role?.name,
+              value: profile.role?.name,
+            });
+            setImagePreview(profile.profilePic || null);
+            setIsActive(profile.isEmailVerified);
+          }
+        } catch (error) {
+          setIsLoading(false);
+        }
+      }
+    })();
   }, [id, isEditMode]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -234,10 +238,10 @@ const CreateOrEditUser: React.FC = () => {
                 <FiArrowLeft /> Back to Users
               </button>
               <h1 className="create-management-user-title">
-                {isEditMode ? "Edit Access Credentials" : "Create a New Access"}
+                {isEditMode ? "Edit User" : "Create a User"}
               </h1>
               <p className="create-management-user-subtitle">
-                Create credentials for internal team members to manage the Nature
+                Create User for internal team members to manage the Nature
                 Candy.
               </p>
             </div>

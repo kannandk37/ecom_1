@@ -29,4 +29,10 @@
   --color-scroll-bar-hover: #6d4906;
 
   --font-family: "Fredoka", sans-serif;
+
+  --admin-role: #4278f6;
+  --admin-role-font: #ddedfc;
+
+  --customer-role: #42f757;
+  --customer-role-font: #9becab;
 }

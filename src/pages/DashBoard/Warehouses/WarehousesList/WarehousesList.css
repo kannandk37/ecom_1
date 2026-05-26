@@ -1,0 +1,143 @@
+.warehouses-list-admin-page-container {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--font-family);
+  min-height: 100vh;
+  background-color: var(--bg-body, #f9f5f1);
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.warehouses-list-admin-page-header {
+  margin-bottom: 30px;
+}
+
+.warehouses-list-admin-page-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.warehouses-list-admin-page-subtitle {
+  font-size: 0.95rem;
+  color: #666;
+  margin: 0;
+}
+
+.warehouses-list-table-actions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  gap: 20px;
+  padding-left: 20px;
+}
+
+.warehouses-list-search-bar-wrapper {
+  width: 500px;
+  flex-shrink: 0;
+}
+
+.warehouses-list-action-btn-wrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.warehouses-list-statistic-card {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 18px 0;
+  padding-left: 20px;
+  margin: 0;
+  margin-bottom: 20px;
+}
+
+.warehouses-list-statistic-card > * {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+
+@media (max-width: 1024px) {
+  .warehouses-list-search-bar-wrapper {
+    width: 380px;
+  }
+}
+
+@media (max-width: 900px) {
+  .warehouses-list-admin-page-container {
+    padding: 20px;
+  }
+
+  .warehouses-list-admin-page-title {
+    font-size: 1.6rem;
+  }
+
+  .warehouses-list-bar-wrapper {
+    width: 280px;
+  }
+
+  .warehouses-list-statistic-card > * {
+    flex: 1 1 220px;
+  }
+}
+
+@media (max-width: 650px) {
+  .warehouses-list-admin-page-title {
+    font-size: 1.4rem;
+  }
+
+  .warehouses-list-table-actions-header {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 15px;
+  }
+
+  .warehouses-list-search-bar-wrapper {
+    width: 100%;
+  }
+
+  .warehouses-list-action-btn-wrapper {
+    width: 100%;
+  }
+
+  .warehouses-list-action-btn-wrapper button {
+    width: 100%;
+  }
+
+  .warehouses-list-statistic-card {
+    flex-direction: column;
+    padding: 18px 0;
+  }
+
+  .warehouses-list-statistic-card > * {
+    flex: 1 1 100%;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .warehouses-list-admin-page-container {
+    padding: 14px;
+  }
+
+  .warehouses-list-admin-page-title {
+    font-size: 1.2rem;
+  }
+
+  .warehouses-list-admin-page-subtitle {
+    font-size: 0.85rem;
+  }
+}
