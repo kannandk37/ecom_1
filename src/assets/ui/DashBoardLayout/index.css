@@ -12,7 +12,7 @@
 }
 
 .dashboard-container.sidebar-min {
-  grid-template-columns: 88px 1fr;
+  grid-template-columns: 87px 1fr;
 }
 
 .dashboard-content {
