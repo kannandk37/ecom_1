@@ -58,6 +58,8 @@ const AddProductToInventory: React.FC = () => {
 
   // Auto Allocation States
   const [autoQty, setAutoQty] = useState<string>("");
+  const [reservedQty, setReservedQty] = useState<string>("");
+  const [reservedQtyError, setReservedQtyError] = useState<string>("");
 
   // Table Data States
   const [selectedBins, setSelectedBins] = useState<BinTableRow[]>([]);
@@ -76,7 +78,7 @@ const AddProductToInventory: React.FC = () => {
   >([]);
 
   const [allWarehouseData, setAllWarehouseData] = useState<Warehouse[]>([]);
-  const [allWarehouseProductData, setAllWarehouseProductData] = useState<
+  const [allProductData, setAllProductData] = useState<
     Product[]
   >([]);
   const [allProductVariantData, setAllProductVariantData] = useState<Variant[]>(
@@ -140,6 +142,28 @@ const AddProductToInventory: React.FC = () => {
         setSelectedBins([]);
         setIsWarehouseLoading(false);
         setIsLoading(false);
+      };
+
+      try {
+        setIsProductLoading(true);
+        let productsData = await new ProductService().get();
+        if (productsData?.length > 0) {
+          setAllProductData(productsData);
+          let productsDataOptions = productsData.map((product: Product) => {
+            return {
+              id: product.id,
+              label: product.name,
+              value: product.name,
+            };
+          });
+          setProductOptions(productsDataOptions);
+        } else {
+          setProductOptions([]);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsProductLoading(false);
       }
     })();
   }, []);
@@ -147,30 +171,6 @@ const AddProductToInventory: React.FC = () => {
   useEffect(() => {
     (async () => {
       if (warehouseId?.id) {
-        try {
-          setIsProductLoading(true);
-          let productsData = await new ProductService().getByWarehouseId(
-            warehouseId.id,
-          );
-          if (productsData?.length > 0) {
-            setAllWarehouseProductData(productsData);
-            let productsDataOptions = productsData.map((product: Product) => {
-              return {
-                id: product.id,
-                label: product.name,
-                value: product.name,
-              };
-            });
-            setProductOptions(productsDataOptions);
-          } else {
-            setProductOptions([]);
-          }
-        } catch (error) {
-          console.log(error);
-        } finally {
-          setIsProductLoading(false);
-        }
-
         try {
           setIsBinLoading(true);
           let warehouseBinsData =
@@ -181,7 +181,7 @@ const AddProductToInventory: React.FC = () => {
             warehouseBinsData = warehouseBinsData.filter(
               (warehouseBin: WarehouseBin) =>
                 (warehouseBin.maxUnits ?? 0) -
-                  (warehouseBin.currentStock ?? 0) >
+                (warehouseBin.currentStock ?? 0) >
                 0,
             );
             let warehouseBinsDataOptions = warehouseBinsData.map(
@@ -219,11 +219,7 @@ const AddProductToInventory: React.FC = () => {
       if (productId?.id) {
         setIsVariantLoading(true);
         try {
-          let variantsData = allWarehouseProductData.flatMap(
-            (product: Product) => {
-              return product.variants;
-            },
-          );
+          let variantsData = allProductData.find((product: Product) => productId?.id == product.id)?.variants;
           if (variantsData?.length > 0) {
             let variantsDataOptions = variantsData.map((variant: Variant) => {
               return {
@@ -399,9 +395,20 @@ const AddProductToInventory: React.FC = () => {
     }
   };
 
+  function isValidData() {
+    if (!reservedQty) {
+      setReservedQtyError('Please Enter Reserved Qty');
+    } else if (Number(reservedQty) < Number(selectedBins.reduce((sum, selectedBin) => sum + Number(selectedBin.addQty), 0))) {
+      setReservedQtyError('Reserved Qty Cannot Be Lower Than The Total Qty');
+    } else {
+      return true;
+    }
+    return false;
+  }
+
   // Final Submit
   const handleSubmit = async () => {
-    let isValid = true;
+    let isValid: boolean = isValidData();
     let newErrors: { [id: string]: string } = {};
 
     if (!warehouseId || !productId || !variantId) {
@@ -442,33 +449,39 @@ const AddProductToInventory: React.FC = () => {
         variantId,
         selectedBins,
       });
-      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       let inventory = new Inventory();
 
       let warehouse = new Warehouse();
-      warehouse.id = "6a0c10ad1e30cedd46e1daa9";
+      warehouse.id = warehouseId?.id;
 
-      let warehouseBins = [
+      // TODO : need to check the below data
+      let warehouseBins = selectedBins.map((selectedBin) => {return {id: selectedBin.id, currentStock: selectedBin.addQty}});
+       [
         { id: "6a0c10ad1e30cedd46e1daaa", currentStock: 200 },
         { id: "6a0c10ad1e30cedd46e1daab", currentStock: 200 },
         { id: "6a0c10ad1e30cedd46e1daac", currentStock: 100 },
       ];
 
       let product = new Product();
-      product.id = "69fadb7794c834ede01df7f0";
+      product.id = productId?.id;
+
+      let variant = new Variant();
+      variant.id = variantId?.id;
+
+      let qty = allocationMode == 'auto' ? Number(autoQty) : 10;
 
       inventory.product = product;
-      inventory.variant = new Variant();
+      inventory.variant = variant;
       inventory.warehouse = warehouse;
-      inventory.qtyOnHand = 500;
+      inventory.qtyOnHand = qty;
       inventory.warehouseBins = warehouseBins;
-      inventory.qtyReserved = 50;
-      inventory.maxStockLevel = 2500;
+      inventory.qtyReserved = reservedQty ? Number(reservedQty) : 0;
+      inventory.maxStockLevel = qty;
 
       // await new InventoryService().createInventory(inventory);
 
-      navigate("/dashboard/inventory");
+      navigate("/dashboard/inventories");
     } catch (error: any) {
       console.log(error);
       setIsLoading(false);
@@ -523,7 +536,7 @@ const AddProductToInventory: React.FC = () => {
             <div className="create-add-product-to-inventory-header-wrapper">
               <button
                 className="create-add-product-to-inventory-back-btn"
-                onClick={() => navigate("/dashboard/inventory")}
+                onClick={() => navigate("/dashboard/inventories")}
               >
                 <FiArrowLeft /> Back to Inventory
               </button>
@@ -648,6 +661,18 @@ const AddProductToInventory: React.FC = () => {
                     </div>
                   </div>
                 )}
+                <div className="create-add-product-to-inventory-field">
+                  <label>Reserved Qty</label>
+                  <DashBoardInput
+                    type="text"
+                    value={reservedQty}
+                    onChange={(e: any) => {setReservedQty(e); setReservedQtyError(null)}}
+                    placeholder="0"
+                    required={true}
+                    error={reservedQtyError ? true : false}
+                    errorMessage={reservedQtyError}
+                  />
+                </div>
               </div>
             </div>
 
@@ -757,7 +782,7 @@ const AddProductToInventory: React.FC = () => {
               <DashBoardButton
                 name="Cancel"
                 variant="secondary"
-                onClick={() => navigate("/dashboard/inventory")}
+                onClick={() => navigate("/dashboard/inventories")}
                 width={"280px"}
               />
               <DashBoardButton
