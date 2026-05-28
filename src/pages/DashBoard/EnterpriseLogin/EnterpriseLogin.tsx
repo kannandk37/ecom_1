@@ -75,16 +75,16 @@
 import React, { useState } from "react";
 import "./EnterpriseLogin.css";
 import { FiMail, FiLock, FiEye, FiEyeOff, FiTrendingUp } from "react-icons/fi";
-import DashboardButton from "../../assets/ui/DashBoardButton/DashBoardButton";
-import DashboardInput from "../../assets/ui/DashBoardInput/DashBoardInput";
-import { emailRegex } from "../../utils/utils";
-import { LOGO } from "../../utils/utils";
+import DashboardButton from "../../../assets/ui/DashBoardButton/DashBoardButton";
+import DashboardInput from "../../../assets/ui/DashBoardInput/DashBoardInput";
+import { emailRegex } from "../../../utils/utils";
+import { LOGO } from "../../../utils/utils";
 import { useNavigate } from "react-router-dom";
-import { UserAccountService } from "../../service/user_account";
-import Loader from "../../assets/loader/Loader2";
-import Toast from "../../assets/toast/Toast";
+import { UserAccountService } from "../../../service/user_account";
+import Loader from "../../../assets/loader/Loader2";
+import Toast from "../../../assets/toast/Toast";
 import axios from "axios";
-import { LocalStorage } from "../../storage";
+import { LocalStorage } from "../../../storage";
 
 interface EnterpriseLoginProps {
   logoUrl?: string;

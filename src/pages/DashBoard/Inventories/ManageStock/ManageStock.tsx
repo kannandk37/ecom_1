@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiArrowLeft, FiClipboard } from "react-icons/fi";
+import { FiArrowLeft } from "react-icons/fi";
 import DashBoardButton from "../../../../assets/ui/DashBoardButton/DashBoardButton";
 import DashBoardInput, {
   DashboardInput,
@@ -12,7 +12,6 @@ import { Warehouse } from "../../../../entity/warehouse";
 import { ProductService } from "../../../../service/product";
 import { Product } from "../../../../entity/product";
 import { Variant } from "../../../../entity/variant";
-import { VariantService } from "../../../../service/variant";
 import { WarehouseBinService } from "../../../../service/warehouse_bin";
 import { WarehouseBin } from "../../../../entity/warehouse_bin";
 import { DateTime } from "luxon";
@@ -373,6 +372,7 @@ const ManageStock: React.FC = () => {
         );
       }
       setIsLoading(false);
+      navigate('/dashboard/inventories')
     } catch (error: any) {
       console.log(error);
       setIsLoading(false);
@@ -445,7 +445,7 @@ const ManageStock: React.FC = () => {
             <div className="create-Inventory-stock-header">
               <button
                 className="create-Inventory-stock-back-btn"
-                onClick={() => navigate("/dashboard/add-product-to-inventory")}
+                onClick={() => navigate("/dashboard/inventories")}
               >
                 <FiArrowLeft /> Back to Inventory
               </button>
@@ -795,7 +795,7 @@ const ManageStock: React.FC = () => {
                     <DashBoardButton
                       name="Cancel"
                       variant="secondary"
-                      onClick={() => navigate("/dashboard/inventory")}
+                      onClick={() => navigate("/dashboard/inventories")}
                     />
                     <DashBoardButton
                       name="Submit Adjustment"

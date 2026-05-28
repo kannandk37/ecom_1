@@ -3,11 +3,7 @@ import axiosinstance from "..";
 import { Inventory } from "../../entity/inventory";
 import { BinStock } from "../../entity/bin_stock";
 import { StockLedger } from "../../entity/stock_ledger";
-import { Product } from "../../entity/product";
-import { Warehouse } from "../../entity/warehouse";
-import { WarehouseBin } from "../../entity/warehouse_bin";
-import { Variant } from "../../entity/variant";
-import { inventoryResponseDatumToInventoryEntity } from "./transformer";
+import { inventoryResponseDataToInventoryEntities, inventoryResponseDatumToInventoryEntity } from "./transformer";
 
 
 export class InventoryService {
@@ -17,7 +13,7 @@ export class InventoryService {
         this.axiosInstance = axiosinstance;
     }
 
-    async createInventory(inventory: Inventory ): Promise<Inventory> {
+    async createInventory(inventory: Inventory): Promise<Inventory> {
         try {
             let response = await this.axiosInstance.post('/inventories/addProduct', { inventory });
             return response.data as any;
@@ -56,4 +52,15 @@ export class InventoryService {
             throw error;
         }
     }
+
+    async inventories(): Promise<Inventory[]> {
+        try {
+            let response = await this.axiosInstance.get(`/inventories`);
+            return inventoryResponseDataToInventoryEntities(response.data);
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
 }

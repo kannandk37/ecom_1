@@ -220,7 +220,7 @@ export const NAV_OPTIONS: NavItem[] = [
     id: "Inventories",
     name: "Inventory",
     icon: <LuPackagePlus />,
-    path: "/dashboard/inventory",
+    path: "/dashboard/inventories",
     component: <InventoriesList />,
     children: [
       {
