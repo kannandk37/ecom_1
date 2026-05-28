@@ -25,6 +25,10 @@ import { IoBook } from "react-icons/io5";
 import { LuPackageX } from "react-icons/lu";
 import { BsClipboard2CheckFill } from "react-icons/bs";
 import Dropdown from "../../../../assets/dropdown/DropDown";
+import { Warehouse } from "../../../../entity/warehouse";
+import { Product } from "../../../../entity/product";
+import { ProductService } from "../../../../service/product";
+import { Variant } from "../../../../entity/variant";
 
 interface WarehouseData {
   id: string;
@@ -129,7 +133,118 @@ const InventoriesList = () => {
   const [categoriesCount, setCategoriesCount] = useState<number>(0);
   const [brandsCount, setBrandsCount] = useState<number>(0);
   const [productsCount, setProductsCount] = useState<number>(0);
+  const [warehouseId, setWarehouseId] = useState<{
+    id: string;
+    label: string;
+    value: string;
+  }>({ id: null, label: "Select Warehouse", value: "" });
+  const [productId, setProductId] = useState<{
+    id: string;
+    label: string;
+    value: string;
+  }>({ id: null, label: "Select Product", value: "" });
+  const [variantId, setVariantId] = useState<{
+    id: string;
+    label: string;
+    value: string;
+  }>({ id: null, label: "Select Variant", value: "" });
+  const [warehouses, setWarehouses] = useState<
+    {
+      id: string;
+      label: string;
+      value: string;
+    }[]
+  >([]);
+  const [isWarehouseLoading, setIsWarehouseLoading] = useState<boolean>(true);
+  const [isProductLoading, setIsProductLoading] = useState<boolean>(false);
+  const [isVariantLoading, setIsVariantLoading] = useState<boolean>(false);
+
+  const [productsData, setProductsData] = useState<Product[]>([]);
+  const [products, setProducts] = useState<
+    {
+      id: string;
+      label: string;
+      value: string;
+    }[]
+  >([]);
+  const [variants, setVariants] = useState<
+    {
+      id: string;
+      label: string;
+      value: string;
+    }[]
+  >([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    (async () => {
+      setIsWarehouseLoading(true);
+      try {
+        let warehousesData = await new WarehouseService().getAllWarehouses();
+        let warehousesOptions = warehousesData.map((warehouse: Warehouse) => {
+          return {
+            id: warehouse.id,
+            label: warehouse.name,
+            value: warehouse.name,
+          };
+        });
+        setWarehouses(warehousesOptions);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsWarehouseLoading(false);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      if (warehouseId?.id) {
+        setIsProductLoading(true);
+        try {
+          let productsData = await new ProductService().getByWarehouseId(
+            warehouseId?.id,
+          );
+          setProductsData(productsData);
+          let productsOptions = productsData.map((product: Product) => {
+            return { id: product.id, label: product.name, value: product.name };
+          });
+          setProducts(productsOptions);
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setIsProductLoading(false);
+        }
+      } else {
+        setProductsData([]);
+        setProducts([]);
+        setProductId({ id: null, label: "Select Product", value: "" });
+      }
+    })();
+  }, [warehouseId]);
+
+  useEffect(() => {
+    if (!productId?.id) {
+      setVariants([]);
+      setVariantId({ id: null, label: "Select Variant", value: "" });
+      return;
+    }
+    setIsVariantLoading(true);
+
+    const selectedProduct = productsData.find(
+      (product: Product) => product.id === productId.id,
+    );
+
+    const options =
+      selectedProduct?.variants?.map((variant: Variant) => ({
+        id: variant.id,
+        label: variant.name,
+        value: variant.name,
+      })) || [];
+
+    setVariants(options);
+    setIsVariantLoading(false);
+  }, [productId?.id, productsData]);
 
   useEffect(() => {
     (async () => {
@@ -273,28 +388,62 @@ const InventoriesList = () => {
                 icon={<FiSearch />}
                 showBorder={true}
               />
-              {/* <Dropdown
-                options={roleOptions}
-                label={roleId?.label || "Select Warehouse"}
-                onSelect={(val: any) => {
-                  setRoleId(val);
-                  setSearchQuery("");
-                }}
-                selected={roleId}
-                width={"260px"}
-                showClose={false}
-              />
-              <Dropdown
-                options={roleOptions}
-                label={roleId?.label || "Select Role"}
-                onSelect={(val: any) => {
-                  setRoleId(val);
-                  setSearchQuery("");
-                }}
-                selected={roleId}
-                width={"260px"}
-                showClose={false}
-              /> */}
+              <div className="inventories-list-dropdown-wrapper">
+                <Dropdown
+                  isLoading={isWarehouseLoading}
+                  options={warehouses}
+                  label={warehouseId.label || "Select Warehouse"}
+                  noData={warehouses?.length == 0}
+                  selected={warehouseId}
+                  onSelect={(val: any) => {
+                    if (val) {
+                      setWarehouseId(val as any);
+                    } else {
+                      setWarehouseId({
+                        id: null,
+                        label: "Select Warehouse",
+                        value: "",
+                      });
+                    }
+                  }}
+                />
+                <Dropdown
+                  isLoading={isProductLoading}
+                  options={products}
+                  label={productId.label || "Select Product"}
+                  noData={products?.length == 0}
+                  selected={productId}
+                  onSelect={(val: any) => {
+                    if (val) {
+                      setProductId(val as any);
+                    } else {
+                      setProductId({
+                        id: null,
+                        label: "Select Product",
+                        value: "",
+                      });
+                    }
+                  }}
+                />
+                <Dropdown
+                  isLoading={isVariantLoading}
+                  options={variants}
+                  label={variantId.label || "Select Variant"}
+                  noData={variants?.length == 0}
+                  selected={variantId}
+                  onSelect={(val: any) => {
+                    if (val) {
+                      setVariantId(val as any);
+                    } else {
+                      setVariantId({
+                        id: null,
+                        label: "Select Variant",
+                        value: "",
+                      });
+                    }
+                  }}
+                />
+              </div>
             </div>
             <div className="inventories-list-action-btn-wrapper">
               <DashBoardButton

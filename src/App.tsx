@@ -236,36 +236,37 @@ function App() {
         </Route>
         <Route path="/checkout" element={<ConfirmCheckout />} />
         <Route element={<DashboardLayout />}>{renderRoutes(NAV_OPTIONS)}</Route>
-        {/* <Route path="/receipt" element={<OrderReceipt
-          orderNumber="123"
-          date=''
-          status="success"
-          payment={{
-            method: {
-              icon: '',
-              text: ""
-            }, transactionId: ""
-          }}
-          shipping={{
-            name: '',
-            phone: "",
-            address: ['', '']
-          }}
-          items={[]}
-          pricing={{
-            subtotal: '',
-            discount: {
-              code: "",
-              value: ""
-            },
-            shippingFee: '',
-            grandTotal: ''
-          }}
-          onDownloadCopy={() => { }}
-        />} /> */}
       </Routes>
     </BrowserRouter>
   );
 }
 
 export default App;
+
+{/* <Route path="/receipt" element={<OrderReceipt
+  orderNumber="123"
+  date=''
+  status="success"
+  payment={{
+    method: {
+      icon: '',
+      text: ""
+    }, transactionId: ""
+  }}
+  shipping={{
+    name: '',
+    phone: "",
+    address: ['', '']
+  }}
+  items={[]}
+  pricing={{
+    subtotal: '',
+    discount: {
+      code: "",
+      value: ""
+    },
+    shippingFee: '',
+    grandTotal: ''
+  }}
+  onDownloadCopy={() => { }}
+/>} /> */}

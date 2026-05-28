@@ -27,6 +27,7 @@ import { WishListService } from "../../service/wishlist";
 import { useCart } from "../../context/cart";
 import { useWishlist } from "../../context/wishlist";
 import { useAuth } from "../../context/auth";
+import { LocalStorage } from "../../storage";
 
 const AuthCard: React.FC = () => {
   const { setCart } = useCart();
@@ -93,16 +94,24 @@ const AuthCard: React.FC = () => {
     if (isValid()) {
       setIsLoading(true);
       try {
+        let response: any = '';
         if (isLogin) {
-          // TODO: nned to check this login in flow
-          let response = await new UserAccountService().loginIn(
+          response = await new UserAccountService().loginIn(
             email,
             password,
           );
         } else {
-          await new UserAccountService().signUp(name, mobile, email, password);
+          response = await new UserAccountService().signUp(name, mobile, email, password);
         }
-        navigate("/");
+
+        if (response) {
+          let token = response.data.token;
+          let refreshToken = response.data.refreshToken;
+          let storagePersistor = new LocalStorage();
+          await storagePersistor.storeToken(token, remember);
+          await storagePersistor.storeRefreshToken(refreshToken, remember);
+          navigate("/");
+        }
       } catch (error: any) {
         if (axios.isAxiosError(error) && error.response?.data?.statusCode) {
           setToastError(error.response?.data?.error);
@@ -360,6 +369,18 @@ const AuthCard: React.FC = () => {
               </div>
               {/* </form> */}
 
+              <label className="login-el-checkbox-container">
+                <input
+                  type="checkbox"
+                  checked={remember}
+                  onChange={(e) => setRemember(e.target.checked)}
+                  className="login-el-checkmark"
+                  hidden
+                />
+                <span className="login-el-checkmark"></span>
+                Keep me logged in
+              </label>
+
               <div className="login-signup-auth-footer">
                 <DashboardButton
                   name={isLogin ? "Create Account" : "Sign In"}
@@ -368,11 +389,11 @@ const AuthCard: React.FC = () => {
                   onClick={
                     isLogin
                       ? () => {
-                          onSubmit();
-                        }
+                        onSubmit();
+                      }
                       : () => {
-                          onSubmit();
-                        }
+                        onSubmit();
+                      }
                   }
                 />
                 <p>

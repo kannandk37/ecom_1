@@ -12,6 +12,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -47,6 +48,12 @@
 .inventories-list-search-bar-wrapper {
   width: 500px;
   flex-shrink: 0;
+}
+
+.inventories-list-dropdown-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
 }
 
 .inventories-list-action-btn-wrapper {

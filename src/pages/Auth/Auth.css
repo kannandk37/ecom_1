@@ -17,6 +17,18 @@
   box-sizing: border-box;
 }
 
+.login-el-checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size:large;
+}
+
+.login-el-checkbox-container input:checked + .el-checkmark {
+  background-color: #8c6d3f;
+}
+
 .login-signup-auth-card {
   display: flex;
   width: 100%;

@@ -31,6 +31,16 @@ export class ProfileService {
         }
     }
 
+    async getByEmail(email: string): Promise<Profile> {
+        try {
+            let response = await this.axiosInstance.get(`/profiles/email/${email}`);
+            return (profileResponseDatumToProfileEntity(response.data));
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
     async getStaffs(): Promise<Profile[]> {
         try {
             let response = await this.axiosInstance.get(`/profiles/staffs`);

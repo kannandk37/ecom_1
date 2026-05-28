@@ -84,6 +84,7 @@ import { UserAccountService } from "../../service/user_account";
 import Loader from "../../assets/loader/Loader2";
 import Toast from "../../assets/toast/Toast";
 import axios from "axios";
+import { LocalStorage } from "../../storage";
 
 interface EnterpriseLoginProps {
   logoUrl?: string;
@@ -116,8 +117,15 @@ const Enterprise: React.FC<EnterpriseLoginProps> = ({
     if (isValid()) {
       setIsLoading(true);
       try {
-        await new UserAccountService().enterpriseLoginIn(email, password);
-        navigate("/dashboard/orders");
+        let response = await new UserAccountService().enterpriseLoginIn(email, password);
+        if (response) {
+          let token = response.data.token;
+          let refreshToken = response.data.refreshToken;
+          let storagePersistor = new LocalStorage();
+          await storagePersistor.storeToken(token, remember);
+          await storagePersistor.storeRefreshToken(refreshToken, remember);
+          navigate("/dashboard/orders");
+        }
         setIsLoading(false);
       } catch (error: any) {
         setUser("not");
@@ -262,7 +270,7 @@ const Enterprise: React.FC<EnterpriseLoginProps> = ({
                   <button
                     type="button"
                     className="el-forgot-btn"
-                    onClick={() => {}}
+                    onClick={() => { }}
                   >
                     Forgot Password?
                   </button>

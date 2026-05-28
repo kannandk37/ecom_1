@@ -5,31 +5,44 @@ import { User } from "../entity/user";
 import { Wishlist } from "../entity/wishlist";
 
 const storage = localStorage;
+const session = sessionStorage;
 
 export class LocalStorage {
 
-    async storeToken(token: string) {
-        return await storage.setItem('token', token);
+    async storeToken(token: string, keepMeLoggedIn: boolean) {
+        if(keepMeLoggedIn) {
+            return await storage.setItem('token', token);
+        } else {
+            return await session.setItem('token', token);
+        }
     }
 
     async getToken() {
-        return await storage.getItem('token');
+        return await storage.getItem('token') ?? await session.getItem('token');
     }
 
     async clearToken() {
-        return await storage.removeItem('token');
+        await storage.removeItem('token');
+        await session.removeItem('token');
+        return 
     }
 
-    async storeRefreshToken(refreshToken: string) {
-        return await storage.setItem('refreshtoken', refreshToken);
+    async storeRefreshToken(refreshToken: string, keepMeLoggedIn: boolean) {
+        if(keepMeLoggedIn) {
+            return await storage.setItem('refreshtoken', refreshToken);
+        } else {
+            return await session.setItem('refreshtoken', refreshToken);
+        }
     }
 
     async getRefreshToken() {
-        return await storage.getItem('refreshtoken');
+        return await storage.getItem('refreshtoken') ?? await session.getItem('refreshtoken');
     }
 
     async clearRefreshToken() {
-        return await storage.removeItem('refreshtoken');
+        await storage.removeItem('refreshtoken');
+        await session.removeItem('refreshtoken');
+        return 
     }
 
     async storeUser(user: User) {
