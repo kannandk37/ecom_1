@@ -293,7 +293,7 @@
 // //           <div>
 // //             <p>{item.product?.name}</p>
 // //             {item.variant && <p style={{ fontSize: 12, color: "#888" }}>{item.variant.name}</p>}
-// //             <p>₹{(item.variant?.price ?? item.product?.price ?? 0) * (item.quantity ?? 1)}</p>
+// //             <p>₹{(item.variant?.price ?? 0) * (item.quantity ?? 1)}</p>
 // //           </div>
 
 // //           {/* Quantity controls */}

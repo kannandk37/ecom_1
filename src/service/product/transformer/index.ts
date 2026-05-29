@@ -1,5 +1,5 @@
 
-import { Duration, Label, Product, SpecValue, Unit, Storage } from "../../../entity/product";
+import { Duration, Label, Product, SpecValue, Storage } from "../../../entity/product";
 import { brandResponseDatumToBrandEntity } from "../../brand/transformer";
 import { categoryResponseDatumToCategoryEntity } from "../../category/transformer";
 import { variantsResponseDataToVariantsEntities } from "../../variant/transformer";
@@ -27,10 +27,6 @@ export function productResponseDatumToProductEntity(raw: any): Product {
         product.description = raw.description;
     }
 
-    if (raw.price) {
-        product.price = raw.price;
-    }
-
     if (raw.shortDescription) {
         product.shortDescription = raw.shortDescription;
     }
@@ -45,18 +41,6 @@ export function productResponseDatumToProductEntity(raw: any): Product {
 
     if (raw.variants) {
         product.variants = variantsResponseDataToVariantsEntities(raw.variants);
-    }
-
-    if (raw.price) {
-        product.price = raw.price;
-    }
-
-    if (raw.weight) {
-        product.weight = raw.weight;
-    }
-
-    if (raw.unit) {
-        product.unit = raw.unit as Unit;
     }
 
     if (raw.images) {

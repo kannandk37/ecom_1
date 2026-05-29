@@ -10,6 +10,19 @@
   min-height: 100vh;
 }
 
+.create-variant-combined-input {
+  display: flex;
+  gap: 10px;
+}
+
+.create-variant-combined-left {
+  flex: 2;
+}
+
+.create-variant-combined-right {
+  flex: 1;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

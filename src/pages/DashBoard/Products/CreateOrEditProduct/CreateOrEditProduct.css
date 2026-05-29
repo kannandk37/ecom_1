@@ -211,11 +211,11 @@
   gap: 10px;
 }
 
-.combined-left {
+.create-product-combined-left {
   flex: 2;
 }
 
-.combined-right {
+.create-product-combined-right {
   flex: 1;
 }
 

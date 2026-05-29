@@ -76,7 +76,7 @@ const CartItems: React.FC<CartItemsProps> = ({
                     {item.product.shortDescription}
                   </p>
                 </div>
-                <div className="cart-item-price">₹{item.product.price}</div>
+                <div className="cart-item-price">₹{item.variant.price}</div>
               </div>
 
               <div className="cart-item-actions-row">

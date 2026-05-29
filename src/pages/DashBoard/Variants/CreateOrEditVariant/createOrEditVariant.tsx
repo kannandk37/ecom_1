@@ -12,7 +12,7 @@ import DashBoardButton from "../../../../assets/ui/DashBoardButton/DashBoardButt
 import DashBoardInput from "../../../../assets/ui/DashBoardInput/DashBoardInput";
 import Dropdown from "../../../../assets/dropdown/DropDown";
 import "./CreateOrEditVariant.css";
-import { Variant, VariantGrade, VariantType } from "../../../../entity/variant";
+import { Unit, Variant, VariantGrade, VariantType } from "../../../../entity/variant";
 import { ProductService } from "../../../../service/product";
 import { Product } from "../../../../entity/product";
 import { FaExclamationTriangle } from "react-icons/fa";
@@ -53,7 +53,14 @@ const CreateOrEditVariant: React.FC = () => {
   const [priceError, setPriceError] = useState<string>(null);
   const [newImagePreviewsError, setNewImagePreviewsError] =
     useState<string>(null);
-
+  const [weight, setWeight] = useState<number>(0);
+  const [weightError, setWeightError] = useState<string>(null);
+  const [unit, setUnit] = useState<{
+    id: string;
+    label: string;
+    value: string;
+  }>();
+  const [unitError, setUnitError] = useState<string>(null);
   // const [sku, setSku] = useState("");
 
   // Image States (Max 6)
@@ -71,6 +78,11 @@ const CreateOrEditVariant: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Dropdown Configurations
+  const unitOptions = [
+    { id: Unit.G, label: Unit.G, value: Unit.G },
+    { id: Unit.KG, label: Unit.KG, value: Unit.KG },
+  ];
+
   const typeOptions = [
     { id: VariantType.FULL, label: VariantType.FULL, value: VariantType.FULL },
     {
@@ -148,7 +160,13 @@ const CreateOrEditVariant: React.FC = () => {
                 label: variantWithId.grade,
                 value: variantWithId.grade,
               });
-              setPrice(variantWithId.price?.toString() || '');
+              setPrice(variantWithId.price?.toString() || '0');
+              setWeight((variantWithId.weight as any) || 0);
+              setUnit({
+                id: variantWithId.unit,
+                label: variantWithId.unit,
+                value: variantWithId.unit,
+              });
               // setSku(variantWithId.sku || "");
               // setExistingImages(variantWithId.images || []);
             }
@@ -209,11 +227,15 @@ const CreateOrEditVariant: React.FC = () => {
       setGradeError("Please Select Grade");
     } else if (Number(price) <= 0) {
       setPriceError("Please Provide Price");
-    // } else if (
-    //   newImagePreviewsError == null ||
-    //   newImagePreviewsError?.length < 1
-    // ) {
-    //   setNewImagePreviewsError("Please Provide At Least One Image");
+    } else if (!weight || weight == 0) {
+      setWeightError("Please Provide Weight");
+    } else if (!unit) {
+      setUnitError("Please Select Unit");
+      // } else if (
+      //   newImagePreviewsError == null ||
+      //   newImagePreviewsError?.length < 1
+      // ) {
+      //   setNewImagePreviewsError("Please Provide At Least One Image");
     } else {
       return true;
     }
@@ -235,6 +257,8 @@ const CreateOrEditVariant: React.FC = () => {
         variant.type = type.value;
         variant.grade = grade.value;
         variant.price = Number(price);
+        variant.weight = weight.toString();
+        variant.unit = unit.value as Unit;
         // variant.images = newImageFiles;
 
         if (isEditMode) {
@@ -259,6 +283,8 @@ const CreateOrEditVariant: React.FC = () => {
       typeError ||
       gradeError ||
       priceError ||
+      weightError ||
+      unitError ||
       newImagePreviewsError
     ) {
       setError("Please Provide All Required Fields");
@@ -271,6 +297,8 @@ const CreateOrEditVariant: React.FC = () => {
     typeError,
     gradeError,
     priceError,
+    weightError,
+    unitError,
     newImagePreviewsError,
   ]);
 
@@ -305,9 +333,9 @@ const CreateOrEditVariant: React.FC = () => {
       setPriceError(null);
       return;
     }
-    
+
     if (priceRegex.test(price)) {
-      if(price == "0") {
+      if (price == "0") {
         setPriceError("Plese Provide price");
       } else {
         setPrice(price);
@@ -316,6 +344,30 @@ const CreateOrEditVariant: React.FC = () => {
     } else {
       setPriceError("Only numbers allowed, max 2 decimal places");
     }
+  };
+
+  const onChangeWeight = (weight: string) => {
+    if (weight === '') {
+      setWeight(0);
+      setWeightError(null);
+      return;
+    }
+
+    if (priceRegex.test(weight)) {
+      if (weight == "0") {
+        setWeightError("Plese Provide Weight");
+      } else {
+        setWeight(Number(weight));
+        setWeightError(null);
+      }
+    } else {
+      setWeightError("Only numbers allowed, max 2 decimal places");
+    }
+  };
+
+  const onSelectUnit = (val: any) => {
+    setUnit(val);
+    setUnitError(null);
   };
 
   return (
@@ -349,37 +401,39 @@ const CreateOrEditVariant: React.FC = () => {
               </div>
 
               <div className="create-variant-card-body">
-                <div className="create-variant-field-group">
-                  <label>
-                    Variant Name <span className="req">*</span>
-                  </label>
-                  <DashBoardInput
-                    placeholder="e.g. 500g Glass Jar"
-                    value={name}
-                    onChange={(e: any) => OnChangeName(e)}
-                    error={nameError ? true : false}
-                    errorMessage={nameError}
-                  />
-                </div>
-
-                <div className="create-variant-field-group">
-                  <label>
-                    Select Product <span className="req">*</span>
-                  </label>
-                  <Dropdown
-                    width="250px"
-                    options={productOptions}
-                    onSelect={(val: any) => onSelectProductId(val)}
-                    selected={productId}
-                    label={
-                      productId?.label ? productId.label : "Select Product"
-                    }
-                    error={productIdError ? true : false}
-                    errorMessage={productIdError}
-                  />
-                </div>
 
                 <div className="create-variant-row-split">
+
+                  <div className="create-variant-field-group">
+                    <label>
+                      Select Product <span className="req">*</span>
+                    </label>
+                    <Dropdown
+                      width="250px"
+                      options={productOptions}
+                      onSelect={(val: any) => onSelectProductId(val)}
+                      selected={productId}
+                      label={
+                        productId?.label ? productId.label : "Select Product"
+                      }
+                      error={productIdError ? true : false}
+                      errorMessage={productIdError}
+                    />
+                  </div>
+
+                  <div className="create-variant-field-group">
+                    <label>
+                      Variant Name <span className="req">*</span>
+                    </label>
+                    <DashBoardInput
+                      placeholder="e.g. 500g Glass Jar"
+                      value={name}
+                      onChange={(e: any) => OnChangeName(e)}
+                      error={nameError ? true : false}
+                      errorMessage={nameError}
+                    />
+                  </div>
+
                   <div className="create-variant-field-group">
                     <label>
                       Type <span className="req">*</span>
@@ -394,6 +448,7 @@ const CreateOrEditVariant: React.FC = () => {
                       errorMessage={typeError}
                     />
                   </div>
+
                   <div className="create-variant-field-group">
                     <label>
                       Grade <span className="req">*</span>
@@ -408,9 +463,7 @@ const CreateOrEditVariant: React.FC = () => {
                       errorMessage={gradeError}
                     />
                   </div>
-                </div>
 
-                <div className="create-variant-row-split">
                   <div className="create-variant-field-group">
                     <label>
                       Price (₹) <span className="req">*</span>
@@ -425,6 +478,36 @@ const CreateOrEditVariant: React.FC = () => {
                       errorMessage={priceError}
                     />
                   </div>
+
+                  <div className="create-variant-field-group">
+                    <label>
+                      Weight & Unit <span className="req">*</span>
+                    </label>
+                    <div className="create-variant-combined-input">
+                      <div className="combined-left">
+                        <DashBoardInput
+                          placeholder="Value"
+                          value={weight?.toString()}
+                          onChange={(e) => onChangeWeight(e)}
+                          type="number"
+                          error={weightError ? true : false}
+                          errorMessage={weightError}
+                        />
+                      </div>
+                      <div className="combined-right">
+                        <Dropdown
+                          options={unitOptions}
+                          onSelect={(val: any) => onSelectUnit(val)}
+                          selected={unit}
+                          label={unit?.label ? unit.label : "Select Unit"}
+                          width="250px"
+                          error={unitError ? true : false}
+                          errorMessage={unitError}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
 
                 {/* <div className="create-variant-row-split">

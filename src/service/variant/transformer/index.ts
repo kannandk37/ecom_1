@@ -1,5 +1,5 @@
 import { productResponseDatumToProductEntity } from "../../product/transformer";
-import { Variant, VariantGrade, VariantType } from "../../../entity/variant";
+import { Unit, Variant, VariantGrade, VariantType } from "../../../entity/variant";
 
 export function variantResponseDatumToVariantEntity(raw: any): Variant {
     let variant = new Variant();
@@ -30,6 +30,14 @@ export function variantResponseDatumToVariantEntity(raw: any): Variant {
 
     if (raw.price) {
         variant.price = raw.price;
+    }
+
+    if (raw.weight) {
+        variant.weight = raw.weight;
+    }
+
+    if (raw.unit) {
+        variant.unit = raw.unit as Unit;
     }
 
     if (raw.images) {

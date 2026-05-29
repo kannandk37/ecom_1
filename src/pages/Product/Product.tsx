@@ -132,8 +132,8 @@
 
 //             {/* Price & Weight Section */}
 //             <div className="pd-price-weight-row">
-//               <span className="pd-price">₹{product.price.toFixed(2)}</span>
-//               <span className="pd-weight">{product.weight} {product.unit} pack</span>
+//               <span className="pd-price">₹{product.variants[0].price.toFixed(2)}</span>
+//               <span className="pd-weight">{product.variants[0].weight} {product.variants[0].unit} pack</span>
 //             </div>
 
 //             {/* Attributes List */}
@@ -224,6 +224,7 @@ import { CartItem } from "../../entity/cart_item";
 import { CartService } from "../../service/cart";
 import Loader2 from "../../assets/loader/Loader2";
 import { useCart } from "../../context/cart";
+import { Variant } from "../../entity/variant";
 
 interface ProductProps {
   productData?: Product;
@@ -251,6 +252,9 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
     totalPrice,
   } = useCart();
 
+  const [variants, setVariants] = useState<Variant[]>([]);
+  const [selecteVariant, setSelectedVariant] = useState<Variant>();
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -260,6 +264,8 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
         try {
           let productDatum = await new ProductService().getById(productId);
           setProduct(productDatum);
+          setVariants(productDatum.variants);
+          setSelectedVariant(productDatum?.variants[0]);
         } catch (error) {
           console.log(error);
         } finally {
@@ -300,7 +306,7 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
       if (user?.id) {
         const cartItem = new CartItem();
         cartItem.product = product;
-        cartItem.variant = null;
+        cartItem.variant = selecteVariant;
         cartItem.quantity = 1;
         await addToCart(cartItem);
         navigate("/cart");
@@ -327,7 +333,7 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
                   <div className="product-main-section">
                     <ProductImageGallery
                       images={
-                        product?.images?.length > 0 ? product?.images : [NUTS]
+                        selecteVariant ? selecteVariant.images : product?.images?.length > 0 ? product?.images : [NUTS]
                       }
                     />
 
@@ -367,10 +373,10 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
                       </div>
 
                       <div className="price-row">
-                        <span className="price">₹ {product.price}</span>
+                        <span className="price">₹ {selecteVariant.price}</span>
                         <span className="weight-tag">
-                          {product.weight}
-                          {product.unit} pack
+                          {selecteVariant.weight}
+                          {selecteVariant.unit} pack
                         </span>
                       </div>
 

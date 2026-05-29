@@ -90,11 +90,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
                 <div className="product-card__info-row">
                   <span className="product-card__weight">
-                    {product.weight} {product.unit}
+                    {product?.variants[0]?.weight} {product.variants[0]?.unit}
                   </span>
                   <span className="product-card__price">
                     ₹
-                    {product.price.toLocaleString("en-IN", {
+                    {product.variants[0]?.price.toLocaleString("en-IN", {
                       minimumFractionDigits: 2,
                     })}
                   </span>

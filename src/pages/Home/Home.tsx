@@ -304,7 +304,7 @@ export default Home;
 //     <Carousel
 //       items={products}
 //       renderItem={(product) => (
-//         <Card image={product.image} name={product.name} price={product.price} />
+//         <Card image={product.image} name={product.name} price={product?.variants[0]?.price} />
 //       )}
 //     />
 //   );
@@ -598,7 +598,7 @@ export default Home;
 //               style={{ display: "flex", gap: "9px", flexDirection: "column" }}
 //             >
 //               <h3>{product.name}</h3>
-//               <p>Price: ₹{product.price}</p>
+//               <p>Price: ₹{product?.variants[0]?.price}</p>
 //             </div>
 //             <div>
 //               <button

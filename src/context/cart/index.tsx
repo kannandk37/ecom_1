@@ -53,7 +53,7 @@ function calcTotals(cart: Cart | null): {
   return {
     totalItems: cart.cartItems.length,
     totalPrice: cart.cartItems.reduce((sum, i) => {
-      const price = i.variant?.price ?? i.product?.price ?? 0;
+      const price = i.variant?.price ?? i.variant?.price ?? 0;
       return sum + price * (i.quantity ?? 0);
     }, 0),
   };

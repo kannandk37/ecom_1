@@ -8,13 +8,13 @@ import DRY_FRUITS from "../../../data/DRY_FRUITS.png";
 import "./categoryProducts.css";
 import Dropdown from "../../assets/dropdown/DropDown";
 import { ProductService } from "../../service/product";
-import { Product, Unit } from "../../entity/product";
+import { Product } from "../../entity/product";
 import { LocalStorage } from "../../storage";
 import LogInOrSignUp from "../../assets/dialogue/LogInOrSignUp";
 import { WishListService } from "../../service/wishlist";
 import { Wishlist } from "../../entity/wishlist";
 import { User } from "../../entity/user";
-import { Variant } from "../../entity/variant";
+import { Unit, Variant } from "../../entity/variant";
 import { useWishlist } from "../../context/wishlist";
 
 export const productsData: Product[] = [
@@ -23,9 +23,13 @@ export const productsData: Product[] = [
     title: "Premium California Almonds",
     description: "Crunchy and nutritious, perfect for snacking.",
     images: [NUTS],
-    price: 750,
-    weight: "501",
-    unit: Unit.G,
+    variants: [
+      {
+        price: 750,
+        weight: '250',
+        unit: Unit.G
+      }
+    ],
     // isFav: false,
     category: { id: "1" },
     // quantity: 2,

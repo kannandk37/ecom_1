@@ -7,7 +7,6 @@ import Dropdown from "../../../../assets/dropdown/DropDown";
 import "./CreateOrEditProduct.css";
 import {
   Duration,
-  Unit,
   Storage,
   Label,
   Product,
@@ -50,19 +49,9 @@ const CreateOrEditProduct: React.FC = () => {
     useState<string>(null);
   const [descriptionError, setDescriptionError] = useState<string>(null);
 
-  // Form States - Pricing & Logistics
-  const [price, setPrice] = useState<number>(0);
+  // Form States - Logistics
   const [origin, setOrigin] = useState<string>("");
-  const [weight, setWeight] = useState<number>(0);
-  const [priceError, setPriceError] = useState<string>(null);
   const [originError, setOriginError] = useState<string>(null);
-  const [weightError, setWeightError] = useState<string>(null);
-  const [unit, setUnit] = useState<{
-    id: string;
-    label: string;
-    value: string;
-  }>();
-  const [unitError, setUnitError] = useState<string>(null);
   const [shelfLife, setShelfLife] = useState<string>("");
   const [shelfLifeError, setShelfLifeError] = useState<string>(null);
   const [shelfLifeDuration, setShelfLifeDuration] = useState<{
@@ -96,10 +85,6 @@ const CreateOrEditProduct: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Dropdown Options
-  const unitOptions = [
-    { id: Unit.G, label: Unit.G, value: Unit.G },
-    { id: Unit.KG, label: Unit.KG, value: Unit.KG },
-  ];
   const durationOptionsData = [
     { id: Duration.DAY, label: Duration.DAY, value: Duration.DAY },
     { id: Duration.DAYS, label: Duration.DAYS, value: Duration.DAYS },
@@ -251,13 +236,6 @@ const CreateOrEditProduct: React.FC = () => {
             });
             setShortDescription(productWithId.shortDescription);
             setDescription(productWithId.description);
-            setPrice(productWithId.price || 0);
-            setWeight((productWithId.weight as any) || 0);
-            setUnit({
-              id: productWithId.unit,
-              label: productWithId.unit,
-              value: productWithId.unit,
-            });
             setExistingImages(productWithId.images || []);
             setFeatures(productWithId.features);
             if (productWithId.specs) {
@@ -347,14 +325,6 @@ const CreateOrEditProduct: React.FC = () => {
       setShortDescriptionError("Please Provide Short Description");
     } else if (!description) {
       setDescriptionError("Please Provide Description");
-    } else if (!price || price == 0) {
-      setPriceError("Please Provide Price");
-    } else if (!origin) {
-      setOriginError("Please Provide Origin");
-    } else if (!weight || weight == 0) {
-      setWeightError("Please Provide Weight");
-    } else if (!unit) {
-      setUnitError("Please Select Unit");
     } else if (!shelfLife) {
       setShelfLifeError("Please Provide Shelf Life");
     } else if (!shelfLifeDuration) {
@@ -380,9 +350,7 @@ const CreateOrEditProduct: React.FC = () => {
       brandIdError ||
       shortDescriptionError ||
       descriptionError ||
-      priceError ||
       originError ||
-      weightError ||
       shelfLifeError ||
       shelfLifeDurationError ||
       storageError ||
@@ -400,9 +368,7 @@ const CreateOrEditProduct: React.FC = () => {
     brandIdError,
     shortDescriptionError,
     descriptionError,
-    priceError,
     originError,
-    weightError,
     shelfLifeError,
     shelfLifeDurationError,
     storageError,
@@ -437,10 +403,7 @@ const CreateOrEditProduct: React.FC = () => {
         product.brand = brand;
         product.shortDescription = shortDescription;
         product.description = description;
-        product.price = price;
         product.features = features;
-        product.weight = weight.toString();
-        product.unit = unit.value as Unit;
         // product.images -
         product.specs = [
           { label: Label.ORIGIN, value: origin },
@@ -510,16 +473,6 @@ const CreateOrEditProduct: React.FC = () => {
     }
   };
 
-  const onChangePrice = (price: number) => {
-    if (price < 0) {
-      setPriceError("Plese Provide price");
-    } else {
-      // add any regexs
-      setPrice(price);
-      setPriceError(null);
-    }
-  };
-
   const onChangeOrigin = (origin: string) => {
     if (origin?.length > 30) {
       setOriginError("Only 30 characters allowed");
@@ -527,16 +480,6 @@ const CreateOrEditProduct: React.FC = () => {
       // add any regexs
       setOrigin(origin);
       setOriginError(null);
-    }
-  };
-
-  const onChangeWeight = (weight: number) => {
-    if (weight < 0) {
-      setWeightError("Please Provide Weight");
-    } else {
-      // add any regexs
-      setWeight(weight);
-      setWeightError(null);
     }
   };
 
@@ -586,14 +529,11 @@ const CreateOrEditProduct: React.FC = () => {
     setBrandIdError(null);
   };
 
-  const onSelectUnit = (val: any) => {
-    setUnit(val);
-    setUnitError(null);
-  };
   const onSelectShelfLifeDuration = (val: any) => {
     setShelfLifeDuration(val);
     setShelfLifeDurationError(null);
   };
+
   const onSelectStorage = (val: any) => {
     setStorage(val);
     setStorageError(null);
@@ -808,16 +748,16 @@ const CreateOrEditProduct: React.FC = () => {
               </div>
             </div>
 
-            {/* Section 3: Pricing & Logistics */}
+            {/* Section 3: Logistics */}
             <div className="create-product-card">
               <div className="create-product-card-header">
                 <span className="create-product-section-number">3</span>
-                <h2>Pricing & Logistics</h2>
+                <h2>Logistics</h2>
               </div>
 
               <div className="create-product-card-body">
                 <div className="create-product-row-split">
-                  <div className="create-product-field-group">
+                  {/* <div className="create-product-field-group">
                     <label>
                       Price <span className="req">*</span>
                     </label>
@@ -832,7 +772,7 @@ const CreateOrEditProduct: React.FC = () => {
                         errorMessage={priceError}
                       />
                     </div>
-                  </div>
+                  </div> */}
 
                   <div className="create-product-field-group">
                     <label>
@@ -846,44 +786,8 @@ const CreateOrEditProduct: React.FC = () => {
                       errorMessage={originError}
                     />
                   </div>
-                </div>
 
-                <div className="create-product-row-split">
-                  <div className="create-product-field-group">
-                    <label>
-                      Weight & Unit <span className="req">*</span>
-                    </label>
-                    <div className="create-product-combined-input">
-                      <div className="combined-left">
-                        <DashBoardInput
-                          placeholder="Value"
-                          value={weight?.toString()}
-                          onChange={(e) => onChangeWeight(Number(e))}
-                          type="number"
-                          error={weightError ? true : false}
-                          errorMessage={weightError}
-                        />
-                      </div>
-                      <div className="combined-right">
-                        <Dropdown
-                          options={unitOptions}
-                          onSelect={(val: any) => onSelectUnit(val)}
-                          selected={unit}
-                          label={unit?.label ? unit.label : "Select Unit"}
-                          width="250px"
-                          error={unitError ? true : false}
-                          errorMessage={unitError}
-                        />
-                      </div>
-                    </div>
-                    {errors.weight && (
-                      <span className="create-product-error">
-                        {errors.weight}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="create-product-field-group">
+                                    <div className="create-product-field-group">
                     <label>
                       Shelf Life <span className="req">*</span>
                     </label>
@@ -918,6 +822,44 @@ const CreateOrEditProduct: React.FC = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* <div className="create-product-row-split"> */}
+                  {/* <div className="create-product-field-group">
+                    <label>
+                      Weight & Unit <span className="req">*</span>
+                    </label>
+                    <div className="create-product-combined-input">
+                      <div className="create-product-combined-left">
+                        <DashBoardInput
+                          placeholder="Value"
+                          value={weight?.toString()}
+                          onChange={(e) => onChangeWeight(Number(e))}
+                          type="number"
+                          error={weightError ? true : false}
+                          errorMessage={weightError}
+                        />
+                      </div>
+                      <div className="create-product-combined-right">
+                        <Dropdown
+                          options={unitOptions}
+                          onSelect={(val: any) => onSelectUnit(val)}
+                          selected={unit}
+                          label={unit?.label ? unit.label : "Select Unit"}
+                          width="250px"
+                          error={unitError ? true : false}
+                          errorMessage={unitError}
+                        />
+                      </div>
+                    </div>
+                    {errors.weight && (
+                      <span className="create-product-error">
+                        {errors.weight}
+                      </span>
+                    )}
+                  </div> */}
+
+
+                {/* </div> */}
 
                 <div className="create-product-row-split">
                   {/* Empty div for alignment to match screenshot (Storage on right) */}
