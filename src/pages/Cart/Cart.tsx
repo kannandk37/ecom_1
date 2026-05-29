@@ -18,16 +18,16 @@ import { User } from "../../entity/user";
 import { CartItemService } from "../../service/cart_item";
 import { CartService } from "../../service/cart";
 import { Cart } from "../../entity/cart";
+import { Product } from "../../entity/product";
+import { ProductService } from "../../service/product";
 
 export interface CartProps {
   cartTotal: CartTotalCardProps;
-  productsData: any[];
   onCheckout?: () => void;
 }
 
 const CartScreen: React.FC<CartProps> = ({
   cartTotal,
-  productsData,
   onCheckout,
 }) => {
   const [cartData, setCartData] = useState<Cart>(null);
@@ -36,7 +36,7 @@ const CartScreen: React.FC<CartProps> = ({
   const [user, setUser] = useState<User>();
   const { setCart } = useCart();
   const navigate = useNavigate();
-
+  const [products, setProducts] = useState<Product[]>([]);
   const {
     cart,
     isHydrated,
@@ -52,6 +52,24 @@ const CartScreen: React.FC<CartProps> = ({
   } = useCart();
 
   const { wishlists } = useWishlist();
+
+  useEffect(() => {
+    (async () => {
+      setIsLoading(true);
+      try {
+        let productsData = await new ProductService().get();
+        if (productsData?.length > 0) {
+          setProducts(productsData);
+        } else {
+          setProducts([]);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+  }, []);
 
   // ── Toast watcher — cartError from any action shows here ──────────────────
   useEffect(() => {
@@ -127,10 +145,11 @@ const CartScreen: React.FC<CartProps> = ({
       <div className="cart-page-root">
         <div className="cart-top-nav">
           <div className="cart-breadcrumbs">
-            <span className="home" onClick={() => navigate("/")}>
+            <span onClick={() => navigate("/")}>
               Home
             </span>
-            &rsaquo; <span className="current">Cart</span>
+            <span>{">"}</span>
+            <span className="cart-breadcrumbs-active">Cart</span>
           </div>
           <Button
             disabled={false}
@@ -218,7 +237,7 @@ const CartScreen: React.FC<CartProps> = ({
           <div className="carousel-wrapper">
             <Carousel
               title="You May Also Like"
-              data={productsData}
+              data={products}
               renderItem={(item: any) => (
                 <ProductCardGridSingle product={item} />
               )}

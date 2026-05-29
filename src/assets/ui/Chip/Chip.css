@@ -4,7 +4,7 @@
   justify-content: center;
   gap: 12px;
   padding: 10px 20px;
-  border-radius: 9999px; 
+  border-radius: 9999px;
   font-family: var(--font-family, sans-serif);
   cursor: pointer;
   transition: all 0.2s ease-in-out;
@@ -58,8 +58,9 @@
 }
 
 .organic-chip-primary .organic-chip-badge {
-  background-color: rgba(255, 255, 255, 0.25);
-  color: #ffffff;
+  background-color: #ffffff;
+  color: #1a1a1a;
+
 }
 
 .organic-chip-secondary {
@@ -69,8 +70,8 @@
 }
 
 .organic-chip-secondary .organic-chip-badge {
-  background-color: #ffffff;
-  color: #1a1a1a;
+  background-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
 }
 
 .organic-chip-secondary:hover {

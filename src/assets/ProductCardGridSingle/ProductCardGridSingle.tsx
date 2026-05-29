@@ -1,13 +1,8 @@
 import React from "react";
 import "./ProductCardGridSingle.css";
 import Button from "../button/Button";
-
-export interface Product {
-  id: string | number;
-  name: string;
-  image: string;
-  price: number;
-}
+import { Product } from "../../entity/product";
+import NUTS from '../../../data/NUTS.png';
 
 export interface ProductCardProps {
   product: Product;
@@ -38,7 +33,7 @@ export const ProductCardGridSingle: React.FC<ProductCardProps> = ({
     >
       <div className="pc-single-card__image-container" style={imageStyle}>
         <img
-          src={product.image}
+          src={product.images?.length > 0 ? product?.images[0] : NUTS}
           alt={product.name}
           className="pc-single-card__img"
         />
@@ -49,7 +44,7 @@ export const ProductCardGridSingle: React.FC<ProductCardProps> = ({
 
         <div className="pc-single-card__footer">
           <span className="pc-single-card__price">
-            ${product.price.toFixed(2)}
+            ₹{product?.variants[0]?.price.toFixed(2)}
           </span>
 
           <Button

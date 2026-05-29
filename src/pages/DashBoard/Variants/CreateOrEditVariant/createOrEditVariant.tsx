@@ -489,7 +489,7 @@ const CreateOrEditVariant: React.FC = () => {
                           placeholder="Value"
                           value={weight?.toString()}
                           onChange={(e) => onChangeWeight(e)}
-                          type="number"
+                          type="text"
                           error={weightError ? true : false}
                           errorMessage={weightError}
                         />

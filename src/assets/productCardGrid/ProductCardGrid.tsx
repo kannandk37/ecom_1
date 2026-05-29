@@ -1,14 +1,7 @@
 import React from "react";
 import "./ProductCardGrid.css";
-
-export interface Product {
-  id?: string | number;
-  productName: string;
-  image: string;
-  images: string[];
-  price: number;
-}
-
+import { Product } from "../../entity/product";
+import NUTS from '../../../data/NUTS.png';
 export interface ProductCardGridProps {
   width?: number | string;
   height?: number | string;
@@ -34,18 +27,18 @@ export const ProductCardGrid: React.FC<ProductCardGridProps> = ({
         <div key={product.id} className="pc-card" style={cardStyle}>
           <div className="pc-card__image-container" style={imageStyle}>
             <img
-              src={product.images[0]}
-              alt={product.productName}
+              src={product?.images?.length > 0 ? product?.images[0] : NUTS}
+              alt={product.name}
               className="pc-card__img"
             />
           </div>
 
           <div className="pc-card__body">
-            <h3 className="pc-card__title">{product.productName}</h3>
+            <h3 className="pc-card__title">{product.name}</h3>
 
             <div className="pc-card__footer">
               <span className="pc-card__price">
-                ${product.price.toFixed(2)}
+                ₹{product.variants[0]?.price ? product.variants[0]?.price?.toFixed(2) : 0.00}
               </span>
 
               <button

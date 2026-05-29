@@ -811,7 +811,6 @@ const CreateOrEditWareHouse: React.FC = () => {
       } catch (error: any) {
         console.error(error);
         if (axios.isAxiosError(error) && error.response?.data?.statusCode) {
-          console.log(error.response?.data);
           setToast(error.response?.data?.error);
         }
       } finally {
@@ -982,6 +981,7 @@ const CreateOrEditWareHouse: React.FC = () => {
 
   return (
     <>
+    //TODO: need to add loader
       {toast && (
         <Toast
           title={"WareHouse Creation Error"}

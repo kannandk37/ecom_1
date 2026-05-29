@@ -1,10 +1,6 @@
-body {
-  margin: 0;
-}
-
 .cart-page-root {
   width: 85%;
-  max-width: 100%; /* Adjust based on your container max-width */
+  max-width: 100%; 
   margin: 0 auto;
   padding: 20px 20px;
   font-family: var(--font-family);
@@ -16,7 +12,7 @@ body {
   width: 100vw;
   margin-top: 70px;
   height: calc(100vh - 118px);
-  overflow-y: auto; /* Triggers the custom internal scrollbar */
+  overflow-y: auto; 
   overflow-x: hidden;
 }
 
@@ -54,7 +50,6 @@ body {
   }
 }
 
-/* TOP NAVIGATION */
 .cart-top-nav {
   display: flex;
   justify-content: space-between;
@@ -62,18 +57,37 @@ body {
 }
 
 .cart-breadcrumbs {
-  font-size: 1.5rem;
-  color: #888;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.cart-breadcrumbs span {
+  font-size: 1.4rem;
+  color: #71604d;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.cart-breadcrumbs span:hover {
+  text-decoration: underline;
+}
+
+.cart-breadcrumbs-active {
+  color: #1a1a1a !important;
+  font-weight: 500 !important;
+  cursor: default !important;
+  text-decoration: none !important;
+  text-overflow: ellipsis;
+  display: block;
 }
 
 .home:hover,
 .current:hover {
   text-decoration: underline;
-}
-
-.cart-breadcrumbs .current {
-  color: #1a1a1a;
-  font-weight: 600;
 }
 
 .continue-shopping-btn {
@@ -84,7 +98,7 @@ body {
   gap: 8px;
   font-size: 0.9rem;
   font-weight: 700;
-  color: #8c6d3f; /* Brand brown */
+  color: #8c6d3f;
   cursor: pointer;
   transition: opacity 0.2s;
   padding: 0;
@@ -94,7 +108,6 @@ body {
   opacity: 0.8;
 }
 
-/* HEADER */
 .cart-header-wrapper {
   display: flex;
   align-items: center;
@@ -118,7 +131,6 @@ body {
   border-radius: 20px;
 }
 
-/* MAIN TWO-COLUMN LAYOUT */
 .cart-main-layout {
   display: flex;
   gap: 40px;
@@ -127,18 +139,16 @@ body {
 }
 
 .cart-items-section {
-  flex: 1; /* Takes up remaining space (approx 65-70%) */
+  flex: 1;
   background: #fff;
   border-radius: 16px;
-  /* Optional: Adds a subtle border around the items list area */
-  /* border: 1px solid #f0f0ed; */
 }
 
 .cart-summary-section {
-  width: 380px; /* Fixed width for the summary card */
-  flex-shrink: 0; /* Prevents the card from shrinking */
+  width: 380px;
+  flex-shrink: 0;
   position: sticky;
-  top: 100px; /* Makes the summary card stick while scrolling items */
+  top: 100px; 
 }
 
 .empty-cart-message {
@@ -153,14 +163,12 @@ body {
   font-size: 2.1rem;
   background: #fdfaf5;
   border-radius: 12px;
-  /* border: 1px dashed #ddd; */
 }
 
-/* RECOMMENDATIONS SECTION */
 .cart-recommendations-section {
   display: flex;
   flex-direction: column;
-  gap: 60px; /* Space between the two carousels */
+  gap: 60px;
   margin-top: 40px;
   border-top: 1px solid #eee;
   padding-top: 60px;
@@ -171,7 +179,6 @@ body {
   width: 100%;
 }
 
-/* RESPONSIVENESS */
 @media (max-width: 1024px) {
   .cart-main-layout {
     gap: 30px;
@@ -188,7 +195,7 @@ body {
 
   .cart-summary-section {
     width: 100%;
-    position: static; /* Disable sticky on mobile */
+    position: static; 
   }
 
   .cart-top-nav {

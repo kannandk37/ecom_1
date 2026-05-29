@@ -205,12 +205,10 @@
 
 import React, { useEffect, useState } from "react";
 import "./Product.css";
-import { FiMinus, FiPlus, FiHeart, FiShoppingCart } from "react-icons/fi";
+import { FiMinus, FiPlus, FiShoppingCart } from "react-icons/fi";
 import ProductImageGallery from "../../assets/ProductImageGallery/ProductImageGallery";
-import ProductCardGrid from "../../assets/productCardGrid/ProductCardGrid";
 import Button from "../../assets/button/Button";
 import CustomerRievew from "../CustomerReview/CustomerRievew";
-import { productsData } from "../CategoryProducts/categoryProducts";
 import { FaHeart, FaRegHeart } from "react-icons/fa6";
 import { StarRating } from "../../assets/review/Review";
 import { useNavigate, useParams } from "react-router-dom";
@@ -219,21 +217,19 @@ import { ProductService } from "../../service/product";
 import NUTS from "../../../data/NUTS.png";
 import LogInOrSignUp from "../../assets/dialogue/LogInOrSignUp";
 import { LocalStorage } from "../../storage";
-import { Cart } from "../../entity/cart";
 import { CartItem } from "../../entity/cart_item";
-import { CartService } from "../../service/cart";
 import Loader2 from "../../assets/loader/Loader2";
 import { useCart } from "../../context/cart";
 import { Variant } from "../../entity/variant";
+import Chip from "../../assets/ui/Chip/Chip";
+import ProductCardGrid from "../../assets/productCardGrid/ProductCardGrid";
+import { capitalize } from "../../utils/utils";
 
-interface ProductProps {
-  productData?: Product;
-}
-
-export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
+export const ProductDetails = ({ }) => {
   const { productId } = useParams();
   const [quantity, setQuantity] = useState<number>(1);
   const [product, setProduct] = useState<Product>();
+  const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isAuthModalOpen, setAuthModalOpen] = useState<boolean>(false);
   const {
@@ -262,7 +258,28 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
       if (productId) {
         setIsLoading(true);
         try {
-          let productDatum = await new ProductService().getById(productId);
+          let productsData = await new ProductService().get();
+          if (productsData?.length > 0) {
+            const productsOptionsData = productsData.filter((product: Product) => product.id !== productId);
+            setProducts(productsOptionsData);
+          } else {
+            setProducts([]);
+          }
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    })();
+  }, [productId]);
+
+  useEffect(() => {
+    (async () => {
+      if (productId) {
+        setIsLoading(true);
+        try {
+          const productDatum = await new ProductService().getById(productId);
           setProduct(productDatum);
           setVariants(productDatum.variants);
           setSelectedVariant(productDatum?.variants[0]);
@@ -275,34 +292,10 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
     })();
   }, [productId]);
 
-  // const handleAddToCart = async () => {
-  //   setIsLoading(true);
-  //   try {
-  //     let user = await new LocalStorage().getUser();
-  //     if (user?.id) {
-  //       let cart = new Cart();
-  //       let cartItem = new CartItem();
-  //       cartItem.product = product;
-  //       //TODO: have to add for variant;
-  //       cartItem.variant = null;
-  //       cartItem.quantity = quantity;
-  //       cart.cartItems = [cartItem];
-  //       await new CartService().create(cart);
-  //       navigate("/cart");
-  //     } else {
-  //       setIsLoading(false);
-  //       setAuthModalOpen(true);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //     setIsLoading(false);
-  //   }
-  // };
-
   const handleAddToCart = async () => {
     setIsLoading(true);
     try {
-      let user = await new LocalStorage().getUser();
+      const user = await new LocalStorage().getUser();
       if (user?.id) {
         const cartItem = new CartItem();
         cartItem.product = product;
@@ -330,25 +323,31 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
             <div className="product-page-root">
               <div className="product-scroll-viewport">
                 <div className="product-page">
+
                   <div className="product-main-section">
                     <ProductImageGallery
                       images={
-                        selecteVariant ? selecteVariant.images : product?.images?.length > 0 ? product?.images : [NUTS]
+                        selecteVariant
+                          ? selecteVariant.images
+                          : product?.images?.length > 0
+                            ? product?.images
+                            : [NUTS]
                       }
                     />
 
                     <div className="product-info">
-                      <div className="breadcrumbs">
-                        <h2>Home</h2>
-                        <h2>{">"}</h2>
-                        <h2>{product?.category?.name}</h2>
-                        <h2>{">"}</h2>
-                        <h2>{product?.name}</h2>
-                      </div>
-                      <h1 className="product-title">{product.name}</h1>
+                      <nav className="product-breadcrumbs">
+                        <span onClick={() => navigate("/")}>Home</span>
+                        <span>{">"}</span>
+                        <span onClick={() => navigate(-1)}>{capitalize(product?.category?.name)}</span>
+                        <span>{">"}</span>
+                        <span className="product-breadcrumbs-active">{capitalize(product?.name)}</span>
+                      </nav>
 
-                      <div className="rating-row">
-                        <div className="stars">
+                      <h1 className="product-title">{capitalize(selecteVariant?.name)}</h1>
+
+                      <div className="product-rating-row">
+                        <div className="product-stars">
                           {/* {[...Array(5)].map((_, i) => (
                       <FiStar
                         key={i}
@@ -362,38 +361,47 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
                     ))}*/}
                           <StarRating rating={product?.averageRating || 0} />
                         </div>
-                        <span className="rating-text">
-                          {product.averageRating} (
-                          {
-                            // product.reviews ??  // TODO: need to work on this
-                            ""
-                          }{" "}
-                          Reviews)
+                        <span className="product-rating-text">
+                          {product.averageRating} ({""} Reviews)
                         </span>
                       </div>
 
-                      <div className="price-row">
-                        <span className="price">₹ {selecteVariant.price}</span>
-                        <span className="weight-tag">
-                          {selecteVariant.weight}
-                          {selecteVariant.unit} pack
+                      <div className="product-price-row">
+                        <span className="product-price">₹ {selecteVariant?.price}</span>
+                        <span className="product-weight-tag">
+                          {selecteVariant?.weight}
+                          {selecteVariant?.unit} pack
                         </span>
                       </div>
 
-                      <ul className="feature-list">
+                      <ul className="product-feature-list">
                         {product?.features?.map((feature: any, i: number) => (
                           <li key={i}>{feature}</li>
                         ))}
                       </ul>
 
-                      <div className="purchase-actions">
-                        <h2 style={{ fontWidth: "bold" }}>Quantity:</h2>
-                        <div className="quantity-selector">
-                          <button
-                            onClick={() =>
-                              setQuantity(Math.max(1, quantity - 1))
-                            }
-                          >
+                      {variants?.length > 0 && (
+                        <div className="product-variants-section">
+                          <h3 className="product-variants-title">Select Weight</h3>
+                          <div className="product-variants-row">
+                            {variants.map((variant, i) => (
+                              <Chip
+                                key={variant.id ?? i}
+                                icon={<FaHeart />}
+                                title={`${variant.weight}${variant.unit}`}
+                                value={`₹${variant.price}`}
+                                variant={selecteVariant?.id === variant.id ? "primary" : "outline"}
+                                onClick={() => setSelectedVariant(variant)}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="product-purchase-actions">
+                        <h2 className="product-quantity-label">Quantity:</h2>
+                        <div className="product-quantity-selector">
+                          <button onClick={() => setQuantity(Math.max(1, quantity - 1))}>
                             <FiMinus />
                           </button>
                           <span>{quantity}</span>
@@ -411,31 +419,26 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
                         <Button
                           name="Add to Wishlist"
                           icon={product ? <FaRegHeart /> : <FaHeart />}
-                          variant={"secondary"}
+                          variant="secondary"
                           disabled={false}
                           onClick={() => {
-                            // product.isFav = !product.isFav;
                             setProduct(product);
-                            console.log("Added to wishlist", product);
-                            // TODO: if no user
                             setAuthModalOpen(true);
-                            // TODO: user logged in
-                            // call api to add or delete to wishlist
                           }}
                         />
                       </div>
 
-                      <div className="description-section">
+                      <div className="product-description-section">
                         <h3>Product Description</h3>
                         <p>{product.description}</p>
                       </div>
 
-                      <div className="specs-grid">
+                      <div className="product-specs-grid">
                         {product?.specs?.map((spec: SpecValue, i: number) => (
-                          <div key={i} className="spec-card">
-                            <span className="spec-label">{spec.label} — </span>
-                            <span className="spec-value">
-                              {spec.label == Label.SHELF_LIFE
+                          <div key={i} className="product-spec-card">
+                            <span className="product-spec-label">{spec.label} — </span>
+                            <span className="product-spec-value">
+                              {spec.label === Label.SHELF_LIFE
                                 ? `${spec.value?.quantity} ${spec.value?.unit?.charAt(0).toLocaleUpperCase() + spec.value?.unit?.slice(1)}`
                                 : spec.value}
                             </span>
@@ -445,14 +448,16 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
                     </div>
                   </div>
 
-                  <div className="related-section">
-                    <h2 className="section-title">You May Also Like</h2>
-                    <ProductCardGrid products={productsData as any} />
+                  <div className="product-related-section">
+                    <h2 className="product-section-title">You May Also Like</h2>
+                    <ProductCardGrid products={products} />
                   </div>
-                  <div className="related-section">
-                    <h2 className="section-title">Customer Review</h2>
+
+                  <div className="product-related-section">
+                    <h2 className="product-section-title">Customer Review</h2>
                     <CustomerRievew />
                   </div>
+
                 </div>
               </div>
             </div>
@@ -466,5 +471,4 @@ export const ProductDetails: React.FC<ProductProps> = ({ productData }) => {
     </>
   );
 };
-
 export default ProductDetails;

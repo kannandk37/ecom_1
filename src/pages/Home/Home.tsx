@@ -14,29 +14,6 @@ import { CategoryService } from "../../service/category";
 import { Category } from "../../entity/category";
 import Toast from "../../assets/toast/Toast";
 
-export const productsTestData: {
-  image: ReactNode;
-  name: string;
-  price: number;
-}[] = [
-    { image: DRY_FRUITS, name: "Almond1", price: 10 },
-    { image: NUTS, name: "Cashew2", price: 12 },
-    { image: DATES, name: "Walnut3", price: 14 },
-    { image: DRY_FRUITS, name: "Almond4", price: 10 },
-    { image: NUTS, name: "Cashew5", price: 12 },
-    { image: DATES, name: "Walnut6", price: 14 },
-    { image: DRY_FRUITS, name: "Almond7", price: 10 },
-    { image: NUTS, name: "Cashew8", price: 12 },
-    { image: DATES, name: "Walnut9", price: 14 },
-    { image: DRY_FRUITS, name: "Almond90", price: 10 },
-    { image: NUTS, name: "Cashew11", price: 12 },
-    { image: DATES, name: "Walnut12", price: 14 },
-    { image: DATES, name: "Walnut92", price: 14 },
-    { image: DRY_FRUITS, name: "Almond93", price: 10 },
-    { image: NUTS, name: "Cashew13", price: 12 },
-    { image: DATES, name: "Walnut14", price: 14 },
-  ];
-
 const myCards: CardItem[] = [
   {
     id: " 1",

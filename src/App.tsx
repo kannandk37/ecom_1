@@ -1,12 +1,10 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import Home, { productsTestData } from "./pages/Home/Home";
+import Home from "./pages/Home/Home";
 import Login from "./pages/Login";
 import ConfirmCheckout from "./pages/Checkout";
 import Profile from "./pages/Profile";
 import Orders from "./pages/Orders/Orders";
-import CategoryProducts, {
-  productsData,
-} from "./pages/CategoryProducts/categoryProducts";
+import CategoryProducts from "./pages/CategoryProducts/categoryProducts";
 import Enterprise from "./pages/index";
 import MainLayout from "./MainLayout";
 import DashboardLayout from "./assets/ui/DashBoardLayout/DashBoardLayout";
@@ -227,7 +225,6 @@ function App() {
             element={
               <CartScreen
                 cartTotal={cartTotalData}
-                productsData={productsTestData}
               />
             }
           />
