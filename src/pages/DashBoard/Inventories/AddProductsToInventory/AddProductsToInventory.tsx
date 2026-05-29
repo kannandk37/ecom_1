@@ -362,25 +362,6 @@ const AddProductToInventory: React.FC = () => {
         Number(autoQty),
         variant,
       );
-      // Simulate API Call delay
-      setTimeout(() => {
-        const mockApiResult: BinTableRow[] = response?.allocations?.map(
-          (warehouseBin: WarehouseBin) => {
-            return {
-              id: warehouseBin.id,
-              binCode: warehouseBin.binCode,
-              maxQty: warehouseBin.maxUnits,
-              availableQty: warehouseBin.currentStock,
-              addQty: warehouseBin.currentStock?.toString(),
-            };
-          },
-        );
-        //  [
-        //     { id: "bin_1", binCode: "BIN-A-01", maxQty: 500, availableQty: 350, addQty: "100" },
-        //     { id: "bin_2", binCode: "BIN-B-04", maxQty: 200, availableQty: 150, addQty: "50" }
-        // ];
-        setSelectedBins(mockApiResult);
-      }, 100);
 
       if (response.shortfall > 0) {
         setGlobalTableError(
@@ -388,17 +369,35 @@ const AddProductToInventory: React.FC = () => {
         );
         setToast("Unable To Fill The Total Quantity Free Up Some Rack");
       }
+
+      const apiResult: BinTableRow[] = response?.allocations?.map(
+        (warehouseBin: WarehouseBin) => {
+          return {
+            id: warehouseBin.id,
+            binCode: warehouseBin.binCode,
+            maxQty: warehouseBin.maxUnits,
+            availableQty: warehouseBin.currentStock,
+            addQty: warehouseBin.currentStock?.toString(),
+          };
+        },
+      );
+      setSelectedBins(apiResult);
       setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
+    } catch (error: any) {
       console.log(error);
+      setIsLoading(false);
+      if (axios.isAxiosError(error) && error.response?.data?.isCommunicable) {
+        setToast(error.response?.data?.error);
+      } else {
+        setToast("An unexpected error occurred while adding inventory.");
+      }
     }
   };
 
   function isValidData() {
     if (!reservedQty) {
       setReservedQtyError('Please Enter Reserved Qty');
-    } else if (Number(reservedQty) < Number(selectedBins.reduce((sum, selectedBin) => sum + Number(selectedBin.addQty), 0))) {
+    } else if (Number(reservedQty) > Number(selectedBins.reduce((sum, selectedBin) => sum + Number(selectedBin.addQty), 0))) {
       setReservedQtyError('Reserved Qty Cannot Be Lower Than The Total Qty');
     } else {
       return true;
@@ -455,13 +454,14 @@ const AddProductToInventory: React.FC = () => {
       let warehouse = new Warehouse();
       warehouse.id = warehouseId?.id;
 
-      // TODO : need to check the below data
-      let warehouseBins = selectedBins.map((selectedBin) => {return {id: selectedBin.id, currentStock: selectedBin.addQty}});
-       [
-        { id: "6a0c10ad1e30cedd46e1daaa", currentStock: 200 },
-        { id: "6a0c10ad1e30cedd46e1daab", currentStock: 200 },
-        { id: "6a0c10ad1e30cedd46e1daac", currentStock: 100 },
-      ];
+      let totalCount = 0;
+      let warehouseBins = selectedBins.map((selectedBin) => {
+        let warehouseBin = new WarehouseBin();
+        warehouseBin.id = selectedBin.id;
+        warehouseBin.currentStock = Number(selectedBin.addQty);
+        totalCount = totalCount + Number(selectedBin.addQty);
+        return warehouseBin
+      });
 
       let product = new Product();
       product.id = productId?.id;
@@ -474,12 +474,11 @@ const AddProductToInventory: React.FC = () => {
       inventory.product = product;
       inventory.variant = variant;
       inventory.warehouse = warehouse;
-      inventory.qtyOnHand = qty;
+      inventory.qtyOnHand = totalCount;
       inventory.warehouseBins = warehouseBins;
       inventory.qtyReserved = reservedQty ? Number(reservedQty) : 0;
       inventory.maxStockLevel = qty;
-
-      // await new InventoryService().createInventory(inventory);
+      await new InventoryService().createInventory(inventory);
 
       navigate("/dashboard/inventories");
     } catch (error: any) {
@@ -630,7 +629,7 @@ const AddProductToInventory: React.FC = () => {
                       <DashBoardInput
                         type="text"
                         value={autoQty}
-                        onChange={(e: any) => setAutoQty(e)}
+                        onChange={(e: any) => {setAutoQty(e); setGlobalTableError(null)}}
                         placeholder="0"
                       />
                       <DashBoardButton
@@ -666,7 +665,7 @@ const AddProductToInventory: React.FC = () => {
                   <DashBoardInput
                     type="text"
                     value={reservedQty}
-                    onChange={(e: any) => {setReservedQty(e); setReservedQtyError(null)}}
+                    onChange={(e: any) => { setReservedQty(e); setReservedQtyError(null); setGlobalTableError(null); }}
                     placeholder="0"
                     required={true}
                     error={reservedQtyError ? true : false}
@@ -786,10 +785,10 @@ const AddProductToInventory: React.FC = () => {
                 width={"280px"}
               />
               <DashBoardButton
-                name="Add Inventory"
+                name="Add To Inventory"
                 variant="primary"
                 onClick={handleSubmit}
-                disabled={isLoading || globalTableError ? true : false}
+                disabled={isLoading || globalTableError || selectedBins?.length <= 0 ? true : false}
                 width={"280px"}
               />
             </div>
