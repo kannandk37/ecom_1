@@ -215,7 +215,7 @@ import { FiAlignJustify } from "react-icons/fi";
 import { LOGO, siteName } from "../../../utils/utils";
 import { useEffect, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
-import { UserOptions } from "../../../pages/Header/Header";
+import { UserOptions } from "../../../pages/Ecom/Header/Header";
 import { MdManageAccounts } from "react-icons/md";
 import { IoLogOut } from "react-icons/io5";
 import { LocalStorage } from "../../../storage";

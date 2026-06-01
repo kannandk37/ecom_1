@@ -25,7 +25,7 @@ export const CardGrid: React.FC<CardGridProps> = ({
       className="card-grid-container"
       style={
         {
-          "--cards-per-column": cardsPerColumn,
+          "--cards-per-row": 4,
           height: height || "100%",
         } as React.CSSProperties
       }

@@ -18,7 +18,7 @@ import {
   // FiChevronRight,
 } from "react-icons/fi";
 import Products from "../pages/Products/Products";
-import Home from "../pages/Home/Home";
+import Home from "../pages/Ecom/Home/Home";
 import DRY_FRUITS from "../../data/DRY_FRUITS.png";
 import NUTS from "../../data/NUTS.png";
 import DATES from "../../data/DATES.png";

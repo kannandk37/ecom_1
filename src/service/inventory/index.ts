@@ -23,10 +23,11 @@ export class InventoryService {
         }
     }
 
-    async inventoryByWarehouseAndProduct(warehouseId: string, productId: string): Promise<Inventory> {
+    async inventoryByWarehouseAndProductAndVariant(warehouseId: string, productId: string, variantId?: string): Promise<Inventory[]> {
         try {
-            let response = await this.axiosInstance.get(`/inventories/warehouse/${warehouseId}/product/${productId}`);
-            return inventoryResponseDatumToInventoryEntity(response.data);
+            let url = `/inventories/warehouse/${warehouseId}/product/${productId}/variant/${variantId}`
+            let response = await this.axiosInstance.get(url);
+            return inventoryResponseDataToInventoryEntities(response.data);
         } catch (error) {
             console.log(error);
             throw error;

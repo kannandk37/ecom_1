@@ -7,7 +7,7 @@ import PaymentForm from "./Checkout/PaymentForm";
 import ReviewForm from "./Checkout/ReviewForm";
 import { useNavigate } from "react-router-dom";
 import { siteName } from "../utils/utils";
-import Header from "./Header/Header";
+import Header from "./Ecom/Header/Header";
 import "./Checkout.css";
 import IdentityForm from "./Checkout/IdentityForm";
 // import { productsData } from "./CategoryProducts/categoryProducts";

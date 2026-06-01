@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import Home from "./pages/Home/Home";
+import Home from "./pages/Ecom/Home/Home";
 import Login from "./pages/Login";
 import ConfirmCheckout from "./pages/Checkout";
 import Profile from "./pages/Profile";

@@ -1,8 +1,8 @@
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import Header from "./pages/Header/Header";
+import Header from "./pages/Ecom/Header/Header";
 import "./assets/color/colors.css";
-import Footer from "./pages/Footer/Footer";
+import Footer from "./pages/Ecom/Footer/Footer";
 import type { IconType } from "react-icons";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 import { SiThreads } from "react-icons/si";

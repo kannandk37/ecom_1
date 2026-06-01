@@ -1,21 +1,20 @@
 import React, { useState, useEffect, useRef, ReactNode } from "react";
 import "./Header.css";
 import { FiSearch, FiUser, FiShoppingCart } from "react-icons/fi";
-import Button from "../../assets/button/Button";
-import IconButton from "../../assets/icon_button/IconButton";
-import { LOGO } from "../../utils/utils";
+import Button from "../../../assets/button/Button";
+import IconButton from "../../../assets/icon_button/IconButton";
+import { LOGO } from "../../../utils/utils";
 import { BsFillBoxSeamFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
-import { ProductService } from "../../service/product";
-import { Product } from "../../entity/product";
-import NUTS from "../../../data/NUTS.png";
+import { ProductService } from "../../../service/product";
+import { Product } from "../../../entity/product";
+import NUTS from "../../../../data/NUTS.png";
 import { FaRegUser, FaSpinner } from "react-icons/fa";
-import { User } from "../../entity/user";
-import { LocalStorage } from "../../storage";
+import { User } from "../../../entity/user";
+import { LocalStorage } from "../../../storage";
 import { MdManageAccounts } from "react-icons/md";
-import { IoMdSettings } from "react-icons/io";
 import { IoLogOut } from "react-icons/io5";
-import { useCart } from "../../context/cart";
+import { useCart } from "../../../context/cart";
 
 export interface UserOptions {
   name: string;
@@ -104,17 +103,8 @@ export const Header: React.FC<HeaderProps> = ({
 
     try {
       setIsLoading(true);
-      let result = await new ProductService().getByName(searchQuery);
-      setProducts([
-        ...result,
-        ...result,
-        ...result,
-        ...result,
-        ...result,
-        ...result,
-        ...result,
-        ...result,
-      ]);
+      let results = await new ProductService().getByName(searchQuery);
+      setProducts(results);
       setShowDropdown(true);
     } catch (error) {
       console.log(error);
