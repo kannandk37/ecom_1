@@ -404,6 +404,8 @@
 }
 
 .bin-summary-badge {
+  padding-Left: 10px;
+  padding-right: 10px;
   margin-left: 12px;
   font-size: 0.75rem;
   font-weight: 700;

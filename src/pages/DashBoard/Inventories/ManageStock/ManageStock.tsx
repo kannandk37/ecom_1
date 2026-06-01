@@ -85,9 +85,6 @@ const ManageStock: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  // Mock Data (Would typically come from API)
-  const [currentStockMock, setCurrentStockMock] = useState<number>(0);
-
   const actionOptions = [
     { id: "", label: InventoryAction.ADJUST, value: InventoryAction.ADJUST },
     { id: "", label: InventoryAction.WASTE, value: InventoryAction.WASTE },
@@ -130,7 +127,7 @@ const ManageStock: React.FC = () => {
   const [isBinLoading, setIsBinLoading] = useState<boolean>(false);
   const [isProductLoading, setIsProductLoading] = useState<boolean>(false);
   const [isVariantLoading, setIsVariantLoading] = useState<boolean>(false);
-  const [inventory, setInventory] = useState<Inventory>(null);
+  const [inventories, setInventories] = useState<Inventory[]>([]);
   const [binStocks, setBinStocks] = useState<BinStock[]>([]);
   const [binStockId, setBinStockId] = useState<{
     id: string;
@@ -219,14 +216,14 @@ const ManageStock: React.FC = () => {
       (product: Product) => product.id === productId.id,
     );
 
-    const options =
+    const variantsOptions =
       selectedProduct?.variants?.map((variant: Variant) => ({
         id: variant.id,
         label: variant.name,
         value: variant.name,
       })) || [];
 
-    setVariants(options);
+    setVariants(variantsOptions);
     setIsVariantLoading(false);
   }, [productId?.id, productsData]);
 
@@ -266,20 +263,21 @@ const ManageStock: React.FC = () => {
       if (warehouseId?.id && productId?.id) {
         try {
           let inventoryData =
-            await new InventoryService().inventoryByWarehouseAndProduct(
+            await new InventoryService().inventoryByWarehouseAndProductAndVariant(
               warehouseId.id,
               productId.id,
+              variantId?.id
             );
-          setInventory(inventoryData);
+          setInventories(inventoryData);
         } catch (error: any) {
           console.log(error);
         } finally {
         }
       } else {
-        setInventory(null);
+        setInventories([]);
       }
     })();
-  }, [warehouseId, productId]);
+  }, [warehouseId, productId, variantId]);
 
   useEffect(() => {
     (async () => {
@@ -325,8 +323,13 @@ const ManageStock: React.FC = () => {
   const submitAdjustment = async (deleteRecord: boolean) => {
     setIsLoading(true);
     try {
-      let inventoryData = new Inventory();
-      inventoryData.id = inventory?.id;
+      const inventoryData = inventories.find((inventory: Inventory) => {
+        const isProductMatch = inventory.product?.id === productId?.id;
+
+        const isVariantMatch = variantId?.id ? inventory.variant?.id === variantId.id : true;
+
+        return isProductMatch && isVariantMatch;
+      });
 
       let binStockData = new BinStock();
       binStockData.id = binStockId.id;
@@ -351,7 +354,7 @@ const ManageStock: React.FC = () => {
       if (actionType.value === InventoryAction.WASTE) {
         binStockData.qtyOnHand = Number(quantity);
         await new InventoryService().wasteStock(
-          inventory,
+          inventoryData,
           binStockData,
           stockLedger,
         );
@@ -365,7 +368,7 @@ const ManageStock: React.FC = () => {
           binStockData.qtyOnHand = -Number(quantity);
         }
         await new InventoryService().adjustStock(
-          inventory,
+          inventoryData,
           binStockData,
           stockLedger,
           deleteRecord,
@@ -641,7 +644,7 @@ const ManageStock: React.FC = () => {
                         </b>
                       </>
                     }
-                    value={`Units - ${inventory?.qtyOnHand ?? 0}`}
+                    value={`Units - ${inventories.reduce((sum, a) => sum + (a?.qtyOnHand ?? 0), 0)}`} // TODO: need to check
                   />
                 </div>
               </div>

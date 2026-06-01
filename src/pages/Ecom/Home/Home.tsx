@@ -1,4 +1,4 @@
-import { useState, useEffect, ReactNode } from "react";
+import { useState, useEffect } from "react";
 import axiosinstance from "../../../service";
 import { useNavigate } from "react-router-dom";
 import HomeBanner from "../../../assets/banner/Banner";
@@ -9,6 +9,9 @@ import DRY_FRUITS from "../../../../data/DRY_FRUITS.png";
 import { CategoryService } from "../../../service/category";
 import { Category } from "../../../entity/category";
 import Toast from "../../../assets/toast/Toast";
+import { LocalStorage } from "../../../storage";
+import { RoleName } from "../../../entity/role";
+import Loader from "../../../assets/loader/Loader";
 
 // const mockReviews: any[] = [
 //   {
@@ -46,39 +49,49 @@ const Home = () => {
 
   useEffect(() => {
     (async () => {
-      try {
-        let categories = await new CategoryService().get();
-        setCardData(
-          categories?.map((category: Category) => {
-            return {
-              id: category.id,
-              image: DRY_FRUITS,
-              title: category.name,
-            } as CardItem;
-          }),
-        );
-      } catch (error) {
-        setShowError(true);
-        console.log(error);
-      } finally {
-        setLoading(false);
+      const storedUser = await new LocalStorage().getUser();
+      if (storedUser) {
+        const storedProfile = await new LocalStorage().getProfile();
+        if (storedProfile.role?.name !== RoleName.CUSTOMER) {
+          await new LocalStorage().clearUser();
+          await new LocalStorage().clearRole();
+          await new LocalStorage().clearProfile();
+          await new LocalStorage().clearCart();
+          await new LocalStorage().clearWishlists();
+          await new LocalStorage().clearToken();
+          await new LocalStorage().clearRefreshToken();
+          setLoading(false);
+          navigate('/');
+        } else {
+          setUser(storedUser);
+          getCategories();
+        }
+      } else {
+        getCategories();
       }
-    })();
+    })()
   }, []);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
+  const getCategories = async () => {
+    setLoading(true)
+    try {
+      let categories = await new CategoryService().get();
+      setCardData(
+        categories?.map((category: Category) => {
+          return {
+            id: category.id,
+            image: DRY_FRUITS,
+            title: category.name,
+          } as CardItem;
+        }),
+      );
+    } catch (error) {
+      setShowError(true);
+      console.log(error);
+    } finally {
       setLoading(false);
-    }, 1500);
-  }, []);
-
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
     }
-  }, []);
+  }
 
   useEffect(() => {
     const fetchUserCart = async () => {
@@ -111,46 +124,54 @@ const Home = () => {
 
   return (
     <>
-      {showError && (
-        <Toast
-          title="Category"
-          description="Unable to Get Categories"
-          isError={false}
-          duration={5000}
-          onClose={() => setShowError(false)}
-        />
-      )}
-      <div className="root-home">
-        <div className="scroll-viewport">
-          <div className="home-container">
-            <HomeBanner
-              image={Banner}
-              width="100%"
-              height="400px"
-              borderRadius="20px"
-              fontSize2="22px"
-              buttonText="Shop Now"
-              buttonVariant="primary"
-              onButtonClick={handleScrollDown}
-              showButton={true}
-              showTitle1={true}
-              showTitle2={true}
-              title1="PREMIUM QUALITY, NATURALLY DELICIOUS"
-              title2="Discover our curated collection of dry fruits, nuts, dates, and healthy snacks."
-            />
-            <div className="categoreis-container">
-              <h2 className="categories-title">Categories</h2>
-              <div className="categories-cards-container">
-                <CardGrid
-                  cards={cardData}
-                  cardsPerColumn={4}
-                  onCardClick={handleCardClick}
-                />
+      {
+        loading ? (
+          <Loader />
+        ) : (
+          <>
+            {showError && (
+              <Toast
+                title="Category"
+                description="Unable to Get Categories"
+                isError={false}
+                duration={5000}
+                onClose={() => setShowError(false)}
+              />
+            )}
+            <div className="root-home">
+              <div className="scroll-viewport">
+                <div className="home-container">
+                  <HomeBanner
+                    image={Banner}
+                    width="100%"
+                    height="400px"
+                    borderRadius="20px"
+                    fontSize2="22px"
+                    buttonText="Shop Now"
+                    buttonVariant="primary"
+                    onButtonClick={handleScrollDown}
+                    showButton={true}
+                    showTitle1={true}
+                    showTitle2={true}
+                    title1="PREMIUM QUALITY, NATURALLY DELICIOUS"
+                    title2="Discover our curated collection of dry fruits, nuts, dates, and healthy snacks."
+                  />
+                  <div className="categoreis-container">
+                    <h2 className="categories-title">Categories</h2>
+                    <div className="categories-cards-container">
+                      <CardGrid
+                        cards={cardData}
+                        cardsPerColumn={4}
+                        onCardClick={handleCardClick}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
+          </>
+        )
+      }
     </>
   );
 };

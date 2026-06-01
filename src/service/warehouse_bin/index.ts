@@ -32,7 +32,6 @@ export class WarehouseBinService {
     }> {
         try {
             let response = await this.axiosInstance.post(`/warehousebins/allocate`, { warehouse, product, quantity, variant });
-            console.log(response.data);
             return response.data as {
                 success: boolean,
                 allocations: WarehouseBin[],

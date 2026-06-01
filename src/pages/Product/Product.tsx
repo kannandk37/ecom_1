@@ -387,7 +387,6 @@ export const ProductDetails = ({ }) => {
                             {variants.map((variant, i) => (
                               <Chip
                                 key={variant.id ?? i}
-                                icon={<FaHeart />}
                                 title={`${variant.weight}${variant.unit}`}
                                 value={`₹${variant.price}`}
                                 variant={selecteVariant?.id === variant.id ? "primary" : "outline"}

@@ -10,6 +10,7 @@ import {
   FiPlus,
   FiChevronDown,
   FiChevronUp,
+  FiEdit,
 } from "react-icons/fi";
 import DashBoardButton from "../../../../assets/ui/DashBoardButton/DashBoardButton";
 import DashBoardInput from "../../../../assets/ui/DashBoardInput/DashBoardInput";
@@ -36,6 +37,8 @@ interface BinLevel {
   id: string;
   levelCode: string;
   positions: number;
+  maxUnits: number;
+  minThreshold: number;
 }
 
 interface BinRack {
@@ -52,20 +55,23 @@ interface BinAisle {
   maxUnits: Number;
 }
 
-type ModalType = "aisle" | "rack" | "level" | null;
+type ModalType = "aisle" | "rack" | "level" | "editRack" | "editLevel" | null;
 
 interface ModalState {
   type: ModalType;
   aisleId: string;
   rackId: string;
+  levelId: string;
   racks: string;
   levels: string;
   positions: string;
   maxUnits: string;
+  minThreshold: string;
   racksError: string;
   levelsError: string;
   positionsError: string;
   maxUnitsError: string;
+  minThresholdError: string;
 }
 
 const typeOptions = [
@@ -101,14 +107,17 @@ const EMPTY_MODAL: ModalState = {
   type: null,
   aisleId: "",
   rackId: "",
+  levelId: "",
   racks: "2",
   levels: "2",
   positions: "1",
-  maxUnits: "200", // Defaulted positions to 1
+  maxUnits: "200",
+  minThreshold: "20",
   racksError: "",
   levelsError: "",
   positionsError: "",
   maxUnitsError: "",
+  minThresholdError: ""
 };
 
 function nextCode(prefix: string, existing: string[]): string {
@@ -217,6 +226,7 @@ const CreateOrEditWareHouse: React.FC = () => {
   const [rack, setRack] = useState<string>("");
   const [level, setLevel] = useState<string>("");
   const [maxUnits, setMaxUnits] = useState<string>("");
+  const [minThreshold, setMinThreshold] = useState<string>("");
 
   // Edit-mode bin tree
   const [binAisles, setBinAisles] = useState<BinAisle[]>([]);
@@ -257,6 +267,7 @@ const CreateOrEditWareHouse: React.FC = () => {
   const [rackError, setRackError] = useState<string | null>(null);
   const [levelError, setLevelError] = useState<string | null>(null);
   const [maxUnitsError, setMaxUnitsError] = useState<string | null>(null);
+  const [minThresholdError, setMinThresholdError] = useState<string | null>(null);
 
   const stateOptions = INDIAN_STATES.map((s: string) => ({
     id: s,
@@ -306,10 +317,10 @@ const CreateOrEditWareHouse: React.FC = () => {
           setState(
             warehouseResponse.address?.state
               ? {
-                  id: warehouseResponse.address.state,
-                  label: warehouseResponse.address.state,
-                  value: warehouseResponse.address.state,
-                }
+                id: warehouseResponse.address.state,
+                label: warehouseResponse.address.state,
+                value: warehouseResponse.address.state,
+              }
               : (null as any),
           );
           setMobile(warehouseResponse.address?.mobile ?? "");
@@ -317,38 +328,38 @@ const CreateOrEditWareHouse: React.FC = () => {
           setType(
             warehouseResponse.type
               ? {
-                  id: warehouseResponse.type,
-                  label: warehouseResponse.type,
-                  value: warehouseResponse.type,
-                }
+                id: warehouseResponse.type,
+                label: warehouseResponse.type,
+                value: warehouseResponse.type,
+              }
               : (null as any),
           );
           setUserId(
             warehouseResponse.operator?.id
               ? {
-                  id: warehouseResponse.operator.id,
-                  label: warehouseResponse.operator.id,
-                  value: warehouseResponse.operator.id,
-                }
+                id: warehouseResponse.operator.id,
+                label: warehouseResponse.operator.id,
+                value: warehouseResponse.operator.id,
+              }
               : (null as any),
           );
           setStatus(
             warehouseResponse.status
               ? {
-                  id: warehouseResponse.status,
-                  label: warehouseResponse.status,
-                  value: warehouseResponse.status,
-                }
+                id: warehouseResponse.status,
+                label: warehouseResponse.status,
+                value: warehouseResponse.status,
+              }
               : (null as any),
           );
           setTotalCapacity(warehouseResponse.totalCapacity?.toString() ?? "");
           setCapacityUnit(
             warehouseResponse.capacityUnit
               ? {
-                  id: warehouseResponse.capacityUnit,
-                  label: warehouseResponse.capacityUnit,
-                  value: warehouseResponse.capacityUnit,
-                }
+                id: warehouseResponse.capacityUnit,
+                label: warehouseResponse.capacityUnit,
+                value: warehouseResponse.capacityUnit,
+              }
               : (null as any),
           );
 
@@ -400,6 +411,8 @@ const CreateOrEditWareHouse: React.FC = () => {
           id: `${rackCode}-${levelCode}`,
           levelCode,
           positions: 0,
+          maxUnits: bin.maxUnits ?? 200,
+          minThreshold: bin.minThreshold ?? 20
         };
         rackEntry.levels.push(levelEntry);
       }
@@ -440,13 +453,13 @@ const CreateOrEditWareHouse: React.FC = () => {
         prev.map((a) =>
           a.id === aisleId
             ? {
-                ...a,
-                racks: a.racks.map((r) =>
-                  r.id === rackId
-                    ? { ...r, levels: r.levels.filter((l) => l.id !== levelId) }
-                    : r,
-                ),
-              }
+              ...a,
+              racks: a.racks.map((r) =>
+                r.id === rackId
+                  ? { ...r, levels: r.levels.filter((l) => l.id !== levelId) }
+                  : r,
+              ),
+            }
             : a,
         ),
       ),
@@ -538,6 +551,37 @@ const CreateOrEditWareHouse: React.FC = () => {
     setIsModalOpen(false);
   };
 
+  const openEditRackModal = (aisleId: string, rackId: string) => {
+    const aisleEntry = binAisles.find((a) => a.id === aisleId)!;
+    const rackEntry = aisleEntry.racks.find((r) => r.id === rackId)!;
+    setModal({
+      ...EMPTY_MODAL,
+      type: "editRack",
+      aisleId,
+      rackId,
+      levels: rackEntry.levels.length.toString(),
+      maxUnits: rackEntry.levels[0]?.maxUnits?.toString() ?? "200",
+      minThreshold: rackEntry.levels[0]?.minThreshold?.toString() ?? "20",
+    });
+    setIsModalOpen(true);
+  };
+
+  const openEditLevelModal = (aisleId: string, rackId: string, levelId: string) => {
+    const aisleEntry = binAisles.find((a) => a.id === aisleId)!;
+    const rackEntry = aisleEntry.racks.find((r) => r.id === rackId)!;
+    const levelEntry = rackEntry.levels.find((l) => l.id === levelId)!;
+    setModal({
+      ...EMPTY_MODAL,
+      type: "editLevel",
+      aisleId,
+      rackId,
+      levelId,
+      maxUnits: levelEntry.maxUnits?.toString() ?? "200",
+      minThreshold: levelEntry.minThreshold?.toString() ?? "20",
+    });
+    setIsModalOpen(true);
+  };
+
   // ── Bin preview count ────────────────────────────────────────────────────
 
   const getModalBinPreview = (): number => {
@@ -548,7 +592,7 @@ const CreateOrEditWareHouse: React.FC = () => {
     if (modal.type === "aisle") return r * l * p;
     if (modal.type === "rack") return l * p;
     if (modal.type === "level") return p;
-    if (modal.type === "maxUnits") return mu;
+    // if (modal.type === "maxUnits") return mu;
     return 0;
   };
 
@@ -557,6 +601,7 @@ const CreateOrEditWareHouse: React.FC = () => {
   const isModalValid = (): boolean => {
     let valid = true;
     const updated = { ...modal };
+
     if (modal.type === "aisle") {
       if (!modal.racks || parseInt(modal.racks) < 1) {
         updated.racksError = "Min 1 rack required";
@@ -567,19 +612,28 @@ const CreateOrEditWareHouse: React.FC = () => {
         valid = false;
       }
     }
-    if (modal.type === "rack") {
+    if (modal.type === "rack" || modal.type === "editRack") {
       if (!modal.levels || parseInt(modal.levels) < 1) {
         updated.levelsError = "Min 1 level required";
         valid = false;
       }
     }
-    // Validation for positions commented out, but kept logic default to pass
-    if (!modal.positions || parseInt(modal.positions) < 1) {
-      updated.positionsError = "Min 1 position required";
-      valid = false;
+    if (!["editRack", "editLevel"].includes(modal.type)) {
+      if (!modal.positions || parseInt(modal.positions) < 1) {
+        updated.positionsError = "Min 1 position required";
+        valid = false;
+      }
     }
     if (!modal.maxUnits || parseInt(modal.maxUnits) < 1) {
       updated.maxUnitsError = "Min 1 unit required";
+      valid = false;
+    }
+    if (!modal.minThreshold || parseInt(modal.minThreshold) < 0) {
+      updated.minThresholdError = "Min threshold must be 0 or more";
+      valid = false;
+    }
+    if (parseInt(modal.minThreshold) >= parseInt(modal.maxUnits)) {
+      updated.minThresholdError = "Min threshold must be less than max units";
       valid = false;
     }
     if (!valid) setModal(updated);
@@ -592,6 +646,7 @@ const CreateOrEditWareHouse: React.FC = () => {
     const l = parseInt(modal.levels, 10) || 1;
     const p = parseInt(modal.positions, 10) || 1; // Forced to 1
     const mu = parseInt(modal.maxUnits, 10) || 200;
+    const mi = parseInt(modal.minThreshold, 10) || 200;
 
     try {
       if (modal.type === "aisle") {
@@ -608,6 +663,8 @@ const CreateOrEditWareHouse: React.FC = () => {
               id: `${rackCode}-L${li + 1}`,
               levelCode: `L${li + 1}`,
               positions: p,
+              maxUnits: mu,
+              minThreshold: mi
             })),
           };
         });
@@ -635,12 +692,14 @@ const CreateOrEditWareHouse: React.FC = () => {
             id: `${nextRackCode}-L${li + 1}`,
             levelCode: `L${li + 1}`,
             positions: p,
+            maxUnits: mu,
+            minThreshold: mi
           })),
         };
         setBinAisles((prev) =>
           prev.map((a) =>
             a.id === modal.aisleId
-              ? { ...a, racks: [...a.racks, newRack], maxUnits: mu }
+              ? { ...a, racks: [...a.racks, newRack] }
               : a,
           ),
         );
@@ -653,23 +712,96 @@ const CreateOrEditWareHouse: React.FC = () => {
           id: `${modal.rackId}-${nextLvlCode}`,
           levelCode: nextLvlCode,
           positions: p,
+          maxUnits: mu,
+          minThreshold: mi
         };
         setBinAisles((prev) =>
           prev.map((a) =>
             a.id === modal.aisleId
               ? {
-                  ...a,
-                  racks: a.racks.map((r) =>
-                    r.id === modal.rackId
-                      ? { ...r, levels: [...r.levels, newLevel] }
-                      : r,
-                  ),
-                  maxUnits: mu,
-                }
+                ...a,
+                racks: a.racks.map((r) =>
+                  r.id === modal.rackId
+                    ? { ...r, levels: [...r.levels, newLevel] }
+                    : r,
+                ),
+              }
               : a,
           ),
         );
         // await axios.post(`/api/warehousebins/level`, { warehouseId: id, aisle: modal.aisleId, rack: modal.rackId, positions: p, maxUnitsPerBin: mu });
+      } else if (modal.type === "editRack") {
+        const mu = parseInt(modal.maxUnits, 10) || 200;
+        const mt = parseInt(modal.minThreshold, 10) || 20;
+        const l = parseInt(modal.levels, 10) || 1;
+
+        setBinAisles((prev) =>
+          prev.map((a) =>
+            a.id === modal.aisleId
+              ? {
+                ...a,
+                racks: a.racks.map((r) => {
+                  if (r.id !== modal.rackId) return r;
+
+                  // Adjust levels count
+                  let updatedLevels = [...r.levels];
+                  if (l > updatedLevels.length) {
+                    // Add missing levels
+                    for (let i = updatedLevels.length; i < l; i++) {
+                      updatedLevels.push({
+                        id: `${r.rackCode}-L${i + 1}`,
+                        levelCode: `L${i + 1}`,
+                        positions: 1,
+                        maxUnits: mu,
+                        minThreshold: mt,
+                      });
+                    }
+                  } else if (l < updatedLevels.length) {
+                    // Trim extra levels
+                    updatedLevels = updatedLevels.slice(0, l);
+                  }
+
+                  // Update maxUnits and minThreshold on all levels in this rack
+                  updatedLevels = updatedLevels.map((lv) => ({
+                    ...lv,
+                    maxUnits: mu,
+                    minThreshold: mt,
+                  }));
+
+                  return { ...r, levels: updatedLevels };
+                }),
+              }
+              : a,
+          ),
+        );
+        closeModal();
+
+      } else if (modal.type === "editLevel") {
+        const mu = parseInt(modal.maxUnits, 10) || 200;
+        const mt = parseInt(modal.minThreshold, 10) || 20;
+
+        setBinAisles((prev) =>
+          prev.map((a) =>
+            a.id === modal.aisleId
+              ? {
+                ...a,
+                racks: a.racks.map((r) =>
+                  r.id === modal.rackId
+                    ? {
+                      ...r,
+                      levels: r.levels.map((lv) =>
+                        lv.id === modal.levelId
+                          ? { ...lv, maxUnits: mu, minThreshold: mt }
+                          : lv,
+                      ),
+                    }
+                    : r,
+                ),
+              }
+              : a,
+          ),
+        );
+        closeModal();
       }
       closeModal();
     } catch (err) {
@@ -773,7 +905,17 @@ const CreateOrEditWareHouse: React.FC = () => {
         warehouseBin.rack = rack;
         warehouseBin.level = level;
         warehouseBin.maxUnits = Number(maxUnits);
+        warehouseBin.minThreshold = Number(minThreshold);
 
+        function getInitials(input: string): string {
+          return input
+            .trim()
+            .split(/\s+/) // Splits by any number of spaces
+            .map(word => word.charAt(0).toUpperCase())
+            .join('');
+        };
+
+        let warehouseShortName = getInitials(warehouse.name);
         // Transform the nested UI binAisles tree back to the flat array layout
         let warehouseBins: WarehouseBin[] = [];
         binAisles.forEach((a) => {
@@ -782,12 +924,13 @@ const CreateOrEditWareHouse: React.FC = () => {
               for (let p = 1; p <= l.positions; p++) {
                 warehouseBins.push({
                   warehouse: warehouse,
-                  binCode: `${a.aisleCode}-${r.rackCode}-${l.levelCode}-P${p}`,
+                  binCode: `${warehouseShortName}-${a.aisleCode}-${r.rackCode}-${l.levelCode}-P${p}`,
                   aisle: a.aisleCode,
                   rack: r.rackCode,
                   level: l.levelCode,
                   position: `P${p}`,
-                  maxUnits: Number(a.maxUnits) || 200,
+                  maxUnits: Number(l.maxUnits) || 200,
+                  minThreshold: Number(l.minThreshold) || 20,
                   isActive: true,
                 });
               }
@@ -905,6 +1048,14 @@ const CreateOrEditWareHouse: React.FC = () => {
     } else {
       setMaxUnits(v);
       setMaxUnitsError(null);
+    }
+  };
+  const onChangeMinThreshold = (v: string) => {
+    if (!v) {
+      setMinThresholdError("Please provide min units");
+    } else {
+      setMinThreshold(v);
+      setMinThresholdError(null);
     }
   };
   const onChangeUserId = (v: { id: string; label: string; value: string }) => {
@@ -1292,11 +1443,27 @@ const CreateOrEditWareHouse: React.FC = () => {
                                       gap: "6px",
                                     }}
                                   >
-                                    {lvl.levelCode}
+                                    {lvl.levelCode} - Max: {lvl.maxUnits} Min: {lvl.minThreshold}
 
                                     {/* Commented out position UI for future use */}
                                     {/* · P1–P{lvl.positions} */}
-
+                                    <button
+                                      style={{
+                                        background: "none",
+                                        border: "none",
+                                        cursor: "pointer",
+                                        color: "#8c6d3f",
+                                        padding: "0",
+                                        display: "flex",
+                                        alignItems: "center"
+                                      }}
+                                      onClick={() =>
+                                        openEditLevelModal(aisleEntry.id, rackEntry.id, lvl.id)
+                                      }
+                                      title="Edit Level"
+                                    >
+                                      <FiEdit size={13} />
+                                    </button>
                                     {/* Remove Level Button */}
                                     <button
                                       style={{
@@ -1342,6 +1509,12 @@ const CreateOrEditWareHouse: React.FC = () => {
                               >
                                 <FiPlus size={11} /> level
                               </button>
+                              <button
+                                className="bin-add-level-btn"
+                                onClick={() => openEditRackModal(aisleEntry.id, rackEntry.id)}
+                              >
+                                <FiEdit size={11} /> edit
+                              </button>
                               {/* Remove Rack Button */}
                               <button
                                 className="bin-add-level-btn"
@@ -1383,6 +1556,8 @@ const CreateOrEditWareHouse: React.FC = () => {
                             `Add rack to ${modal.aisleId}`}
                           {modal.type === "level" &&
                             `Add level to ${modal.aisleId} / ${modal.rackId}`}
+                          {modal.type === "editRack" && `Edit rack ${modal.rackId} in ${modal.aisleId}`}
+                          {modal.type === "editLevel" && `Edit level ${modal.levelId} in ${modal.aisleId} / ${modal.rackId}`}
                         </h3>
                         <p className="bin-modal-sub">{getModalSubTitle()}</p>
                       </div>
@@ -1478,6 +1653,20 @@ const CreateOrEditWareHouse: React.FC = () => {
                             }
                             error={!!modal.maxUnitsError}
                             errorMessage={modal.maxUnitsError}
+                          />
+                        </div>
+
+                        <div className="create-warehouse-field-group">
+                          <label>Min Threshold / bin</label>
+                          <DashBoardInput
+                            type="number"
+                            placeholder="20"
+                            value={modal.minThreshold}
+                            onChange={(v: string) =>
+                              setModal((m) => ({ ...m, minThreshold: v, minThresholdError: "" }))
+                            }
+                            error={!!modal.minThresholdError}
+                            errorMessage={modal.minThresholdError}
                           />
                         </div>
                       </div>

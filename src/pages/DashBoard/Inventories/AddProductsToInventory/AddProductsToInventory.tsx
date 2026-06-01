@@ -337,6 +337,14 @@ const AddProductToInventory: React.FC = () => {
 
   // Auto Allocation Simulation
   const handleAutoAllocate = async () => {
+    let isValid: boolean = isValidData();
+
+    if (!isValid) {
+      setGlobalTableError(
+        "Please resolve the errors in the allocation table before submitting.",
+      );
+      return;
+    }
     if (!autoQty || Number(autoQty) <= 0) {
       setToast("Please enter a valid total quantity to allocate.");
       return;
@@ -354,6 +362,7 @@ const AddProductToInventory: React.FC = () => {
     if (variantId?.id) {
       variant.id = variantId.id;
     }
+    setGlobalTableError(null);
 
     try {
       let response = await new WarehouseBinService().allocateWarehouseBins(
@@ -397,8 +406,10 @@ const AddProductToInventory: React.FC = () => {
   function isValidData() {
     if (!reservedQty) {
       setReservedQtyError('Please Enter Reserved Qty');
-    } else if (Number(reservedQty) > Number(selectedBins.reduce((sum, selectedBin) => sum + Number(selectedBin.addQty), 0))) {
+    } else if (allocationMode != 'auto' && Number(reservedQty) > Number(selectedBins.reduce((sum, selectedBin) => sum + Number(selectedBin.addQty), 0))) {
       setReservedQtyError('Reserved Qty Cannot Be Lower Than The Total Qty');
+    } else if (!warehouseId || !productId || !variantId) {
+      setToast("Please select Warehouse, Product, and Variant.");
     } else {
       return true;
     }
@@ -410,10 +421,7 @@ const AddProductToInventory: React.FC = () => {
     let isValid: boolean = isValidData();
     let newErrors: { [id: string]: string } = {};
 
-    if (!warehouseId || !productId || !variantId) {
-      setToast("Please select Warehouse, Product, and Variant.");
-      return;
-    }
+
 
     if (selectedBins.length === 0) {
       setGlobalTableError("Please add at least one bin for allocation.");
@@ -469,7 +477,7 @@ const AddProductToInventory: React.FC = () => {
       let variant = new Variant();
       variant.id = variantId?.id;
 
-      let qty = allocationMode == 'auto' ? Number(autoQty) : 10;
+      let qty = allocationMode == 'auto' ? Number(autoQty) : totalCount;
 
       inventory.product = product;
       inventory.variant = variant;
@@ -629,7 +637,7 @@ const AddProductToInventory: React.FC = () => {
                       <DashBoardInput
                         type="text"
                         value={autoQty}
-                        onChange={(e: any) => {setAutoQty(e); setGlobalTableError(null)}}
+                        onChange={(e: any) => { setAutoQty(e); setGlobalTableError(null) }}
                         placeholder="0"
                       />
                       <DashBoardButton
